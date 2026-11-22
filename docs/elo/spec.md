@@ -66,3 +66,22 @@ branch `bot/elo-new-matches` and opens (or updates) a PR listing each candidate 
 evidence. Nothing reaches the leaderboard until a human merges that PR.
 Requires repo secret `ANTHROPIC_API_KEY` and the setting
 "Allow GitHub Actions to create and approve pull requests".
+
+## ClickBench column
+The leaderboard shows, next to each engine's ELO, how the same product does on
+[ClickBench](https://benchmark.clickhouse.com/) — a single-table, scan-heavy benchmark run by
+ClickHouse, so a useful contrast to the join-heavy TPC suites behind the ELO.
+
+- **Data:** `npm run clickbench` downloads ClickBench's `data.generated.js` (the file the site
+  itself renders) and writes `data/elo/clickbench.json`. No API key needed. The weekly workflow
+  refreshes it too.
+- **Score:** a port of the site's default view (`scripts/lib/clickbench.mjs`): the "Combined"
+  metric (60% hot run, 20% cold run, 10% load time, 10% data size, each a geometric mean of
+  ratios to the best result, +10 ms per query, failed queries at 2× the system's worst), with
+  the default filters (untuned, CPU, default machine list, categories elite/production/
+  challenger/retired, in-memory engines excluded). Lower is better; ×1.00 is the best entry.
+- **Mapping:** `data/elo/clickbench-map.json` lists, per ELO engine, the ClickBench systems that
+  are that product (any storage variant or the vendor's cloud service; not third-party wrappers
+  such as pg_duckdb or Spark accelerators). The engine gets its best-scoring entry.
+- **Rank:** position among ClickBench systems, one row per system (the site's "best" toggle),
+  e.g. `#14 of 120`. Engines with no entry in the default view show "—".

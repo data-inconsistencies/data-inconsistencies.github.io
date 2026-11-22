@@ -22,7 +22,7 @@ marketing:
     plausible: ''
     fathom: ''
     pirsch: ''
-    google_tag_manager: 'G-GV8QDDVB6Q'
+    google_tag_manager: ''  # needs a GTM-XXXX container ID; a GA4 ID here loaded a non-existent container
   verification:
     google: ''
     baidu: ''

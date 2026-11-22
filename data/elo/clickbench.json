@@ -1,0 +1,93 @@
+{
+  "source": "https://benchmark.clickhouse.com/",
+  "metric": "Combined, default view; lower is better, 1.00 = best",
+  "updated": "2026-11-22",
+  "systems": 124,
+  "engines": {
+    "Amazon Redshift": {
+      "rank": 50,
+      "score": 7.38,
+      "system": "Redshift",
+      "machine": "serverless",
+      "date": "2026-11-16"
+    },
+    "Apache Spark": {
+      "rank": 109,
+      "score": 104.56,
+      "system": "Spark (Iceberg)",
+      "machine": "c6a.4xlarge",
+      "date": "2026-11-08"
+    },
+    "ClickHouse": {
+      "rank": 3,
+      "score": 2.07,
+      "system": "ClickHouse ☁️ (gcp)",
+      "machine": "ClickHouse ☁️: 356GiB",
+      "date": "2026-11-20"
+    },
+    "Databricks": {
+      "rank": 74,
+      "score": 14.83,
+      "system": "Databricks",
+      "machine": "XL",
+      "date": "2025-11-13"
+    },
+    "DataFusion": {
+      "rank": 21,
+      "score": 4.46,
+      "system": "DataFusion (Vortex, partitioned)",
+      "machine": "c8g.metal-48xl",
+      "date": "2026-11-15"
+    },
+    "DuckDB": {
+      "rank": 25,
+      "score": 4.63,
+      "system": "DuckDB",
+      "machine": "c8g.metal-48xl",
+      "date": "2026-11-10"
+    },
+    "Google BigQuery": {
+      "rank": 83,
+      "score": 20.73,
+      "system": "Bigquery",
+      "machine": "serverless",
+      "date": "2025-10-28"
+    },
+    "Polars": {
+      "rank": 18,
+      "score": 4.39,
+      "system": "Polars (Parquet)",
+      "machine": "c8g.metal-48xl",
+      "date": "2026-11-11"
+    },
+    "Snowflake": {
+      "rank": 36,
+      "score": 6.02,
+      "system": "Snowflake (Interactive)",
+      "machine": "2XL",
+      "date": "2026-07-27"
+    },
+    "StarRocks": {
+      "rank": 42,
+      "score": 6.33,
+      "system": "StarRocks",
+      "machine": "c8g.metal-48xl",
+      "date": "2026-09-07"
+    },
+    "Trino": {
+      "rank": 84,
+      "score": 22.13,
+      "system": "Trino (Parquet, partitioned)",
+      "machine": "c8g.metal-48xl",
+      "date": "2026-11-14"
+    }
+  },
+  "hidden": {
+    "Apache Druid": "listed as \"enthusiast\", hidden by default",
+    "Dask": "in-memory engine, not scored by the Combined metric",
+    "Kinetica": "listed as \"enthusiast\", hidden by default",
+    "Pandas": "in-memory engine, not scored by the Combined metric",
+    "SingleStore": "listed as \"enthusiast\", hidden by default",
+    "Tableau Hyper": "listed as \"enthusiast\", hidden by default"
+  }
+}

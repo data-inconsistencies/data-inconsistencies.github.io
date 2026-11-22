@@ -10,6 +10,7 @@
   "version": "0.1.0",
   "scripts": {
     "test": "node --test 'tests/*.test.mjs'",
-    "find-matches": "node scripts/find-matches.mjs"
+    "find-matches": "node scripts/find-matches.mjs",
+    "clickbench": "node scripts/clickbench.mjs"
   }
 }

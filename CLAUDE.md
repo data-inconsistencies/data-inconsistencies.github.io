@@ -18,6 +18,14 @@ Hugo Blox (Tailwind) landing site, deployed to GitHub Pages by `.github/workflow
   `ANTHROPIC_API_KEY`. Helpers in `scripts/lib/candidates.mjs` stay pure (tests import them without
   `npm ci`). Weekly run + PR: `.github/workflows/find-matches.yaml`. New name variants go in
   `data/elo/aliases.json`.
+- ClickBench column: `npm run clickbench` rewrites `data/elo/clickbench.json` (no key needed);
+  `scripts/lib/clickbench.mjs` ports ClickBench's default "Combined" ranking — re-check it against
+  benchmark.clickhouse.com if their index.html scoring changes. Product → ClickBench systems mapping:
+  `data/elo/clickbench-map.json` (add an entry when a new ELO engine appears).
+- Product links: `data/elo/engines.json` (url per engine; a test fails if an ELO engine is missing).
+  Engine names on /rankings/ link there and send GA4 event `engine_click`
+  (engine, link_url, link_location, workload_filter). GA is `G-GV8QDDVB6Q` in params.yaml and only
+  loads in production builds, not `hugo server`.
 - Use canonical engine names (`ClickHouse`, `Apache Spark`, `Trino`, `DataFusion`) — a new spelling creates a new player.
 
 ## Conventions
