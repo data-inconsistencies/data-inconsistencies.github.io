@@ -39,13 +39,14 @@ test('validateCandidate rejects bad input with a reason', () => {
 
 test('mergeCandidates drops known sources, rejects invalid ones, assigns next ids', () => {
   const { added, skipped } = mergeCandidates(existing, [
-    cand({ source: 'http://example.com/post' }),          // same report + workload -> skip
-    cand({ source: 'http://example.com/post', workload: 'TPC-DS' }), // same report, new workload -> keep
+    cand({ source: 'http://example.com/post', date: '2024-01-01' }),    // same report, workload and date -> skip
+    cand({ source: 'http://example.com/post', date: '2025-05-01' }),    // same page republished later -> keep
+    cand({ source: 'http://example.com/post', date: '2024-01-01', workload: 'TPC-DS' }), // new workload -> keep
     cand({ source: 'https://a.test/1' }),
     cand({ source: 'https://a.test/1' }),                  // duplicate within batch -> skip
     cand({ source: 'https://b.test/2', ranking: ['X'] }),  // invalid
   ], { aliases, today: '2026-01-01' });
-  assert.deepEqual(added.map((m) => [m.id, m.workload, m.source]), [[8, 'TPC-DS', 'http://example.com/post'], [9, 'TPC-H', 'https://a.test/1']]);
+  assert.deepEqual(added.map((m) => [m.id, m.workload, m.date]), [[8, 'TPC-H', '2025-05-01'], [9, 'TPC-DS', '2024-01-01'], [10, 'TPC-H', '2025-03-01']]);
   assert.equal(skipped.length, 3);
   assert.ok(skipped.every((s) => s.reason));
 });
@@ -55,6 +56,8 @@ test('buildPrompt includes cutoff date, known engines and known sources', () => 
   assert.match(p, /2024-01-01/);
   assert.match(p, /ClickHouse/);
   assert.match(p, /example\.com\/post/);
+  assert.match(p, /2024-01-01 TPC-H https:\/\/www\.example\.com\/post\//, 'known sources listed with date and workload');
+  assert.match(p, /republished/i);
 });
 
 test('aliases file maps only to engines spelled canonically elsewhere', () => {

@@ -53,7 +53,10 @@ export function knownEngines(matches) {
 
 export function mergeCandidates(existing, candidates, { aliases = {}, today = new Date().toISOString().slice(0, 10) } = {}) {
   const known = knownEngines(existing);
-  const seen = new Set(existing.map((m) => `${normalizeUrl(m.source)}|${m.workload}`));
+  // A report is the same match only if URL, workload and publication date all match:
+  // a page republished with new results on a later date is a new match.
+  const keyOf = (m) => `${normalizeUrl(m.source)}|${m.workload}|${m.date}`;
+  const seen = new Set(existing.map(keyOf));
   let nextId = Math.max(0, ...existing.map((m) => m.id)) + 1;
   const added = [];
   const skipped = [];
@@ -62,7 +65,7 @@ export function mergeCandidates(existing, candidates, { aliases = {}, today = ne
     const c = normalizeCandidate(raw, aliases, known);
     const reason = validateCandidate(c, today);
     if (reason) { skipped.push({ candidate: c, reason }); continue; }
-    const key = `${normalizeUrl(c.source)}|${c.workload}`;
+    const key = keyOf(c);
     if (seen.has(key)) { skipped.push({ candidate: c, reason: 'already in matches.json' }); continue; }
     seen.add(key);
     added.push({ id: nextId++, date: c.date, source: c.source, workload: c.workload, ranking: c.ranking, evidence: c.evidence });
@@ -72,7 +75,7 @@ export function mergeCandidates(existing, candidates, { aliases = {}, today = ne
 
 export function buildPrompt(existing, { today = new Date().toISOString().slice(0, 10), maxResults = 10 } = {}) {
   const newest = existing.map((m) => m.date).sort().at(-1) ?? '2020-01-01';
-  const sources = [...new Set(existing.map((m) => m.source))].sort();
+  const sources = [...new Set(existing.map((m) => `${m.date} ${m.workload} ${m.source}`))].sort();
   return `You maintain an ELO leaderboard of analytics / OLAP query engines built from public benchmark reports.
 Today is ${today}. The newest report already in the leaderboard was published ${newest}.
 
@@ -90,8 +93,9 @@ For each report:
 3. date = the report's publication date (YYYY-MM-DD). source = the canonical URL of the report.
 4. evidence = one sentence saying which figure or table the order came from.
 
-Skip a report if you cannot determine a clear order, if it is not public, or if its URL is one of these
-already-recorded sources:
+Skip a report if you cannot determine a clear order or if it is not public. These reports are already
+recorded (date, benchmark, URL). Skip them, unless the page has since been republished with new results
+on a later date: then return it again with the new publication date and the new order.
 ${sources.map((s) => `- ${s}`).join('\n')}
 
 Use these exact engine names when an engine matches one of them; otherwise use the engine's official name:
