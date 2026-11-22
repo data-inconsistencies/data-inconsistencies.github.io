@@ -256,5 +256,30 @@
       "DataFusion"
     ],
     "evidence": "Computed from raw results in github.com/pola-rs/polars-2.0-benchmark, SF100 on c7a.4xlarge, sum of best-of-5 over 97 queries (q67, q72 excluded, DataFusion timeouts): Polars 2.0 85.8s, DuckDB 1.5.6 112.7s, DataFusion 54 198.5s. DuckDB 2.0 alpha not counted."
+  },
+  {
+    "id": 24,
+    "date": "2025-06-01",
+    "source": "https://pola.rs/posts/benchmarks/",
+    "workload": "TPC-H",
+    "ranking": [
+      "DuckDB",
+      "Polars",
+      "Apache Spark",
+      "Dask"
+    ],
+    "evidence": "Republished 'Updated PDS-H benchmark results (May 2025)', SF-100 total_time table: DuckDB 1.3.0 19.65s, Polars 1.30 streaming 23.94s (in-memory 152.27s not counted separately), PySpark 4.0 312.43s, Dask 2025.5.1 548.52s. At SF-10 Polars streaming is first (3.89s vs DuckDB 5.87s)."
+  },
+  {
+    "id": 25,
+    "date": "2025-06-13",
+    "source": "https://docs.starrocks.io/docs/benchmarking/SSB_Benchmarking/",
+    "workload": "SSB",
+    "ranking": [
+      "StarRocks",
+      "ClickHouse",
+      "Apache Druid"
+    ],
+    "evidence": "Rerun on the same docs page, SSB-Flat 100 GB, SUM row of the Test results table: StarRocks 3.5.0 992ms, ClickHouse 25.3.3.42 1858ms, Apache Druid 33.0.0 4710ms. Page has no publication date; date is the release date of the newest tested build (StarRocks 3.5.0, 2025-06-13)."
   }
 ]
