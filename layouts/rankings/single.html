@@ -62,12 +62,50 @@
   .elo .match li small { margin-left: 4px; font-variant-numeric: tabular-nums; }
   .elo .note { color: var(--muted); font-size: .9rem; line-height: 1.6; }
   .elo .note a, .elo .lede a { color: var(--accent); text-decoration: underline; }
+  .elo .explain { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent);
+                  border-radius: 10px; padding: 14px 18px; margin: 1.5rem 0 0; line-height: 1.6; max-width: 80ch; }
+  .elo .explain h2 { font-size: 1rem; margin: 0 0 .4rem; }
+  .elo .explain p { margin: .4rem 0; }
+  .elo .explain ul { margin: .4rem 0 .4rem 1.2rem; padding: 0; list-style: disc; }
+  .elo .explain li { margin: .15rem 0; }
+  .elo .explain a { color: var(--accent); text-decoration: underline; }
+  .elo .explain .note { margin-top: .6rem; }
   .elo code { font-size: .85em; background: var(--surface); padding: 1px 5px; border-radius: 4px; }
 </style>
 
 <div class="elo">
   <h1>{{ .Title }}</h1>
   <div class="lede">{{ .Content }}</div>
+
+  <aside class="explain" aria-labelledby="elo-what">
+    <h2 id="elo-what">New to ELO ratings?</h2>
+    <p>
+      An ELO rating is one number that sums up how strong a player is, based on who they have beaten. It was
+      created by physicist Arpad Elo for chess and is now used in many games and sports.
+    </p>
+    <ul>
+      <li>Every player starts at <b>1500</b>.</li>
+      <li>Beating a higher-rated player earns more points than beating a lower-rated one, and losing to a
+        lower-rated player costs more.</li>
+      <li>Points move from loser to winner, so the total never changes.</li>
+      <li>The gap predicts results: 200 points ahead means you are expected to win about 76% of the time;
+        400 points ahead, about 91%.</li>
+    </ul>
+    <p>
+      <b>How we use it:</b> the players are analytics engines and each public benchmark report is a game.
+      The report's finishing order (fastest first) decides who beat whom; a report that compares six engines
+      counts as every pair of them playing at once. Reports are applied oldest first, so a rating reflects
+      every benchmark an engine has appeared in, not just the latest one. Use the workload buttons to see
+      ratings from one benchmark type only.
+    </p>
+    <p class="note">
+      A rating measures speed in published benchmarks, many of them run by vendors. It says nothing about
+      price, features or ease of use. More detail:
+      <a href="https://en.wikipedia.org/wiki/Elo_rating_system">Elo rating system (Wikipedia)</a>,
+      <a href="https://www.chess.com/terms/elo-rating-chess">a plain-language guide from Chess.com</a>,
+      and <a href="#method">our exact formula</a> below.
+    </p>
+  </aside>
 
   <div class="stats" id="elo-stats" aria-live="polite"></div>
 
@@ -95,7 +133,7 @@
   <h2>Matches</h2>
   <div class="matches" id="elo-matches"></div>
 
-  <h2>Method &amp; contributing</h2>
+  <h2 id="method">Method &amp; contributing</h2>
   <p class="note">
     Each N-way match is split into every pair of engines. For each pair the expected score is
     <code>1 / (1 + 10<sup>(R<sub>b</sub>−R<sub>a</sub>)/400</sup>)</code>; a win scores 1, a tie 0.5.
