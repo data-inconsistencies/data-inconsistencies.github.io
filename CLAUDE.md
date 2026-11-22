@@ -16,7 +16,8 @@ Hugo Blox (Tailwind) landing site, deployed to GitHub Pages by `.github/workflow
 - Spec / intent / plan: `docs/elo/`. Change the spec before changing the algorithm.
 - Discovery: `npm run find-matches` (dry run) / `-- --write` asks Claude to find new reports; needs
   `ANTHROPIC_API_KEY`. Helpers in `scripts/lib/candidates.mjs` stay pure (tests import them without
-  `npm ci`). Weekly run + PR: `.github/workflows/find-matches.yaml`. New name variants go in
+  `npm ci`). Run by hand monthly (runbook `docs/elo/finding-matches.md`); `.github/workflows/monthly-reminder.yaml`
+  emails the committers via an assigned issue and refreshes ClickBench. New name variants go in
   `data/elo/aliases.json`.
 - ClickBench column: `npm run clickbench` rewrites `data/elo/clickbench.json` (no key needed);
   `scripts/lib/clickbench.mjs` ports ClickBench's default "Combined" ranking — re-check it against

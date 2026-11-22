@@ -51,7 +51,7 @@ async function main() {
     }])),
     hidden: hiddenReasons(data, mapping, engines),
   };
-  // Keep the previous "updated" date when nothing else changed, so the weekly job opens no PR.
+  // Keep the previous "updated" date when nothing else changed, so the monthly job opens no PR.
   try {
     const prev = JSON.parse(readFileSync(OUT, 'utf8'));
     if (JSON.stringify({ ...prev, updated: out.updated }) === JSON.stringify(out)) out.updated = prev.updated;

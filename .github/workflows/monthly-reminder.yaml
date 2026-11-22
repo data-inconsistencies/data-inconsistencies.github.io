@@ -1,0 +1,96 @@
+name: Monthly ELO reminder
+
+# On the 1st of each month:
+# 1. Refresh the ClickBench comparison (no API key needed) and open a PR if it changed.
+# 2. Open a reminder issue assigned to the committers, so GitHub emails them to run the
+#    match search by hand (docs/elo/finding-matches.md). Last month's reminder is closed.
+# Setup: Settings > Actions > General > "Allow GitHub Actions to create and approve pull requests".
+
+on:
+  schedule:
+    - cron: '0 15 1 * *' # 1st of the month, 15:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: monthly-reminder
+  cancel-in-progress: false
+
+env:
+  # GitHub logins that get the reminder. Assigning the issue is what triggers GitHub's email.
+  REMINDER_ASSIGNEES: alberttwong,geoHeil
+  LABEL: elo-reminder
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+
+      - name: Refresh ClickBench comparison
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: bot/clickbench-refresh
+        run: |
+          npm run clickbench
+          if git diff --quiet -- data/elo/clickbench.json; then
+            echo "ClickBench comparison unchanged."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -C "$BRANCH"
+          git add data/elo/clickbench.json
+          git commit -m "Refresh ClickBench comparison $(date -u +%Y-%m-%d)"
+          git push --force origin "$BRANCH"
+          if ! gh pr view "$BRANCH" --json state --jq .state 2>/dev/null | grep -q OPEN; then
+            gh pr create --base main --head "$BRANCH" \
+              --title "Refresh ClickBench comparison ($(date -u +%Y-%m-%d))" \
+              --body "Monthly refresh of \`data/elo/clickbench.json\` from ClickBench's published results (\`npm run clickbench\`). Check the leaderboard's ClickBench column in the Netlify preview before merging."
+          fi
+          git switch -q -
+
+      - name: Open reminder issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          month=$(date -u +'%B %Y')
+          newest=$(node -e "const m=require('./data/elo/matches.json'); console.log(m.map(x=>x.date).sort().at(-1))")
+          count=$(node -e "console.log(require('./data/elo/matches.json').length)")
+          repo_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"
+
+          gh label create "$LABEL" --color 1d76db --description "Monthly ELO match search reminder" --force
+
+          # Close last month's reminder(s) so only one is open.
+          for n in $(gh issue list --label "$LABEL" --state open --json number --jq '.[].number'); do
+            gh issue close "$n" --comment "Superseded by the ${month} reminder."
+          done
+
+          cat > "$RUNNER_TEMP/body.md" <<EOF
+          Time for the monthly search for new public benchmark reports.
+
+          The leaderboard has **${count} matches**; the newest report is from **${newest}**.
+
+          **How to run it** (details in [docs/elo/finding-matches.md](${repo_url}/blob/main/docs/elo/finding-matches.md)):
+
+          - **With an Anthropic API key:** \`npm ci\`, then \`ANTHROPIC_API_KEY=… npm run find-matches\` (dry run), then rerun with \`-- --write\`.
+          - **Without a key:** open the repo in Claude Code and ask it to follow \`docs/elo/finding-matches.md\`.
+
+          Check every candidate against its source, then open a PR with the new entries in \`data/elo/matches.json\`.
+          Close this issue when done, or note that nothing new was found.
+          EOF
+
+          gh issue create \
+            --title "Monthly ELO match search: ${month}" \
+            --label "$LABEL" \
+            --assignee "$REMINDER_ASSIGNEES" \
+            --body-file "$RUNNER_TEMP/body.md"

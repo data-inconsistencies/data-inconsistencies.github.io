@@ -60,12 +60,10 @@ web fetch tools) to find public benchmark reports published after the newest mat
 - Needs an Anthropic credential (`ANTHROPIC_API_KEY` or an `ant auth login` profile).
 
 ### Schedule
-`.github/workflows/find-matches.yaml` runs every Monday 06:00 UTC (and on manual dispatch).
-It runs the tests, then `find-matches --write`. If `matches.json` changed it pushes
-branch `bot/elo-new-matches` and opens (or updates) a PR listing each candidate with its
-evidence. Nothing reaches the leaderboard until a human merges that PR.
-Requires repo secret `ANTHROPIC_API_KEY` and the setting
-"Allow GitHub Actions to create and approve pull requests".
+The search is run by hand, monthly. `.github/workflows/monthly-reminder.yaml` opens an issue on the
+1st of each month assigned to the committers (GitHub emails them) and closes the previous one.
+The runbook is `docs/elo/finding-matches.md`: run `npm run find-matches` with an API key, or ask
+Claude Code to follow the same process. Nothing reaches the leaderboard until a human merges the PR.
 
 ## ClickBench column
 The leaderboard shows, next to each engine's ELO, how the same product does on
@@ -73,8 +71,8 @@ The leaderboard shows, next to each engine's ELO, how the same product does on
 ClickHouse, so a useful contrast to the join-heavy TPC suites behind the ELO.
 
 - **Data:** `npm run clickbench` downloads ClickBench's `data.generated.js` (the file the site
-  itself renders) and writes `data/elo/clickbench.json`. No API key needed. The weekly workflow
-  refreshes it too.
+  itself renders) and writes `data/elo/clickbench.json`. No API key needed. The monthly reminder
+  workflow refreshes it and opens a PR when it changed.
 - **Score:** a port of the site's default view (`scripts/lib/clickbench.mjs`): the "Combined"
   metric (60% hot run, 20% cold run, 10% load time, 10% data size, each a geometric mean of
   ratios to the best result, +10 ms per query, failed queries at 2× the system's worst), with
