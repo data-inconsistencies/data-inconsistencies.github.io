@@ -4,8 +4,8 @@ Hugo Blox (Tailwind) landing site, deployed to GitHub Pages by `.github/workflow
 
 ## Commands
 - Test ELO engine: `npm test` (node:test, no deps; needs Node 22+)
-- Build: `hugo --gc --minify` — CI pins Hugo **0.148.2**. Newer local Hugo (≥0.145 removes `_build`)
-  fails on `content/authors/_index.md`; use the pinned version to reproduce CI.
+- Build: `hugo --gc --minify` — CI pins Hugo **0.148.2** (also builds on 0.161). Use `build:`, never the
+  removed `_build:`, in front matter.
 - Preview: `hugo server`
 
 ## ELO rankings
