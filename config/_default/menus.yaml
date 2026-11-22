@@ -9,6 +9,9 @@ main:
   # - name: Inconsistencies with data
   #   url: /#datainconsistencies
   #   weight: 11
+  - name: Rankings
+    url: rankings/
+    weight: 20
   - name: Videos
     # TODO migrate to youtube.data-inconsistencies.datajourney.expert once set up properly
     # url: https://www.youtube.com/@datainconsistencies/

@@ -1,0 +1,172 @@
+{{ define "main" }}
+{{ $elo := resources.Get "js/elo.mjs" | minify | fingerprint }}
+{{ $repo := "https://github.com/data-inconsistencies/landingpage" }}
+<style>
+  .elo { --bg: #ffffff; --surface: #f6f7f9; --border: #e3e6eb; --text: #111827; --muted: #5b6474;
+         --accent: #1d4ed8; --accent-soft: #dbe5ff; --up: #047857; --down: #b91c1c; --grid: #e9ecf1;
+         color: var(--text); max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+  html.dark .elo { --bg: #0f1420; --surface: #161d2b; --border: #273246; --text: #e8ecf3; --muted: #9aa5b8;
+         --accent: #7aa2ff; --accent-soft: #1f2d4d; --up: #34d399; --down: #f87171; --grid: #222c3d; }
+  body:has(.elo) { background: #ffffff; }
+  html.dark body:has(.elo) { background: #0f1420; }
+  .elo h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 .75rem; }
+  .elo h2 { font-size: 1.25rem; font-weight: 700; margin: 2.5rem 0 .75rem; }
+  .elo .lede { color: var(--muted); max-width: 68ch; line-height: 1.6; }
+  .elo .lede strong { color: var(--text); }
+  .elo .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 1.5rem 0; }
+  .elo .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+  .elo .stat b { display: block; font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+  .elo .stat span { color: var(--muted); font-size: .85rem; }
+  .elo .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 1rem 0; }
+  .elo .chip { border: 1px solid var(--border); background: var(--bg); color: var(--text); border-radius: 999px;
+               padding: 6px 14px; font-size: .9rem; cursor: pointer; }
+  .elo .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  html.dark .elo .chip[aria-pressed="true"] { color: #0b1020; }
+  .elo .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+  .elo table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+  .elo th, .elo td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  .elo th { background: var(--surface); color: var(--muted); font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+  .elo tr:last-child td { border-bottom: 0; }
+  .elo .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .elo .rank { color: var(--muted); width: 2.5rem; }
+  .elo .engine { font-weight: 600; }
+  .elo .bar { display: inline-block; height: 6px; border-radius: 3px; background: var(--accent); vertical-align: middle; margin-left: 8px; opacity: .8; }
+  .elo .up { color: var(--up); } .elo .down { color: var(--down); } .elo .flat { color: var(--muted); }
+  .elo .chart { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+  .elo .chart svg { width: 100%; height: auto; display: block; }
+  .elo .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .85rem; margin-top: 8px; color: var(--muted); }
+  .elo .legend i { display: inline-block; width: 12px; height: 3px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+  .elo .matches { display: grid; gap: 10px; }
+  .elo .match { border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; background: var(--bg); }
+  .elo .match header { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; margin-bottom: 6px; }
+  .elo .match .tag { font-size: .75rem; background: var(--accent-soft); color: var(--accent); border-radius: 4px; padding: 2px 6px; font-weight: 600; }
+  .elo .match .date { color: var(--muted); font-size: .85rem; font-variant-numeric: tabular-nums; }
+  .elo .match a { color: var(--accent); font-size: .85rem; overflow-wrap: anywhere; }
+  .elo .match ol { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+  .elo .match li { font-size: .88rem; background: var(--surface); border-radius: 6px; padding: 3px 8px; }
+  .elo .match li small { margin-left: 4px; font-variant-numeric: tabular-nums; }
+  .elo .note { color: var(--muted); font-size: .9rem; line-height: 1.6; }
+  .elo .note a, .elo .lede a { color: var(--accent); text-decoration: underline; }
+  .elo code { font-size: .85em; background: var(--surface); padding: 1px 5px; border-radius: 4px; }
+</style>
+
+<div class="elo">
+  <h1>{{ .Title }}</h1>
+  <div class="lede">{{ .Content }}</div>
+
+  <div class="stats" id="elo-stats" aria-live="polite"></div>
+
+  <div class="chips" role="group" aria-label="Filter by workload" id="elo-filter"></div>
+
+  <h2>Leaderboard</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th class="rank">#</th><th>Engine</th><th class="num">Rating</th><th class="num">Last Δ</th>
+        <th class="num">W–L–D</th><th class="num">Matches</th><th class="num">Last match</th>
+      </tr></thead>
+      <tbody id="elo-board"></tbody>
+    </table>
+  </div>
+
+  <h2>Rating history <span class="flat" style="font-weight:400;font-size:.9rem">(top 6)</span></h2>
+  <div class="chart"><div id="elo-chart"></div><div class="legend" id="elo-legend"></div></div>
+
+  <h2>Matches</h2>
+  <div class="matches" id="elo-matches"></div>
+
+  <h2>Method &amp; contributing</h2>
+  <p class="note">
+    Each N-way match is split into every pair of engines. For each pair the expected score is
+    <code>1 / (1 + 10<sup>(R<sub>b</sub>−R<sub>a</sub>)/400</sup>)</code>; a win scores 1, a tie 0.5.
+    An engine's change is <code>K / (N−1) × Σ(actual − expected)</code> with K = 32, so ratings stay zero-sum.
+    The full spec is in <a href="{{ $repo }}/blob/main/docs/elo/spec.md">docs/elo/spec.md</a>.
+    <br><br>
+    Got results? Publish them publicly, then add a match to
+    <a href="{{ $repo }}/blob/main/data/elo/matches.json">data/elo/matches.json</a> in a pull request,
+    or email <a href="mailto:atwong@alumni.uci.edu">atwong@alumni.uci.edu</a>. Backdated reports are welcome.
+  </p>
+</div>
+
+<script type="application/json" id="elo-data">{{ site.Data.elo.matches | jsonify | safeJS }}</script>
+<script type="module">
+  import { computeRatings, leaderboard, workloads } from "{{ $elo.RelPermalink }}";
+  const data = JSON.parse(document.getElementById("elo-data").textContent);
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  const fmtD = (d) => (Math.abs(d) < 0.5 ? `<span class="flat">±0</span>` : `<span class="${d > 0 ? "up" : "down"}">${d > 0 ? "+" : "−"}${Math.abs(d).toFixed(0)}</span>`);
+  const PALETTE = ["#2563eb", "#d97706", "#059669", "#db2777", "#7c3aed", "#0891b2"];
+
+  const filters = ["All", ...workloads(data)];
+  let current = "All";
+  $("elo-filter").innerHTML = filters.map((w) =>
+    `<button class="chip" data-w="${esc(w)}" aria-pressed="${w === current}">${esc(w)} · ${w === "All" ? data.length : data.filter((m) => m.workload === w).length}</button>`).join("");
+  $("elo-filter").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-w]"); if (!b) return;
+    current = b.dataset.w;
+    for (const c of $("elo-filter").children) c.setAttribute("aria-pressed", c.dataset.w === current);
+    render();
+  });
+
+  function render() {
+    const { ratings, history, matches } = computeRatings(data, { workload: current });
+    const board = leaderboard(ratings);
+    const lo = Math.min(...board.map((r) => r.rating)), hi = Math.max(...board.map((r) => r.rating));
+
+    $("elo-stats").innerHTML = [
+      [board[0]?.engine ?? "—", "Top engine"],
+      [board[0] ? board[0].rating.toFixed(0) : "—", "Top rating"],
+      [board.length, "Engines"],
+      [matches.length, "Matches"],
+    ].map(([v, l]) => `<div class="stat"><b>${esc(v)}</b><span>${l}</span></div>`).join("");
+
+    $("elo-board").innerHTML = board.map((r, i) => `<tr>
+      <td class="rank">${i + 1}</td>
+      <td class="engine">${esc(r.engine)}</td>
+      <td class="num">${r.rating.toFixed(0)}<span class="bar" style="width:${(8 + 52 * (r.rating - lo) / ((hi - lo) || 1)).toFixed(0)}px"></span></td>
+      <td class="num">${fmtD(r.lastDelta)}</td>
+      <td class="num">${r.wins}–${r.losses}–${r.draws}</td>
+      <td class="num">${r.played}</td>
+      <td class="num flat">${r.lastDate}</td></tr>`).join("");
+
+    $("elo-matches").innerHTML = matches.slice().reverse().map((m) => `<article class="match">
+      <header><span class="tag">${esc(m.workload)}</span><span class="date">${m.date}</span>
+        <a href="${esc(m.source)}" rel="noopener" target="_blank">${esc(new URL(m.source).hostname.replace(/^www\./, ""))} ↗</a></header>
+      <ol>${m.placings.map((p) => `<li>${p.place}. ${esc(p.engine)}<small>${fmtD(m.deltas[p.engine])}</small></li>`).join("")}</ol>
+    </article>`).join("");
+
+    drawChart(board.slice(0, 6), history);
+  }
+
+  function drawChart(top, history) {
+    const W = 960, H = 320, P = { l: 44, r: 12, t: 12, b: 28 };
+    const t = (d) => Date.parse(d);
+    const all = top.flatMap((r) => history[r.engine]);
+    if (!all.length) { $("elo-chart").innerHTML = ""; $("elo-legend").innerHTML = ""; return; }
+    const dates = all.map((p) => t(p.date));
+    const x0 = Math.min(...dates) - 864e5 * 20, x1 = Math.max(...dates) + 864e5 * 20;
+    const ys = [1500, ...all.map((p) => p.rating)];
+    const y0 = Math.floor((Math.min(...ys) - 5) / 10) * 10, y1 = Math.ceil((Math.max(...ys) + 5) / 10) * 10;
+    const X = (v) => P.l + (W - P.l - P.r) * (v - x0) / (x1 - x0);
+    const Y = (v) => H - P.b - (H - P.t - P.b) * (v - y0) / (y1 - y0);
+    const step = (y1 - y0) > 60 ? 20 : 10;
+    let g = "";
+    for (let v = Math.ceil(y0 / step) * step; v <= y1; v += step)
+      g += `<line x1="${P.l}" x2="${W - P.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--grid)" ${v === 1500 ? 'stroke-dasharray="4 4" stroke="var(--muted)"' : ""}/><text x="${P.l - 6}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="var(--muted)">${v}</text>`;
+    for (let yr = new Date(x0).getFullYear() + 1; yr <= new Date(x1).getFullYear(); yr++)
+      g += `<text x="${X(Date.UTC(yr, 0, 1))}" y="${H - 8}" text-anchor="middle" font-size="11" fill="var(--muted)">${yr}</text><line x1="${X(Date.UTC(yr, 0, 1))}" x2="${X(Date.UTC(yr, 0, 1))}" y1="${P.t}" y2="${H - P.b}" stroke="var(--grid)"/>`;
+    const lines = top.map((r, i) => {
+      const pts = history[r.engine];
+      let d = `M${X(t(pts[0].date))},${Y(1500)}`;
+      for (const p of pts) d += ` H${X(t(p.date))} V${Y(p.rating)}`;
+      d += ` H${X(x1)}`;
+      const dots = pts.map((p) => `<circle cx="${X(t(p.date))}" cy="${Y(p.rating)}" r="3" fill="${PALETTE[i]}"><title>${esc(r.engine)} · ${p.date} · ${p.rating.toFixed(0)}</title></circle>`).join("");
+      return `<path d="${d}" fill="none" stroke="${PALETTE[i]}" stroke-width="2"/>${dots}`;
+    }).join("");
+    $("elo-chart").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Rating history of top engines">${g}${lines}</svg>`;
+    $("elo-legend").innerHTML = top.map((r, i) => `<span><i style="background:${PALETTE[i]}"></i>${esc(r.engine)}</span>`).join("");
+  }
+
+  render();
+</script>
+{{ end }}
