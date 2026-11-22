@@ -207,5 +207,54 @@
       "DataFusion",
       "Polars"
     ]
+  },
+  {
+    "id": 20,
+    "date": "2026-04-16",
+    "source": "https://ideas.paasup.io/global/tpcds-benchmark1tben/",
+    "workload": "TPC-DS",
+    "ranking": [
+      "StarRocks",
+      "Trino"
+    ],
+    "evidence": "Section 6.3 summary table, SF1000 on Iceberg/GCS: StarRocks 4.0.8 (4 CN, warm) geomean 2.198s vs Trino 475 geomean 6.782s; Trino figure is the page's 'official' number, not a same-hardware run."
+  },
+  {
+    "id": 21,
+    "date": "2026-06-03",
+    "source": "https://clickhouse.com/blog/tpc-h-clickhouse-cloud-vs-snowflake-databricks-bigquery-redshift",
+    "workload": "TPC-H",
+    "ranking": [
+      "Snowflake",
+      "ClickHouse",
+      "Google BigQuery",
+      "Databricks",
+      "Amazon Redshift"
+    ],
+    "evidence": "SF100 raw hot runtime, hardware-matched sizes named in the post: Snowflake Large Gen2 15.9s, ClickHouse Cloud 59-core node 19.8s, BigQuery 2,000 slots 26.2s, Databricks Large 28.9s, Redshift Serverless 128 RPU 30.7s."
+  },
+  {
+    "id": 22,
+    "date": "2026-10-06",
+    "source": "https://pola.rs/posts/release-polars-2/",
+    "workload": "TPC-H",
+    "ranking": [
+      "Polars",
+      "DuckDB",
+      "DataFusion"
+    ],
+    "evidence": "Computed from raw results in github.com/pola-rs/polars-2.0-benchmark, SF100 on c7a.4xlarge, sum of best-of-5 over 21 queries (q18 excluded, DataFusion OOM): Polars 2.0 34.6s, DuckDB 1.5.6 50.2s, DataFusion 54 78.0s. DuckDB 2.0 alpha not counted."
+  },
+  {
+    "id": 23,
+    "date": "2026-10-06",
+    "source": "https://pola.rs/posts/release-polars-2/",
+    "workload": "TPC-DS",
+    "ranking": [
+      "Polars",
+      "DuckDB",
+      "DataFusion"
+    ],
+    "evidence": "Computed from raw results in github.com/pola-rs/polars-2.0-benchmark, SF100 on c7a.4xlarge, sum of best-of-5 over 97 queries (q67, q72 excluded, DataFusion timeouts): Polars 2.0 85.8s, DuckDB 1.5.6 112.7s, DataFusion 54 198.5s. DuckDB 2.0 alpha not counted."
   }
 ]
