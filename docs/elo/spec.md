@@ -50,7 +50,8 @@ web fetch tools) to find public benchmark reports published after the newest mat
   was read from the report, e.g. "total runtime SF100 table").
 - **Post-processing (pure, tested in `scripts/lib/candidates.mjs`):**
   engine names are mapped to canonical names through `data/elo/aliases.json`;
-  candidates whose normalized URL + workload already exist are dropped; invalid
+  candidates whose normalized URL + workload + date already exist are dropped (a page
+  republished with new results on a later date is a new match); invalid
   candidates (bad date, <2 engines, duplicate engine, non-http source, future date) are
   rejected with a reason; survivors get the next free ids.
 - **Default is a dry run** that prints candidates. `--write` appends them to
