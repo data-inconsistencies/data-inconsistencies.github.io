@@ -37,3 +37,31 @@ Homepage "Explore the live rankings" button and the main menu point to `/ranking
 - `node --test tests/` passes (engine unit tests incl. zero-sum, N-way, ties, determinism).
 - `hugo` builds with no errors; `/rankings/` renders leaderboard from the data file.
 - Light and dark mode readable; works at 375px width.
+
+## Discovering new matches (`npm run find-matches`)
+`scripts/find-matches.mjs` asks Claude (Opus 5.5, with the server-side web search and
+web fetch tools) to find public benchmark reports published after the newest match in
+`data/elo/matches.json`, and to extract each report's overall ranking.
+
+- **Input to the model:** newest match date, the canonical engine names, and every source
+  URL already in the data (so known reports are skipped).
+- **Output:** JSON matching a fixed schema (structured outputs): `date`, `source`,
+  `workload`, `ranking` (fastest → slowest; nested array = tie), `evidence` (how the order
+  was read from the report, e.g. "total runtime SF100 table").
+- **Post-processing (pure, tested in `scripts/lib/candidates.mjs`):**
+  engine names are mapped to canonical names through `data/elo/aliases.json`;
+  candidates whose normalized URL + workload already exist are dropped; invalid
+  candidates (bad date, <2 engines, duplicate engine, non-http source, future date) are
+  rejected with a reason; survivors get the next free ids.
+- **Default is a dry run** that prints candidates. `--write` appends them to
+  `matches.json` with an `evidence` field. A human checks each one against its source in
+  the PR diff before merge: the model can misread charts, and vendor reports are biased.
+- Needs an Anthropic credential (`ANTHROPIC_API_KEY` or an `ant auth login` profile).
+
+### Schedule
+`.github/workflows/find-matches.yaml` runs every Monday 06:00 UTC (and on manual dispatch).
+It runs the tests, then `find-matches --write`. If `matches.json` changed it pushes
+branch `bot/elo-new-matches` and opens (or updates) a PR listing each candidate with its
+evidence. Nothing reaches the leaderboard until a human merges that PR.
+Requires repo secret `ANTHROPIC_API_KEY` and the setting
+"Allow GitHub Actions to create and approve pull requests".

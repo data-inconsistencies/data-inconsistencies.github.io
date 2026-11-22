@@ -3,11 +3,13 @@
     "dependencies": {},
     "devDependencies": {}
   },
-  "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^1.12.0"
+  },
   "name": "landingpage",
   "version": "0.1.0",
   "scripts": {
-    "test": "node --test 'tests/*.test.mjs'"
+    "test": "node --test 'tests/*.test.mjs'",
+    "find-matches": "node scripts/find-matches.mjs"
   }
 }
