@@ -30,6 +30,8 @@ jobs:
         with:
           # Fetch history for Hugo's .GitInfo and .Lastmod
           fetch-depth: 0
+      - name: Run ELO engine tests
+        run: npm test
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
