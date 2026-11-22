@@ -29,6 +29,8 @@
   .elo tr:last-child td { border-bottom: 0; }
   .elo .num { text-align: right; font-variant-numeric: tabular-nums; }
   .elo .rank { color: var(--muted); width: 2.5rem; }
+  .elo td.cb { cursor: help; }
+  .elo td.cb small { color: var(--muted); }
   .elo .engine { font-weight: 600; }
   .elo .bar { display: inline-block; height: 6px; border-radius: 3px; background: var(--accent); vertical-align: middle; margin-left: 8px; opacity: .8; }
   .elo .up { color: var(--up); } .elo .down { color: var(--down); } .elo .flat { color: var(--muted); }
@@ -62,7 +64,9 @@
   <div class="table-wrap">
     <table>
       <thead><tr>
-        <th class="rank">#</th><th>Engine</th><th class="num">Rating</th><th class="num">Last Δ</th>
+        <th class="rank">#</th><th>Engine</th><th class="num">Rating</th>
+        <th class="num" title="Rank among {{ site.Data.elo.clickbench.systems }} systems in ClickBench's default view, and its Combined score (lower is better, ×1.00 = best). Updated {{ site.Data.elo.clickbench.updated }}.">ClickBench</th>
+        <th class="num">Last Δ</th>
         <th class="num">W–L–D</th><th class="num">Matches</th><th class="num">Last match</th>
       </tr></thead>
       <tbody id="elo-board"></tbody>
@@ -82,6 +86,12 @@
     An engine's change is <code>K / (N−1) × Σ(actual − expected)</code> with K = 32, so ratings stay zero-sum.
     The full spec is in <a href="{{ $repo }}/blob/main/docs/elo/spec.md">docs/elo/spec.md</a>.
     <br><br>
+    The <b>ClickBench</b> column is for contrast: <a href="https://benchmark.clickhouse.com/">ClickBench</a> is a
+    single-table, scan-heavy benchmark, while most ELO matches are join-heavy TPC suites. It shows the
+    product's best entry in ClickBench's default view: its rank among {{ site.Data.elo.clickbench.systems }}
+    systems and its Combined score (×1.00 is the best system; lower is better). "—" means the product has
+    no entry there; hover for why. Updated {{ site.Data.elo.clickbench.updated }}.
+    <br><br>
     Got results? Publish them publicly, then add a match to
     <a href="{{ $repo }}/blob/main/data/elo/matches.json">data/elo/matches.json</a> in a pull request,
     or email <a href="mailto:atwong@alumni.uci.edu">atwong@alumni.uci.edu</a>. Backdated reports are welcome.
@@ -89,6 +99,7 @@
 </div>
 
 <script type="application/json" id="elo-data">{{ site.Data.elo.matches | jsonify | safeJS }}</script>
+<script type="application/json" id="clickbench-data">{{ site.Data.elo.clickbench | jsonify | safeJS }}</script>
 <script type="module">
   import { computeRatings, leaderboard, workloads } from "{{ $elo.RelPermalink }}";
   const data = JSON.parse(document.getElementById("elo-data").textContent);
@@ -96,6 +107,17 @@
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   const fmtD = (d) => (Math.abs(d) < 0.5 ? `<span class="flat">±0</span>` : `<span class="${d > 0 ? "up" : "down"}">${d > 0 ? "+" : "−"}${Math.abs(d).toFixed(0)}</span>`);
   const PALETTE = ["#2563eb", "#d97706", "#059669", "#db2777", "#7c3aed", "#0891b2"];
+  const clickbench = JSON.parse(document.getElementById("clickbench-data").textContent);
+
+  function clickbenchCell(engine) {
+    const c = clickbench.engines[engine];
+    if (c) {
+      const tip = `Best ClickBench entry: ${c.system} on ${c.machine} (${c.date}), Combined ×${c.score.toFixed(2)}`;
+      return `<td class="num cb" title="${esc(tip)}">#${c.rank} <small>×${c.score.toFixed(2)}</small></td>`;
+    }
+    const why = clickbench.hidden[engine] ?? "no ClickBench entry";
+    return `<td class="num cb flat" title="${esc(why)}">—</td>`;
+  }
 
   const filters = ["All", ...workloads(data)];
   let current = "All";
@@ -124,6 +146,7 @@
       <td class="rank">${i + 1}</td>
       <td class="engine">${esc(r.engine)}</td>
       <td class="num">${r.rating.toFixed(0)}<span class="bar" style="width:${(8 + 52 * (r.rating - lo) / ((hi - lo) || 1)).toFixed(0)}px"></span></td>
+      ${clickbenchCell(r.engine)}
       <td class="num">${fmtD(r.lastDelta)}</td>
       <td class="num">${r.wins}–${r.losses}–${r.draws}</td>
       <td class="num">${r.played}</td>

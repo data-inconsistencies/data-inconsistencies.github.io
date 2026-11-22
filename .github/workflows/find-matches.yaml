@@ -37,6 +37,9 @@ jobs:
       - run: npm ci
       - run: npm test
 
+      - name: Refresh ClickBench comparison
+        run: npm run clickbench
+
       - name: Look for new matches
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -51,15 +54,15 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if git diff --quiet -- data/elo/matches.json; then
-            echo "No new matches; nothing to do."
+          if git diff --quiet -- data/elo/; then
+            echo "No new matches or ClickBench changes; nothing to do."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -C "$BRANCH"
-          git add data/elo/matches.json
-          git commit -m "Add new ELO matches found $(date -u +%Y-%m-%d)"
+          git add data/elo/matches.json data/elo/clickbench.json
+          git commit -m "Update ELO matches and ClickBench comparison $(date -u +%Y-%m-%d)"
           git push --force origin "$BRANCH"
 
           {

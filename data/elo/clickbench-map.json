@@ -1,0 +1,19 @@
+{
+  "Amazon Redshift": ["Redshift"],
+  "Apache Druid": ["Druid"],
+  "Apache Spark": ["Spark", "Spark (Iceberg)"],
+  "ClickHouse": ["ClickHouse", "ClickHouse ☁️ (aws)", "ClickHouse ☁️ (gcp)", "ClickHouse ☁️ (azure)", "ClickHouse (Parquet, partitioned)", "ClickHouse (Parquet, single)", "ClickHouse (data lake, partitioned)", "ClickHouse (data lake, single)", "ClickHouse (Iceberg)", "ClickHouse (Vortex, partitioned)", "ClickHouse (Vortex, single)", "ClickHouse (web)", "ClickHouse (memory)"],
+  "Dask": ["Dask (DataFrame)"],
+  "DataFusion": ["DataFusion (Parquet, partitioned)", "DataFusion (Parquet, single)", "DataFusion (Iceberg)", "DataFusion (Vortex, partitioned)", "DataFusion (Vortex, single)"],
+  "Databricks": ["Databricks"],
+  "DuckDB": ["DuckDB", "DuckDB (Parquet, partitioned)", "DuckDB (Parquet, single)", "DuckDB (data lake, partitioned)", "DuckDB (data lake, single)", "DuckDB (Iceberg)", "DuckDB (Vortex, partitioned)", "DuckDB (Vortex, single)", "DuckDB (Vortex, single, load threads=2)", "DuckDB (DataFrame)", "DuckDB (memory)"],
+  "Google BigQuery": ["Bigquery"],
+  "Kinetica": ["Kinetica"],
+  "Pandas": ["pandas"],
+  "Polars": ["Polars (Parquet)", "Polars (SQL)", "Polars (DataFrame)", "Polars (Parquet, tuned)"],
+  "SingleStore": ["SingleStore"],
+  "Snowflake": ["Snowflake", "Snowflake (Gen2)", "Snowflake (Interactive)"],
+  "StarRocks": ["StarRocks", "StarRocks (Parquet, partitioned)", "StarRocks (Parquet, single)", "StarRocks (Iceberg)"],
+  "Tableau Hyper": ["Salesforce Hyper", "Salesforce Hyper (Parquet, partitioned)", "Salesforce Hyper (Parquet, single)", "Salesforce Hyper (web)"],
+  "Trino": ["Trino (Parquet, partitioned)", "Trino (Parquet, single)", "Trino (data lake, partitioned)", "Trino (data lake, single)", "Trino (Iceberg)"]
+}
