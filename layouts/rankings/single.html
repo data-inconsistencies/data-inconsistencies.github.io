@@ -41,7 +41,16 @@
   .elo .chart { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
   .elo .chart svg { width: 100%; height: auto; display: block; }
   .elo .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .85rem; margin-top: 8px; color: var(--muted); }
-  .elo .legend i { display: inline-block; width: 12px; height: 3px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+  .elo .legend i { display: inline-block; width: 14px; height: 0; border-top: 3px solid; margin-right: 6px; vertical-align: middle; }
+  .elo .legend i.dashed { border-top-style: dashed; }
+  .elo .picker { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .elo .picker .chip { font-size: .8rem; padding: 4px 10px; display: inline-flex; align-items: center; gap: 6px; }
+  .elo .picker .chip i { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
+  .elo .picker .chip[aria-pressed="true"],
+  html.dark .elo .picker .chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--text); }
+  .elo .picker .chip.action { color: var(--accent); border-style: dashed; }
+  .elo .picker .sep { width: 1px; background: var(--border); margin: 0 4px; }
+  .elo .chart-empty { color: var(--muted); padding: 48px 0; text-align: center; }
   .elo .matches { display: grid; gap: 10px; }
   .elo .match { border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; background: var(--bg); }
   .elo .match header { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; margin-bottom: 6px; }
@@ -77,8 +86,11 @@
     </table>
   </div>
 
-  <h2>Rating history <span class="flat" style="font-weight:400;font-size:.9rem">(top 6)</span></h2>
-  <div class="chart"><div id="elo-chart"></div><div class="legend" id="elo-legend"></div></div>
+  <h2>Rating history <span class="flat" style="font-weight:400;font-size:.9rem" id="elo-chart-note">(top 6)</span></h2>
+  <div class="chart">
+    <div id="elo-chart"></div><div class="legend" id="elo-legend"></div>
+    <div class="picker" role="group" aria-label="Engines shown in the chart" id="elo-picker"></div>
+  </div>
 
   <h2>Matches</h2>
   <div class="matches" id="elo-matches"></div>
@@ -111,7 +123,24 @@
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   const fmtD = (d) => (Math.abs(d) < 0.5 ? `<span class="flat">±0</span>` : `<span class="${d > 0 ? "up" : "down"}">${d > 0 ? "+" : "−"}${Math.abs(d).toFixed(0)}</span>`);
-  const PALETTE = ["#2563eb", "#d97706", "#059669", "#db2777", "#7c3aed", "#0891b2"];
+  const PALETTE = ["#2563eb", "#d97706", "#059669", "#db2777", "#7c3aed", "#0891b2",
+                   "#dc2626", "#65a30d", "#ea580c", "#0d9488", "#4f46e5", "#a16207"];
+  const TOP_N = 6;
+  // Stable colour per engine, assigned in overall (all-workload) rating order so the top 12 get
+  // solid lines; lower engines reuse the palette dashed.
+  const allEngines = leaderboard(computeRatings(data).ratings).map((r) => r.engine);
+  const styleOf = (engine) => {
+    const i = allEngines.indexOf(engine);
+    return { color: PALETTE[i % PALETTE.length], dashed: i >= PALETTE.length };
+  };
+
+  // Chart selection: null = "top 6 of the current filter"; otherwise the engines the viewer picked.
+  // Remembered in this browser only.
+  const PICK_KEY = "elo-chart-engines";
+  let picked = null;
+  try { const v = JSON.parse(localStorage.getItem(PICK_KEY)); if (Array.isArray(v)) picked = new Set(v); } catch {}
+  const savePick = () => { try { picked ? localStorage.setItem(PICK_KEY, JSON.stringify([...picked])) : localStorage.removeItem(PICK_KEY); } catch {} };
+  let lastBoard = [], lastHistory = {};
   const clickbench = JSON.parse(document.getElementById("clickbench-data").textContent);
   const engineInfo = JSON.parse(document.getElementById("engines-data").textContent);
 
@@ -185,14 +214,48 @@
       <ol>${m.placings.map((p) => `<li>${p.place}. ${engineLink(p.engine, "match")}<small>${fmtD(m.deltas[p.engine])}</small></li>`).join("")}</ol>
     </article>`).join("");
 
-    drawChart(board.slice(0, 6), history);
+    lastBoard = board; lastHistory = history;
+    renderChart();
   }
+
+  function renderChart() {
+    const board = lastBoard;
+    const shown = picked ? board.filter((r) => picked.has(r.engine)) : board.slice(0, TOP_N);
+    const shownSet = new Set(shown.map((r) => r.engine));
+    $("elo-chart-note").textContent = picked ? `(${shown.length} of ${board.length})` : `(top ${Math.min(TOP_N, board.length)})`;
+    const actions = [["top", `Top ${TOP_N}`], ["all", "All"], ["none", "None"]]
+      .map(([a, l]) => `<button class="chip action" data-action="${a}">${l}</button>`).join("");
+    $("elo-picker").innerHTML = actions + `<span class="sep" aria-hidden="true"></span>` + board.map((r) => {
+      const on = shownSet.has(r.engine);
+      const st = styleOf(r.engine);
+      return `<button class="chip" data-engine="${esc(r.engine)}" aria-pressed="${on}"><i style="${on ? `background:${st.color}` : ""}"></i>${esc(r.engine)}</button>`;
+    }).join("");
+    drawChart(shown, lastHistory);
+  }
+
+  $("elo-picker").addEventListener("click", (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    const names = lastBoard.map((r) => r.engine);
+    if (b.dataset.action === "top") picked = null;
+    else if (b.dataset.action === "all") picked = new Set(names);
+    else if (b.dataset.action === "none") picked = new Set();
+    else if (b.dataset.engine) {
+      if (!picked) picked = new Set(names.slice(0, TOP_N));
+      picked.has(b.dataset.engine) ? picked.delete(b.dataset.engine) : picked.add(b.dataset.engine);
+    }
+    savePick();
+    renderChart();
+  });
 
   function drawChart(top, history) {
     const W = 960, H = 320, P = { l: 44, r: 12, t: 12, b: 28 };
     const t = (d) => Date.parse(d);
     const all = top.flatMap((r) => history[r.engine]);
-    if (!all.length) { $("elo-chart").innerHTML = ""; $("elo-legend").innerHTML = ""; return; }
+    if (!all.length) {
+      $("elo-chart").innerHTML = `<div class="chart-empty">No engines selected. Pick some below.</div>`;
+      $("elo-legend").innerHTML = "";
+      return;
+    }
     const dates = all.map((p) => t(p.date));
     const x0 = Math.min(...dates) - 864e5 * 20, x1 = Math.max(...dates) + 864e5 * 20;
     const ys = [1500, ...all.map((p) => p.rating)];
@@ -205,16 +268,20 @@
       g += `<line x1="${P.l}" x2="${W - P.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--grid)" ${v === 1500 ? 'stroke-dasharray="4 4" stroke="var(--muted)"' : ""}/><text x="${P.l - 6}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="var(--muted)">${v}</text>`;
     for (let yr = new Date(x0).getFullYear() + 1; yr <= new Date(x1).getFullYear(); yr++)
       g += `<text x="${X(Date.UTC(yr, 0, 1))}" y="${H - 8}" text-anchor="middle" font-size="11" fill="var(--muted)">${yr}</text><line x1="${X(Date.UTC(yr, 0, 1))}" x2="${X(Date.UTC(yr, 0, 1))}" y1="${P.t}" y2="${H - P.b}" stroke="var(--grid)"/>`;
-    const lines = top.map((r, i) => {
+    const lines = top.map((r) => {
+      const st = styleOf(r.engine);
       const pts = history[r.engine];
       let d = `M${X(t(pts[0].date))},${Y(1500)}`;
       for (const p of pts) d += ` H${X(t(p.date))} V${Y(p.rating)}`;
       d += ` H${X(x1)}`;
-      const dots = pts.map((p) => `<circle cx="${X(t(p.date))}" cy="${Y(p.rating)}" r="3" fill="${PALETTE[i]}"><title>${esc(r.engine)} · ${p.date} · ${p.rating.toFixed(0)}</title></circle>`).join("");
-      return `<path d="${d}" fill="none" stroke="${PALETTE[i]}" stroke-width="2"/>${dots}`;
+      const dots = pts.map((p) => `<circle cx="${X(t(p.date))}" cy="${Y(p.rating)}" r="3" fill="${st.color}"><title>${esc(r.engine)} · ${p.date} · ${p.rating.toFixed(0)}</title></circle>`).join("");
+      return `<path d="${d}" fill="none" stroke="${st.color}" stroke-width="2"${st.dashed ? ' stroke-dasharray="7 4"' : ""}/>${dots}`;
     }).join("");
-    $("elo-chart").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Rating history of top engines">${g}${lines}</svg>`;
-    $("elo-legend").innerHTML = top.map((r, i) => `<span><i style="background:${PALETTE[i]}"></i>${engineLink(r.engine, "chart-legend")}</span>`).join("");
+    $("elo-chart").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Rating history of the selected engines">${g}${lines}</svg>`;
+    $("elo-legend").innerHTML = top.map((r) => {
+      const st = styleOf(r.engine);
+      return `<span><i class="${st.dashed ? "dashed" : ""}" style="color:${st.color}"></i>${engineLink(r.engine, "chart-legend")}</span>`;
+    }).join("");
   }
 
   render();
