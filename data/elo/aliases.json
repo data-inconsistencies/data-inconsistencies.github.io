@@ -1,0 +1,21 @@
+{
+  "Clickhouse": "ClickHouse",
+  "TrinoDB": "Trino",
+  "Trino DB": "Trino",
+  "Presto/Trino": "Trino",
+  "PySpark": "Apache Spark",
+  "Spark": "Apache Spark",
+  "Spark SQL": "Apache Spark",
+  "Datafusion": "DataFusion",
+  "Apache DataFusion": "DataFusion",
+  "GCP BigQuery": "Google BigQuery",
+  "BigQuery": "Google BigQuery",
+  "AWS Redshift": "Amazon Redshift",
+  "Redshift": "Amazon Redshift",
+  "PowerBI Datamart": "Power BI Datamart",
+  "Druid": "Apache Druid",
+  "Hudi": "Apache Hudi",
+  "Hyper": "Tableau Hyper",
+  "Duckdb": "DuckDB",
+  "Starrocks": "StarRocks"
+}
