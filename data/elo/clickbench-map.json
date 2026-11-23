@@ -7,6 +7,7 @@
   "DataFusion": ["DataFusion (Parquet, partitioned)", "DataFusion (Parquet, single)", "DataFusion (Iceberg)", "DataFusion (Vortex, partitioned)", "DataFusion (Vortex, single)"],
   "Databricks": ["Databricks"],
   "DuckDB": ["DuckDB", "DuckDB (Parquet, partitioned)", "DuckDB (Parquet, single)", "DuckDB (data lake, partitioned)", "DuckDB (data lake, single)", "DuckDB (Iceberg)", "DuckDB (Vortex, partitioned)", "DuckDB (Vortex, single)", "DuckDB (Vortex, single, load threads=2)", "DuckDB (DataFrame)", "DuckDB (memory)"],
+  "Exasol": ["Exasol"],
   "Google BigQuery": ["Bigquery"],
   "Kinetica": ["Kinetica"],
   "Pandas": ["pandas"],
