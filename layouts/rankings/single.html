@@ -32,6 +32,7 @@
   .elo td.cb { cursor: help; }
   .elo td.cb small { color: var(--muted); }
   .elo .engine { font-weight: 600; }
+  .elo td.about { white-space: normal; min-width: 220px; max-width: 300px; color: var(--muted); font-size: .85rem; line-height: 1.4; }
   .elo a.engine-link { color: inherit; text-decoration: underline; text-decoration-color: var(--border);
                        text-underline-offset: 3px; }
   .elo a.engine-link:hover, .elo a.engine-link:focus-visible { color: var(--accent); text-decoration-color: currentColor; }
@@ -115,7 +116,7 @@
   <div class="table-wrap">
     <table>
       <thead><tr>
-        <th class="rank">#</th><th>Engine</th><th class="num">Rating</th>
+        <th class="rank">#</th><th>Engine</th><th>What it is</th><th>Best for</th><th class="num">Rating</th>
         <th class="num" title="Rank among {{ site.Data.elo.clickbench.systems }} systems in ClickBench's default view, and its Combined score (lower is better, ×1.00 = best). Updated {{ site.Data.elo.clickbench.updated }}.">ClickBench</th>
         <th class="num">Last Δ</th>
         <th class="num">W–L–D</th><th class="num">Matches</th><th class="num">Last match</th>
@@ -239,6 +240,8 @@
     $("elo-board").innerHTML = board.map((r, i) => `<tr>
       <td class="rank">${i + 1}</td>
       <td class="engine">${engineLink(r.engine, "leaderboard")}</td>
+      <td class="about">${esc(engineInfo[r.engine]?.description ?? "")}</td>
+      <td class="about">${esc(engineInfo[r.engine]?.bestFor ?? "")}</td>
       <td class="num">${r.rating.toFixed(0)}<span class="bar" style="width:${(8 + 52 * (r.rating - lo) / ((hi - lo) || 1)).toFixed(0)}px"></span></td>
       ${clickbenchCell(r.engine)}
       <td class="num">${fmtD(r.lastDelta)}</td>

@@ -1,25 +1,117 @@
 {
-  "Amazon Redshift": { "url": "https://aws.amazon.com/redshift/" },
-  "Apache Druid": { "url": "https://druid.apache.org/" },
-  "Apache Hudi": { "url": "https://hudi.apache.org/" },
-  "Apache Spark": { "url": "https://spark.apache.org/" },
-  "ClickHouse": { "url": "https://clickhouse.com/" },
-  "Dask": { "url": "https://dask.org/" },
-  "DataFusion": { "url": "https://datafusion.apache.org/" },
-  "Databricks": { "url": "https://www.databricks.com/" },
-  "Delta Lake": { "url": "https://delta.io/" },
-  "DuckDB": { "url": "https://duckdb.org/" },
-  "Google BigQuery": { "url": "https://cloud.google.com/bigquery" },
-  "Kinetica": { "url": "https://www.kinetica.com/" },
-  "Modin": { "url": "https://github.com/modin-project/modin" },
-  "Pandas": { "url": "https://pandas.pydata.org/" },
-  "Polars": { "url": "https://pola.rs/" },
-  "Power BI Datamart": { "url": "https://www.microsoft.com/en-us/power-platform/products/power-bi" },
-  "Rockset": { "url": "https://rockset.com/" },
-  "SingleStore": { "url": "https://www.singlestore.com/" },
-  "Snowflake": { "url": "https://www.snowflake.com/" },
-  "StarRocks": { "url": "https://www.starrocks.io/" },
-  "Tableau Hyper": { "url": "https://tableau.github.io/hyper-db/" },
-  "Trino": { "url": "https://trino.io/" },
-  "esProc": { "url": "https://www.esproc.com/" }
+  "Amazon Redshift": {
+    "url": "https://aws.amazon.com/redshift/",
+    "description": "AWS's managed columnar cloud data warehouse, provisioned or serverless.",
+    "bestFor": "SQL warehousing and BI for teams already on AWS"
+  },
+  "Apache Druid": {
+    "url": "https://druid.apache.org/",
+    "description": "Open-source real-time analytics database with streaming ingestion and pre-aggregation.",
+    "bestFor": "Sub-second slice-and-dice dashboards on streaming event data"
+  },
+  "Apache Hudi": {
+    "url": "https://hudi.apache.org/",
+    "description": "Open lakehouse table format with record-level upserts, deletes and incremental pulls.",
+    "bestFor": "Streaming upserts and CDC into a data lake"
+  },
+  "Apache Spark": {
+    "url": "https://spark.apache.org/",
+    "description": "Open-source distributed engine for batch SQL, streaming and machine learning.",
+    "bestFor": "Large-scale ETL and batch processing across a cluster"
+  },
+  "ClickHouse": {
+    "url": "https://clickhouse.com/",
+    "description": "Open-source column-oriented OLAP database built for very fast scans and aggregations.",
+    "bestFor": "Real-time analytics on huge event and log tables"
+  },
+  "Dask": {
+    "url": "https://dask.org/",
+    "description": "Python library that scales pandas, NumPy and custom code across cores or a cluster.",
+    "bestFor": "Scaling existing Python data workflows beyond one machine"
+  },
+  "DataFusion": {
+    "url": "https://datafusion.apache.org/",
+    "description": "Extensible query engine in Rust built on Apache Arrow, used as a library.",
+    "bestFor": "Embedding a fast SQL engine in your own data product"
+  },
+  "Databricks": {
+    "url": "https://www.databricks.com/",
+    "description": "Managed lakehouse platform built on Spark, Delta Lake and the Photon engine.",
+    "bestFor": "Unified data engineering, SQL and ML on a lakehouse"
+  },
+  "Delta Lake": {
+    "url": "https://delta.io/",
+    "description": "Open table format that adds ACID transactions and time travel to Parquet data lakes.",
+    "bestFor": "Reliable, versioned tables on object storage"
+  },
+  "DuckDB": {
+    "url": "https://duckdb.org/",
+    "description": "In-process analytical SQL database; no server, runs inside your app or notebook.",
+    "bestFor": "Fast local analytics on files (Parquet, CSV) on one machine"
+  },
+  "Google BigQuery": {
+    "url": "https://cloud.google.com/bigquery",
+    "description": "Google Cloud's serverless, pay-per-query data warehouse.",
+    "bestFor": "Ad-hoc SQL on very large data with no infrastructure to run"
+  },
+  "Kinetica": {
+    "url": "https://www.kinetica.com/",
+    "description": "GPU-accelerated analytical database with strong geospatial and time-series support.",
+    "bestFor": "Real-time geospatial and sensor analytics"
+  },
+  "Modin": {
+    "url": "https://github.com/modin-project/modin",
+    "description": "Drop-in replacement for pandas that parallelizes operations across all cores.",
+    "bestFor": "Speeding up pandas code without rewriting it"
+  },
+  "Pandas": {
+    "url": "https://pandas.pydata.org/",
+    "description": "The standard Python DataFrame library for data manipulation and analysis.",
+    "bestFor": "Exploratory analysis of data that fits in memory"
+  },
+  "Polars": {
+    "url": "https://pola.rs/",
+    "description": "Fast multi-threaded DataFrame library in Rust with a lazy query optimizer.",
+    "bestFor": "High-performance DataFrame work on a single machine"
+  },
+  "Power BI Datamart": {
+    "url": "https://www.microsoft.com/en-us/power-platform/products/power-bi",
+    "description": "Self-service managed SQL database inside Microsoft Power BI.",
+    "bestFor": "Business users building BI datasets without IT"
+  },
+  "Rockset": {
+    "url": "https://rockset.com/",
+    "description": "Real-time search and analytics database with converged indexing (acquired by OpenAI in 2024).",
+    "bestFor": "Low-latency queries on fresh semi-structured data"
+  },
+  "SingleStore": {
+    "url": "https://www.singlestore.com/",
+    "description": "Distributed SQL database combining rowstore transactions with columnstore analytics.",
+    "bestFor": "Mixed transactional and analytical (HTAP) workloads"
+  },
+  "Snowflake": {
+    "url": "https://www.snowflake.com/",
+    "description": "Managed cloud data warehouse with separate storage and elastic compute.",
+    "bestFor": "Enterprise warehousing with easy scaling and data sharing"
+  },
+  "StarRocks": {
+    "url": "https://www.starrocks.io/",
+    "description": "Open-source MPP OLAP database with a vectorized engine and lakehouse queries.",
+    "bestFor": "Fast multi-table joins for dashboards and lakehouse analytics"
+  },
+  "Tableau Hyper": {
+    "url": "https://tableau.github.io/hyper-db/",
+    "description": "Tableau's in-memory SQL engine, also usable standalone via the Hyper API.",
+    "bestFor": "Fast extracts and analytics feeding Tableau"
+  },
+  "Trino": {
+    "url": "https://trino.io/",
+    "description": "Open-source distributed SQL engine that queries data where it lives.",
+    "bestFor": "Federated interactive SQL across lakes and databases"
+  },
+  "esProc": {
+    "url": "https://www.esproc.com/",
+    "description": "Data computing engine using its own SPL language instead of SQL.",
+    "bestFor": "Complex multi-step computations that are awkward in SQL"
+  }
 }

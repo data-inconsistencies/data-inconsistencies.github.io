@@ -16,3 +16,10 @@ test('product URLs are absolute https URLs', () => {
     assert.equal(new URL(url).protocol, 'https:', `${e}: ${url}`);
   }
 });
+
+test('every engine has a short description and best-for use case', () => {
+  for (const [e, { description, bestFor }] of Object.entries(read('../data/elo/engines.json'))) {
+    assert.ok(description?.trim(), `${e} has no description`);
+    assert.ok(bestFor?.trim(), `${e} has no bestFor`);
+  }
+});

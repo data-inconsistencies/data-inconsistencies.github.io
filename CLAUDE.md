@@ -23,7 +23,7 @@ Hugo Blox (Tailwind) landing site, deployed to GitHub Pages by `.github/workflow
   `scripts/lib/clickbench.mjs` ports ClickBench's default "Combined" ranking — re-check it against
   benchmark.clickhouse.com if their index.html scoring changes. Product → ClickBench systems mapping:
   `data/elo/clickbench-map.json` (add an entry when a new ELO engine appears).
-- Product links: `data/elo/engines.json` (url per engine; a test fails if an ELO engine is missing).
+- Product links: `data/elo/engines.json` (url, one-line `description`, `bestFor` use case per engine; a test fails if an ELO engine or field is missing). Shown as the "What it is" / "Best for" leaderboard columns.
   Engine names on /rankings/ link there and send GA4 event `engine_click`
   (engine, link_url, link_location, workload_filter). GA is `G-GV8QDDVB6Q` in params.yaml and only
   loads in production builds, not `hugo server`.

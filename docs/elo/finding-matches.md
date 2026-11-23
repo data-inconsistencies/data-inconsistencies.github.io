@@ -41,6 +41,6 @@ What it should do, and what to check it did:
 - One configuration per product: if a report tests several sizes, use the one the report treats as
   its main comparison, and say which in `evidence`.
 - New spelling of an engine name? Add it to `data/elo/aliases.json` instead of creating a new player.
-- New engine? Add its product URL to `data/elo/engines.json` (a test fails otherwise) and, if it is
+- New engine? Add its product URL, `description` and `bestFor` to `data/elo/engines.json` (a test fails otherwise) and, if it is
   on ClickBench, its systems to `data/elo/clickbench-map.json`.
 - Close the month's `elo-reminder` issue.
