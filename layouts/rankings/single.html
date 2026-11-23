@@ -23,6 +23,9 @@
   .elo .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
   html.dark .elo .chip[aria-pressed="true"] { color: #0b1020; }
   .elo .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+  /* The leaderboard has more columns than the 1040px page: on wider screens let it grow (centered,
+     up to 1400px) so every column shows; narrower screens keep the horizontal scroll. */
+  .elo .table-wrap.wide { --w: min(calc(100vw - 32px), 1400px); width: var(--w); margin-left: calc(50% - var(--w) / 2); }
   .elo table { width: 100%; border-collapse: collapse; font-size: .92rem; }
   .elo th, .elo td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
   .elo th { background: var(--surface); color: var(--muted); font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
@@ -113,7 +116,7 @@
   <div class="chips" role="group" aria-label="Filter by workload" id="elo-filter"></div>
 
   <h2>Leaderboard</h2>
-  <div class="table-wrap">
+  <div class="table-wrap wide">
     <table>
       <thead><tr>
         <th class="rank">#</th><th>Engine</th><th>What it is</th><th>Best for</th><th class="num">Rating</th>
