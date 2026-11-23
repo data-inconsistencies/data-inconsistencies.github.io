@@ -4,7 +4,7 @@ Hugo Blox (Tailwind) landing site, deployed to GitHub Pages by `.github/workflow
 
 ## Commands
 - Test ELO engine: `npm test` (node:test, no deps; needs Node 22+)
-- Build: `hugo --gc --minify` — CI pins Hugo **0.148.2** (also builds on 0.161). Use `build:`, never the
+- Build: `hugo --gc --minify` — CI pins Hugo **0.162.1** (`.github/workflows/publish.yaml`, `netlify.toml`, `hugoblox.yaml` — keep all three in step). 0.162.1 is the newest that builds with the HugoBlox theme pinned in `go.mod` (blox-tailwind v0.3.2); 0.163+ needs a theme upgrade. Use `build:`, never the
   removed `_build:`, in front matter.
 - Preview: `hugo server`
 
