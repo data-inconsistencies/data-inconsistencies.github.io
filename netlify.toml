@@ -1,5 +1,6 @@
 [build]
-  command = "npm ci && hugo --gc --minify -b $URL"
+  # Pagefind builds the search index the theme loads from /pagefind/ (same step as publish.yaml).
+  command = "npm ci && hugo --gc --minify -b $URL && npx -y pagefind --site public"
   publish = "public"
 
 [build.environment]
@@ -11,10 +12,10 @@
   HUGO_ENV = "production"
 
 [context.deploy-preview]
-  command = "npm ci && hugo --gc --minify --buildFuture -b $DEPLOY_PRIME_URL"
+  command = "npm ci && hugo --gc --minify --buildFuture -b $DEPLOY_PRIME_URL && npx -y pagefind --site public"
 
 [context.branch-deploy]
-  command = "npm ci && hugo --gc --minify -b $DEPLOY_PRIME_URL"
+  command = "npm ci && hugo --gc --minify -b $DEPLOY_PRIME_URL && npx -y pagefind --site public"
 
 [[plugins]]
   package = "netlify-plugin-hugo-cache-resources"
