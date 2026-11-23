@@ -2,7 +2,7 @@ name: Deploy website to GitHub Pages
 
 env:
   # Keep in step with netlify.toml and hugoblox.yaml.
-  WC_HUGO_VERSION: '0.162.1'
+  WC_HUGO_VERSION: '0.170.1'
 
 on:
   # Trigger the workflow every time you push to the `main` branch
@@ -33,6 +33,9 @@ jobs:
           fetch-depth: 0
       - name: Run ELO engine tests
         run: npm test
+      # The theme compiles its CSS with the Tailwind CLI and its JSX blocks with preact.
+      - name: Install npm dependencies
+        run: npm ci
       - name: Setup Go
         uses: actions/setup-go@v7
         with:
@@ -40,11 +43,11 @@ jobs:
           cache: false
       # GitHub's runner images don't ship Hugo. This is the install step from GitHub's own
       # Hugo Pages starter workflow (actions/starter-workflows pages/hugo.yml): the official
-      # extended .deb from Hugo's GitHub releases. No third-party actions needed.
+      # .deb from Hugo's GitHub releases (0.170+ has no extended build). No third-party actions needed.
       - name: Setup Hugo
         run: |
           curl -fsSL -o "${{ runner.temp }}/hugo.deb" \
-            "https://github.com/gohugoio/hugo/releases/download/v${WC_HUGO_VERSION}/hugo_extended_${WC_HUGO_VERSION}_linux-amd64.deb"
+            "https://github.com/gohugoio/hugo/releases/download/v${WC_HUGO_VERSION}/hugo_${WC_HUGO_VERSION}_linux-amd64.deb"
           sudo dpkg -i "${{ runner.temp }}/hugo.deb"
           hugo version
       - uses: actions/cache@v6

@@ -12,5 +12,11 @@
     "test": "node --test 'tests/*.test.mjs'",
     "find-matches": "node scripts/find-matches.mjs",
     "clickbench": "node scripts/clickbench.mjs"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.3.5",
+    "@tailwindcss/typography": "^0.5.20",
+    "preact": "^10.29.8",
+    "tailwindcss": "^4.3.5"
   }
 }
