@@ -1,82 +1,89 @@
 {
   "source": "https://benchmark.clickhouse.com/",
   "metric": "Combined, default view; lower is better, 1.00 = best",
-  "updated": "2026-11-22",
-  "systems": 124,
+  "updated": "2026-11-23",
+  "systems": 126,
   "engines": {
     "Amazon Redshift": {
-      "rank": 50,
-      "score": 7.38,
+      "rank": 52,
+      "score": 7.49,
       "system": "Redshift",
       "machine": "serverless",
       "date": "2026-11-16"
     },
     "Apache Spark": {
-      "rank": 109,
-      "score": 104.56,
+      "rank": 111,
+      "score": 105.9,
       "system": "Spark (Iceberg)",
       "machine": "c6a.4xlarge",
       "date": "2026-11-08"
     },
     "ClickHouse": {
       "rank": 3,
-      "score": 2.07,
-      "system": "ClickHouse ☁️ (gcp)",
-      "machine": "ClickHouse ☁️: 356GiB",
-      "date": "2026-11-20"
+      "score": 2.03,
+      "system": "ClickHouse (web)",
+      "machine": "c8g.metal-48xl",
+      "date": "2026-11-23"
     },
     "Databricks": {
-      "rank": 74,
-      "score": 14.83,
+      "rank": 76,
+      "score": 15.07,
       "system": "Databricks",
       "machine": "XL",
       "date": "2025-11-13"
     },
     "DataFusion": {
-      "rank": 21,
+      "rank": 22,
       "score": 4.46,
       "system": "DataFusion (Vortex, partitioned)",
       "machine": "c8g.metal-48xl",
       "date": "2026-11-15"
     },
     "DuckDB": {
-      "rank": 25,
-      "score": 4.63,
+      "rank": 26,
+      "score": 4.69,
       "system": "DuckDB",
       "machine": "c8g.metal-48xl",
       "date": "2026-11-10"
     },
+    "Exasol": {
+      "rank": 72,
+      "score": 13.55,
+      "system": "Exasol",
+      "machine": "c8g.metal-48xl",
+      "date": "2026-11-08"
+    },
     "Google BigQuery": {
-      "rank": 83,
-      "score": 20.73,
+      "rank": 85,
+      "score": 21.06,
       "system": "Bigquery",
       "machine": "serverless",
       "date": "2025-10-28"
     },
     "Polars": {
-      "rank": 18,
+      "rank": 20,
       "score": 4.39,
       "system": "Polars (Parquet)",
       "machine": "c8g.metal-48xl",
       "date": "2026-11-11"
     },
     "Snowflake": {
-      "rank": 36,
-      "score": 6.02,
+      "rank": 40,
+      "score": 6.12,
       "system": "Snowflake (Interactive)",
       "machine": "2XL",
       "date": "2026-07-27"
     },
     "StarRocks": {
-      "rank": 42,
-      "score": 6.33,
+      "rank": 45,
+      "score": 6.41,
       "system": "StarRocks",
       "machine": "c8g.metal-48xl",
       "date": "2026-09-07"
     },
     "Trino": {
-      "rank": 84,
-      "score": 22.13,
+      "rank": 86,
+      "score": 22.11,
       "system": "Trino (Parquet, partitioned)",
       "machine": "c8g.metal-48xl",
       "date": "2026-11-14"

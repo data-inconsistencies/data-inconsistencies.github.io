@@ -59,6 +59,12 @@
     "bestFor": "Fast local analytics on files (Parquet, CSV) on one machine",
     "playground": "Engines"
   },
+  "Exasol": {
+    "url": "https://www.exasol.com/",
+    "description": "In-memory, massively parallel columnar analytics database.",
+    "bestFor": "Fast BI and reporting queries at high concurrency",
+    "playground": "Engines"
+  },
   "Google BigQuery": {
     "url": "https://cloud.google.com/bigquery",
     "description": "Google Cloud's serverless, pay-per-query data warehouse.",
@@ -69,6 +75,12 @@
     "url": "https://www.kinetica.com/",
     "description": "GPU-accelerated analytical database with strong geospatial and time-series support.",
     "bestFor": "Real-time geospatial and sensor analytics",
+    "playground": "Engines"
+  },
+  "Microsoft Fabric": {
+    "url": "https://www.microsoft.com/en-us/microsoft-fabric",
+    "description": "Microsoft SaaS analytics platform with a SQL warehouse over OneLake Delta tables.",
+    "bestFor": "Microsoft-centric teams unifying warehousing, lakehouse and Power BI",
     "playground": "Engines"
   },
   "Modin": {

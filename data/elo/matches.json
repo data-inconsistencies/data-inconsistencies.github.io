@@ -281,5 +281,30 @@
       "Apache Druid"
     ],
     "evidence": "Rerun on the same docs page, SSB-Flat 100 GB, SUM row of the Test results table: StarRocks 3.5.0 992ms, ClickHouse 25.3.3.42 1858ms, Apache Druid 33.0.0 4710ms. Page has no publication date; date is the release date of the newest tested build (StarRocks 3.5.0, 2025-06-13)."
+  },
+  {
+    "id": 26,
+    "date": "2026-10-13",
+    "source": "https://github.com/kollasriram/tpcds-multiengine-benchmark",
+    "workload": "TPC-DS",
+    "ranking": [
+      "Microsoft Fabric",
+      "Snowflake",
+      "Databricks"
+    ],
+    "evidence": "README results table, TPC-DS-inspired 85-query cohort at ~SF3000 (3 TB), single cold pass run 2026-10-11..13; ranked by batch time, the author's primary metric: Fabric Warehouse 23.35 min, Snowflake optimized 23.98 min, Azure Databricks Photon 47.34 min (geomean gives the same order). One lane per product: Fabric Lakehouse endpoint, Snowflake baseline, Databricks non-Photon and the unranked Fabric Spark notebook not counted."
+  },
+  {
+    "id": 27,
+    "date": "2026-03-04",
+    "source": "https://www.exasol.com/blog/exasol-vs-clickhouse-vs-starrocks-vs-trino-vs-duckdb/",
+    "workload": "TPC-H",
+    "ranking": [
+      "Exasol",
+      "DuckDB",
+      "StarRocks",
+      "Trino"
+    ],
+    "evidence": "Exasol-authored. Concurrency series, 1 node, SF50, 1 stream, median of 5 runs, totals from the text: Exasol 22.4s, DuckDB 81.5s, StarRocks 87.4s; Trino placed last from the text stating it is slowest in every configuration (its 1-stream total is only in Figure 1). ClickHouse left out: it completed only 18 of 22 queries (95.5s over the subset)."
   }
 ]
