@@ -12,12 +12,12 @@ baseURL: 'https://data-inconsistencies.datajourney.expert/' # Website URL
 
 cascade:
   # Blog post options
-  - _target:
+  - target:
       path: /blog/**
       kind: page
     pager: true
     editable: true
-    hide_date: false
+    show_date: true
     show_date_updated: true
     reading_time: true
     commentable: true
@@ -29,7 +29,7 @@ cascade:
       navbar:
         enable: true
   # Blog section options
-  - _target:
+  - target:
       path: /blog/*
       kind: section
     # Set the listing view
@@ -67,7 +67,10 @@ outputs:
   section: [HTML, RSS]
 imaging:
   resampleFilter: lanczos
-  quality: 95
+  jpeg:
+    quality: 95
+  webp:
+    quality: 95
   anchor: smart
 timeout: 600000
 taxonomies:
@@ -83,5 +86,8 @@ markup:
     lineNos: false
 security:
   _merge: deep
+  exec:
+    # Hugo 0.165+ no longer allows tailwindcss by default; the theme compiles its CSS with it.
+    allow: ['^(dart-)?sass$', '^go$', '^git$', '^node$', '^postcss$', '^tailwindcss$']
 sitemap:
   _merge: deep

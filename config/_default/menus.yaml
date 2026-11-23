@@ -35,3 +35,12 @@ main:
   #- parent: Resources
   #  name: Blog
   #  url: blog/
+
+# Footer links
+footer:
+  - name: Privacy
+    url: privacy/
+    weight: 10
+  - name: Terms
+    url: terms/
+    weight: 20

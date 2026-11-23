@@ -1,11 +1,16 @@
 # CLAUDE.md
 
-Hugo Blox (Tailwind) landing site, deployed to GitHub Pages by `.github/workflows/publish.yaml`.
+Hugo Blox (Tailwind v4, `github.com/HugoBlox/kit/modules/blox`) landing site, deployed to GitHub Pages by `.github/workflows/publish.yaml`.
 
 ## Commands
 - Test ELO engine: `npm test` (node:test, no deps; needs Node 22+)
-- Build: `hugo --gc --minify` — CI pins Hugo **0.162.1** (`.github/workflows/publish.yaml`, `netlify.toml`, `hugoblox.yaml` — keep all three in step). 0.162.1 is the newest that builds with the HugoBlox theme pinned in `go.mod` (blox-tailwind v0.3.2); 0.163+ needs a theme upgrade. Use `build:`, never the
-  removed `_build:`, in front matter.
+- Build: `npm ci` once (Tailwind CLI + preact for the theme), then `hugo --gc --minify` — CI pins Hugo
+  **0.170.1**, the standard (non-extended) build, in `.github/workflows/publish.yaml`, `netlify.toml` and
+  `hugoblox.yaml` — keep all three in step. Use `build:`, never the removed `_build:`, in front matter.
+- Theme config is HugoBlox schema v2: everything under `hugoblox:` in `config/_default/params.yaml`
+  (logo = `assets/media/logo.png`). `security.exec.allow` must keep `tailwindcss` (Hugo ≥0.165 dropped it).
+  `layouts/_partials/functions/process_responsive_image.html` overrides a theme bug (images narrower than
+  400px) — drop it once upstream fixes that.
 - Preview: `hugo server`
 
 ## ELO rankings

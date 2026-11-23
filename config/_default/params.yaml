@@ -1,64 +1,76 @@
-# SITE SETUP
-# Guide: https://docs.hugoblox.com/tutorial/
+# HUGO BLOX CONFIGURATION
+# Schema: hugoblox.com/schema/v2
+# Tutorial: https://docs.hugoblox.com/tutorial/
 # Documentation: https://docs.hugoblox.com/
 # This file is formatted using YAML syntax - learn more at https://learnxinyminutes.com/docs/yaml/
+hugoblox:
+  schema: "2.0"
 
-# Appearance
-appearance:
-  mode: light
-  color: green
-
-# SEO
-marketing:
-  seo:
-    site_type: Person
-    local_business_type: 'Data Experts'
-    org_name: 'datainconsistencies'
+  # Site-level branding
+  identity:
+    name: "Data inconsistencies"
+    organization: "datainconsistencies"
+    type: person # person | organization | local_business
     description: 'Data inconsistencies, architecuture and real world stories'
-    twitter: ''
+    social:
+      twitter: ''
+
+  # Colors. Logo is auto-detected from `assets/media/logo.{svg,png}`.
+  theme:
+    mode: light # light | dark | system
+    pack: "default"
+    colors:
+      primary: "green"
+
+  header:
+    enable: true
+    block: navbar
+    sticky: true
+    show_logo: true
+    # The logo already carries the name.
+    show_title: false
+    align: center
+    search: true
+    theme_toggle: true
+    theme_picker: false
+    language_switcher: false
+    # cta:
+    #   enable: true
+    #   text: "Get Scores"
+    #   url: "https://docs.google.com/spreadsheets/d/1Y1Oxw_2LBWd502JtWFFyef2y5TvOyQMkq156cDrKJbA"
+
+  footer:
+    style: minimal # minimal | columns | centered
+    language_switcher: false
+
+  copyright:
+    notice: '© {year} datainconsistencies'
+    license:
+      type: custom # no Creative Commons badge
+
+  search:
+    enable: true
+
   analytics:
-    google_analytics: 'G-GV8QDDVB6Q'
-    baidu_tongji: ''
-    plausible: ''
-    fathom: ''
-    pirsch: ''
-    google_tag_manager: ''  # needs a GTM-XXXX container ID; a GA4 ID here loaded a non-existent container
+    google:
+      measurement_id: 'G-GV8QDDVB6Q'
+    google_tag_manager:
+      container_id: ''  # needs a GTM-XXXX container ID; a GA4 ID here loaded a non-existent container
+
   verification:
     google: ''
     baidu: ''
 
-# Site header
-header:
-  navbar:
+  locale:
+    date_format: 'Jan 2, 2006'
+    time_format: '3:04 PM'
+
+  privacy:
     enable: true
-    blox: "navbar"
-    align: "center"
-    fixed_to_top: true
-    logo:
-      text: ""
-      # Logo filename in `assets/media/` folder
-      filename: "data-inconsistencies-logo.jpg"
-    # button:
-    #   enable: true
-    #   text: "Get Scores"
-    #   url: "https://docs.google.com/spreadsheets/d/1Y1Oxw_2LBWd502JtWFFyef2y5TvOyQMkq156cDrKJbA"
-    show_search: true
-    show_theme_chooser: true
+    anonymize_analytics: true
 
-# Site footer
-footer:
-  copyright:
-    notice: '© {year} datainconsistencies'
-
-# Localization
-locale:
-  date_format: 'Jan 2, 2006'
-  time_format: '3:04 PM'
-
-features:
-  privacy_pack:
-    enable: true
-#  comment:
+#  comments:
+#    enable: true
 #    provider: 'giscus'
 #    giscus:
 #      repo: 'data-inconsistencies/landingpage-comments'

@@ -229,4 +229,5 @@ sections:
       card:
         css_class: "bg-primary-700"
         css_style: ""
+        text_color: light
 ---
