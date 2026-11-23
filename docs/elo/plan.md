@@ -10,4 +10,4 @@
 | 6 | CLAUDE.md with commands/conventions | `CLAUDE.md` | — |
 
 Risks: Hugo Blox base template block names (`main`) — verify by building.
-Riskiest step: the layout integrating with the theme. Left out: rating decay, per-playground leagues, submission form.
+Riskiest step: the layout integrating with the theme. Left out: rating decay (since added as half-life match weights), per-playground leagues, submission form.

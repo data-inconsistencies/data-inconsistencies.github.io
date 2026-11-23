@@ -24,5 +24,5 @@ contributors who want to submit a benchmark report.
 - Every match cites a public URL.
 
 ## Open questions
-- Should old results decay over time? (Not in v1.)
+- Should old results decay over time? (Not in v1. Added later: match weight halves every 2 years; see spec.)
 - Should "playgrounds" (e.g. lakehouse formats vs engines) be ranked separately? (Not in v1.)

@@ -79,3 +79,38 @@ test('real data file is valid and produces a leaderboard', () => {
   const { ratings } = computeRatings(data);
   assert.ok(Math.abs(sum(ratings) - 1500 * Object.keys(ratings).length) < 1e-6);
 });
+
+test('half-life decay: a match one half-life before asOf moves ratings half as much', () => {
+  const { ratings, matches } = computeRatings([m(1, '2022-01-01', ['A', 'B'])], { asOf: '2024-01-01', halfLife: 2 });
+  assert.ok(Math.abs(matches[0].weight - 0.5 ** (730 / 730.5)) < 1e-12);
+  assert.ok(Math.abs(ratings.A.rating - (1500 + 16 * matches[0].weight)) < 1e-9);
+});
+
+test('half-life decay: asOf defaults to the newest match date, so the newest match has weight 1', () => {
+  const { matches } = computeRatings([m(1, '2020-01-01', ['A', 'B']), m(2, '2024-01-01', ['B', 'A'])]);
+  assert.equal(matches[1].weight, 1);
+  assert.ok(Math.abs(matches[0].weight - 0.5 ** (1461 / 730.5)) < 1e-12, 'default half-life is 2 years');
+});
+
+test('half-life decay: asOf comes from all matches, not the filtered workload', () => {
+  const data = [m(1, '2022-01-01', ['A', 'B'], 'SSB'), m(2, '2024-01-01', ['A', 'C'], 'TPC-H')];
+  const { matches } = computeRatings(data, { workload: 'SSB' });
+  assert.ok(matches[0].weight < 1);
+});
+
+test('half-life decay: halfLife Infinity/0/null disables decay; future matches get weight 1', () => {
+  const data = [m(1, '2010-01-01', ['A', 'B']), m(2, '2024-01-01', ['B', 'A'])];
+  for (const halfLife of [Infinity, 0, null]) {
+    assert.deepEqual(computeRatings(data, { halfLife }).matches.map((x) => x.weight), [1, 1]);
+  }
+  assert.equal(computeRatings(data, { asOf: '2000-01-01' }).matches[0].weight, 1);
+});
+
+test('half-life decay: one recent loss outweighs two old wins (plain ELO says the opposite)', () => {
+  const data = [m(1, '2016-01-01', ['A', 'B']), m(2, '2016-01-02', ['A', 'B']), m(3, '2024-01-01', ['B', 'A'])];
+  const plain = computeRatings(data, { halfLife: Infinity }).ratings;
+  assert.ok(plain.A.rating > plain.B.rating);
+  const { ratings } = computeRatings(data);
+  assert.ok(ratings.B.rating > ratings.A.rating);
+  assert.ok(Math.abs(ratings.A.rating + ratings.B.rating - 3000) < 1e-9, 'still zero-sum');
+});
