@@ -1,7 +1,8 @@
 name: Deploy website to GitHub Pages
 
 env:
-  WC_HUGO_VERSION: '0.148.2'
+  # Keep in step with netlify.toml and hugoblox.yaml.
+  WC_HUGO_VERSION: '0.162.1'
 
 on:
   # Trigger the workflow every time you push to the `main` branch
@@ -37,8 +38,9 @@ jobs:
         with:
           go-version: 'stable'
           cache: false
-      # Install Hugo from the official release (avoids third-party actions,
-      # so only GitHub-created actions need to be allowed on this repo).
+      # GitHub's runner images don't ship Hugo. This is the install step from GitHub's own
+      # Hugo Pages starter workflow (actions/starter-workflows pages/hugo.yml): the official
+      # extended .deb from Hugo's GitHub releases. No third-party actions needed.
       - name: Setup Hugo
         run: |
           curl -fsSL -o "${{ runner.temp }}/hugo.deb" \

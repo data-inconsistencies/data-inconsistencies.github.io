@@ -20,16 +20,27 @@ Initial data is imported from the existing "RAW" sheet (19 matches, 2022-01 → 
 - Matches are processed in (date, id) order.
 - An N-way match is decomposed into all N·(N-1)/2 pairs. For each pair,
   expected score `E = 1 / (1 + 10^((Rb - Ra)/400))`, actual `S` = 1 / 0.5 / 0.
-- Each engine's delta = `K / (N-1) · Σ (S - E)` over its pairs, with **K = 32**,
+- Each engine's delta = `w · K / (N-1) · Σ (S - E)` over its pairs, with **K = 32**,
   computed from pre-match ratings and applied simultaneously (order-independent within a match).
-- The engine is a pure function: `computeRatings(matches, {k, initial, workload?}) → {ratings, history, matches}`.
+- **Half-life decay:** `w = 0.5 ^ (age / halfLife)`, where `age` is the time between the match's date
+  and the reference date `asOf`, and **halfLife = 2 years** (730.5 days). A report two years older
+  than `asOf` moves ratings half as much as one published on `asOf`; four years, a quarter.
+  - `asOf` defaults to the newest match date in the whole data file (not today, and not the
+    filtered workload), so ratings are deterministic, change only when the data changes, and all
+    workload views share one clock. Matches dated after `asOf` get `w = 1`.
+  - `halfLife: Infinity` (or `0`/`null`) turns decay off (`w = 1`, plain ELO).
+  - Decay scales each match's update; it does not pull ratings back toward 1500, so an inactive
+    engine keeps its rating. Ratings stay zero-sum.
+- The engine is a pure function:
+  `computeRatings(matches, {k, initial, workload?, halfLife?, asOf?}) → {ratings, history, matches}`;
+  each returned match carries its `weight`.
 
 ## Page
 `/rankings/`:
 1. Workload filter (All, TPC-H, TPC-DS, SSB) — recomputes ratings from the filtered matches.
 2. Leaderboard table: rank, engine, rating, Δ from last match, W-L-D (pairwise), matches played, last match date.
 3. Rating history chart for the top engines (inline SVG, no external libs).
-4. Match log, newest first, with result order, rating change per engine, and source link.
+4. Match log, newest first, with result order, rating change per engine, match weight, and source link.
 5. "How to add a report" note linking the data file on GitHub.
 Homepage "Explore the live rankings" button and the main menu point to `/rankings/`.
 
