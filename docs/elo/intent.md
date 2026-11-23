@@ -25,4 +25,4 @@ contributors who want to submit a benchmark report.
 
 ## Open questions
 - Should old results decay over time? (Not in v1. Added later: match weight halves every 2 years; see spec.)
-- Should "playgrounds" (e.g. lakehouse formats vs engines) be ranked separately? (Not in v1.)
+- Should "playgrounds" (e.g. lakehouse formats vs engines) be ranked separately? (Not in v1. Since added: yes, one league per playground; see spec.)

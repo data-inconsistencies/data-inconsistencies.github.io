@@ -19,6 +19,16 @@ export function expected(ra, rb) {
   return 1 / (1 + Math.pow(10, (rb - ra) / 400));
 }
 
+// Separate leagues: engines are only rated against engines in the same playground (data/elo/engines.json).
+export const PLAYGROUNDS = ['Engines', 'Table formats'];
+
+// Cut a ranking down to the engines in `keep`: empty tie groups disappear, so places renumber.
+function keepOnly(ranking, keep) {
+  return ranking
+    .map((entry) => (Array.isArray(entry) ? entry.filter(keep) : keep(entry) ? entry : null))
+    .filter((entry) => entry !== null && !(Array.isArray(entry) && entry.length === 0));
+}
+
 export function workloads(matches) {
   return [...new Set(matches.map((m) => m.workload))].sort();
 }
@@ -35,7 +45,7 @@ function places(ranking) {
 const byDateThenId = (a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : a.id - b.id);
 
 export function computeRatings(allMatches, opts = {}) {
-  const { k, initial, workload, halfLife } = { ...DEFAULTS, ...opts };
+  const { k, initial, workload, halfLife, playground, playgroundOf = {} } = { ...DEFAULTS, ...opts };
   // Reference date: newest match in the whole file, so every workload view shares one clock.
   const asOf = opts.asOf ?? allMatches.reduce((max, m) => (m.date > max ? m.date : max), '');
   const ratings = {};
@@ -44,7 +54,15 @@ export function computeRatings(allMatches, opts = {}) {
 
   const sorted = allMatches
     .filter((m) => !workload || workload === 'All' || m.workload === workload)
-    .slice()
+    .map((m) => {
+      if (!playground) return m;
+      const inLeague = (e) => {
+        if (!playgroundOf[e]) throw new Error(`Match ${m.id}: engine "${e}" has no playground`);
+        return playgroundOf[e] === playground;
+      };
+      return { ...m, ranking: keepOnly(m.ranking, inLeague) };
+    })
+    .filter((m) => m.ranking.flat().length >= 2)
     .sort(byDateThenId);
 
   for (const match of sorted) {
