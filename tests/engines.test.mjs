@@ -23,3 +23,10 @@ test('every engine has a short description and best-for use case', () => {
     assert.ok(bestFor?.trim(), `${e} has no bestFor`);
   }
 });
+
+test('every engine has a playground from the ELO engine list', async () => {
+  const { PLAYGROUNDS } = await import('../assets/js/elo.mjs');
+  for (const [e, { playground }] of Object.entries(read('../data/elo/engines.json'))) {
+    assert.ok(PLAYGROUNDS.includes(playground), `${e}: playground "${playground}" not in ${PLAYGROUNDS.join(', ')}`);
+  }
+});

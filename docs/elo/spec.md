@@ -31,13 +31,22 @@ Initial data is imported from the existing "RAW" sheet (19 matches, 2022-01 → 
   - `halfLife: Infinity` (or `0`/`null`) turns decay off (`w = 1`, plain ELO).
   - Decay scales each match's update; it does not pull ratings back toward 1500, so an inactive
     engine keeps its rating. Ratings stay zero-sum.
+- **Playgrounds** are separate leagues: products of different kinds (query engines vs lakehouse
+  table formats) are not rated against each other. Each engine's playground is the `playground`
+  field in `data/elo/engines.json` (`Engines` or `Table formats`). Ratings are computed for one
+  playground at a time: every match's ranking is cut down to that playground's engines (places
+  renumbered, ties kept), and a match left with fewer than 2 engines is skipped. A report that
+  mixes playgrounds therefore counts as one match per playground. `asOf` is still the newest match
+  date in the whole file. With no `playground` option every engine is in one league (used by tests).
 - The engine is a pure function:
-  `computeRatings(matches, {k, initial, workload?, halfLife?, asOf?}) → {ratings, history, matches}`;
-  each returned match carries its `weight`.
+  `computeRatings(matches, {k, initial, workload?, halfLife?, asOf?, playground?, playgroundOf?}) → {ratings, history, matches}`
+  where `playgroundOf` maps engine → playground; each returned match carries its `weight`
+  and its cut-down `ranking`.
 
 ## Page
 `/rankings/`:
-1. Workload filter (All, TPC-H, TPC-DS, SSB) — recomputes ratings from the filtered matches.
+1. Playground switch (Engines by default, Table formats) and workload filter (All, TPC-H, TPC-DS, SSB,
+   only workloads with matches in the chosen playground) — recompute ratings from the filtered matches.
 2. Leaderboard table: rank, engine, rating, Δ from last match, W-L-D (pairwise), matches played, last match date.
 3. Rating history chart for the top engines (inline SVG, no external libs).
 4. Match log, newest first, with result order, rating change per engine, match weight, and source link.

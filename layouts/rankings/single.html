@@ -99,7 +99,9 @@
       <b>How we use it:</b> the players are analytics engines and each public benchmark report is a game.
       The report's finishing order (fastest first) decides who beat whom; a report that compares six engines
       counts as every pair of them playing at once. Reports are applied oldest first, so a rating reflects
-      every benchmark an engine has appeared in, not just the latest one. Engines get faster, so older
+      every benchmark an engine has appeared in, not just the latest one. Products of different kinds
+      play in separate leagues ("playgrounds"): query engines are rated only against engines, and lakehouse
+      table formats only against table formats. A report that compares both counts once in each league. Engines get faster, so older
       reports count for less: a report's weight halves for every two years it predates the newest one.
       Use the workload buttons to see ratings from one benchmark type only.
     </p>
@@ -114,6 +116,7 @@
 
   <div class="stats" id="elo-stats" aria-live="polite"></div>
 
+  <div class="chips" role="group" aria-label="Playground" id="elo-playground"></div>
   <div class="chips" role="group" aria-label="Filter by workload" id="elo-filter"></div>
 
   <h2>Leaderboard</h2>
@@ -163,8 +166,11 @@
 <script type="application/json" id="clickbench-data">{{ hugo.Data.elo.clickbench | jsonify | safeJS }}</script>
 <script type="application/json" id="engines-data">{{ hugo.Data.elo.engines | jsonify | safeJS }}</script>
 <script type="module">
-  import { computeRatings, leaderboard, workloads } from "{{ $elo.RelPermalink }}";
+  import { computeRatings, leaderboard, workloads, PLAYGROUNDS } from "{{ $elo.RelPermalink }}";
   const data = JSON.parse(document.getElementById("elo-data").textContent);
+  const engineInfo = JSON.parse(document.getElementById("engines-data").textContent);
+  // Separate leagues: engines are only rated against engines in the same playground.
+  const playgroundOf = Object.fromEntries(Object.entries(engineInfo).map(([e, v]) => [e, v.playground]));
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   const fmtD = (d) => (Math.abs(d) < 0.5 ? `<span class="flat">±0</span>` : `<span class="${d > 0 ? "up" : "down"}">${d > 0 ? "+" : "−"}${Math.abs(d).toFixed(0)}</span>`);
@@ -187,7 +193,6 @@
   const savePick = () => { try { picked ? localStorage.setItem(PICK_KEY, JSON.stringify([...picked])) : localStorage.removeItem(PICK_KEY); } catch {} };
   let lastBoard = [], lastHistory = {};
   const clickbench = JSON.parse(document.getElementById("clickbench-data").textContent);
-  const engineInfo = JSON.parse(document.getElementById("engines-data").textContent);
 
   // Engine name as a link to the product site. Text-only anchor, so the theme's own outbound-link
   // tracker (which checks event.target is the <a>) fires too.
@@ -206,6 +211,7 @@
       link_url: a.href,
       link_location: a.dataset.where,
       workload_filter: current,
+      playground: league,
       transport_type: "beacon",
     });
   });
@@ -220,19 +226,38 @@
     return `<td class="num cb flat" title="${esc(why)}">—</td>`;
   }
 
-  const filters = ["All", ...workloads(data)];
+  const rate = (opts) => computeRatings(data, { playground: league, playgroundOf, ...opts });
+  let league = PLAYGROUNDS[0];
   let current = "All";
-  $("elo-filter").innerHTML = filters.map((w) =>
-    `<button class="chip" data-w="${esc(w)}" aria-pressed="${w === current}">${esc(w)} · ${w === "All" ? data.length : data.filter((m) => m.workload === w).length}</button>`).join("");
+
+  $("elo-playground").innerHTML = PLAYGROUNDS.map((p) =>
+    `<button class="chip" data-p="${esc(p)}" aria-pressed="${p === league}">${esc(p)} · ${computeRatings(data, { playground: p, playgroundOf }).matches.length}</button>`).join("");
+  $("elo-playground").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-p]"); if (!b) return;
+    league = b.dataset.p;
+    for (const c of $("elo-playground").children) c.setAttribute("aria-pressed", c.dataset.p === league);
+    renderFilters();
+    render();
+  });
+
+  // Workload chips list only workloads with matches in the chosen playground.
+  function renderFilters() {
+    const counts = Object.fromEntries(["All", ...workloads(data)].map((w) => [w, rate({ workload: w }).matches.length]));
+    const filters = Object.keys(counts).filter((w) => counts[w] > 0);
+    if (!filters.includes(current)) current = "All";
+    $("elo-filter").innerHTML = filters.map((w) =>
+      `<button class="chip" data-w="${esc(w)}" aria-pressed="${w === current}">${esc(w)} · ${counts[w]}</button>`).join("");
+  }
   $("elo-filter").addEventListener("click", (e) => {
     const b = e.target.closest("button[data-w]"); if (!b) return;
     current = b.dataset.w;
     for (const c of $("elo-filter").children) c.setAttribute("aria-pressed", c.dataset.w === current);
     render();
   });
+  renderFilters();
 
   function render() {
-    const { ratings, history, matches } = computeRatings(data, { workload: current });
+    const { ratings, history, matches } = rate({ workload: current });
     const board = leaderboard(ratings);
     const lo = Math.min(...board.map((r) => r.rating)), hi = Math.max(...board.map((r) => r.rating));
 
