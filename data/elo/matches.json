@@ -133,7 +133,7 @@
   {
     "id": 13,
     "date": "2023-08-21",
-    "source": "https://docs.starrocks.io/docs/benchmarking/SSB_Benchmarking/",
+    "source": "https://web.archive.org/web/20231207015000/https://docs.starrocks.io/docs/benchmarking/SSB_Benchmarking/",
     "workload": "SSB",
     "ranking": [
       "StarRocks",
@@ -186,7 +186,7 @@
   {
     "id": 18,
     "date": "2024-04-17",
-    "source": "https://pola.rs/posts/benchmarks/",
+    "source": "https://web.archive.org/web/20240430011701/https://pola.rs/posts/benchmarks/",
     "workload": "TPC-H",
     "ranking": [
       "Polars",
