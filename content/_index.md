@@ -114,14 +114,14 @@ sections:
 
 
             **How it works:** </br>
-                1. We grab every public performance test (TPC-DS, TPC-H, SSB Wide Table, and more—even the messy ones).</br>
+                1. We grab every public performance test (TPC-DS, TPC-H, SSB Wide Table, CH-benCHmark, Join Order Benchmark, and more—even the messy ones).</br>
                 2. We turn results into “matches” — sometimes 1-on-1, sometimes 3- or 4-way battles.</br>
                 3. The ELO system updates the rankings after every match.
             </br></br>
 
             **Get Involved:**</br>
                 - See the full leaderboard and historical performance.</br>
-                - Sort and explore engines by data workload: TPC-DS, TPC-H, SSB Wide Table or others.</br>
+                - Sort and explore engines by data workload: TPC-DS, TPC-H, SSB Wide Table, CH-benCHmark, Join Order Benchmark or others.</br>
                 - Got results? Publish them online and email <a href="mailto:atwong@alumni.uci.edu">atwong@alumni.uci.edu</a> — we’ll add them (even backdated ones) to the rankings.
             </br></br>
 

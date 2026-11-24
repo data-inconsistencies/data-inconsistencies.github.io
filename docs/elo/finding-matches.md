@@ -25,10 +25,16 @@ Open this repo in Claude Code and ask:
 
 What it should do, and what to check it did:
 
-1. Search for TPC-H, TPC-DS, SSB and ClickBench-style comparisons of analytics engines published
-   after the newest `date` in `data/elo/matches.json`. Include pages republished with new results.
+1. Search for TPC-H, TPC-DS, SSB, CH-benCHmark, Join Order Benchmark (JOB) and ClickBench-style
+   comparisons of analytics engines published after the newest `date` in
+   `data/elo/matches.json`. Include pages republished with new results.
 2. Read each report (not search snippets). Record `date`, `source`, `workload`, `ranking` (fastest
    first; nested array = tie) and one sentence of `evidence` naming the table or figure used.
+   - CH-benCHmark mixes transactions and analytics. Rank on the report's own headline measure; when
+     engines tie on one side (OLTP or OLAP), the other side decides. Skip it when the two disagree
+     and the report names no overall winner, and skip runs of only its OLTP half (that is TPC-C).
+   - JOB means all 113 queries. Skip JOB-light, JOB-Complex, CEB, single-variant subsets, and papers
+     that swap optimizers inside one engine.
 3. Skip reports with no clear overall order. When results are only in images, use the raw data if
    the authors publish it, or skip.
 4. Run the candidates through `mergeCandidates(existing, candidates, { aliases })` from

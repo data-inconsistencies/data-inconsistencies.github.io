@@ -306,5 +306,59 @@
       "Trino"
     ],
     "evidence": "Exasol-authored. Concurrency series, 1 node, SF50, 1 stream, median of 5 runs, totals from the text: Exasol 22.4s, DuckDB 81.5s, StarRocks 87.4s; Trino placed last from the text stating it is slowest in every configuration (its 1-stream total is only in Figure 1). ClickHouse left out: it completed only 18 of 22 queries (95.5s over the subset)."
+  },
+  {
+    "id": 28,
+    "date": "2021-08-10",
+    "source": "https://futurumgroup.com/insights/oracle-mysql-heatwave-melts-snowflake-with-unparalleled-price-and-performance-advantages/",
+    "workload": "CH-benCHmark",
+    "ranking": [
+      "MySQL HeatWave",
+      "Amazon Aurora"
+    ],
+    "evidence": "Analyst article on Oracle's MySQL HeatWave launch, vendor-favourable; it does not name who ran the test. CH-benCHmark 100G: OLTP equal (0.02 s latency, 30K transactions/min for both), so the OLAP side decides: 4 concurrent OLAP sessions, HeatWave 35 s vs Aurora db.r5.8xlarge 632 s latency (18x). The OLAP throughput sentence claims 110x for HeatWave but prints .06 for HeatWave and 6.6 for Aurora, apparently swapped."
+  },
+  {
+    "id": 29,
+    "date": "2023-11-29",
+    "source": "https://arxiv.org/abs/2311.17293",
+    "workload": "Join Order Benchmark",
+    "ranking": [
+      "DuckDB",
+      "MonetDB",
+      "HEAVY.AI"
+    ],
+    "evidence": "UC Merced technical report, section 5.6 and Table 6, total time for the 113 JOB queries with each engine's default optimizer, no indexes, same CPU server: DuckDB 30.38s, MonetDB 114.46s, HEAVY.AI 4744s (37 queries hit the 120s timeout, each charged as 120s, so a lower bound). Forced-join-order (no-CE) runs not counted; PostgreSQL left out because the paper runs it tuned, with a different timeout, and does not tabulate it against these three."
+  },
+  {
+    "id": 30,
+    "date": "2026-10-22",
+    "source": "https://github.com/wlaur/olap-benchmarks/blob/main/docs/campaigns/2026-10-followup.md",
+    "workload": "Join Order Benchmark",
+    "ranking": [
+      "DuckDB",
+      "StarRocks",
+      "ClickHouse",
+      "MonetDB",
+      "PostgreSQL"
+    ],
+    "evidence": "New-suite measurements table, rows \"JOB, original snapshot\", all 113 queries, result hashes matching across engines, M4 Pro, 10 threads, 24 GiB: sum of query medians DuckDB 3.30s, StarRocks 7.24s, ClickHouse 13.92s, MonetDB 20.15s, PostgreSQL 73.36s (with 23 foreign-key indexes); the geometric-mean ratio gives the same order. DuckDB runs embedded, the others in Docker. Date is the commit that added the report."
+  },
+  {
+    "id": 31,
+    "date": "2026-10-03",
+    "source": "https://benchbox.dev/results/joinorder/",
+    "workload": "Join Order Benchmark",
+    "ranking": [
+      "DuckDB",
+      "ClickHouse",
+      "SQLite",
+      "Polars",
+      "DataFusion",
+      "Snowflake",
+      "Databricks",
+      "Google BigQuery"
+    ],
+    "evidence": "BenchBox Results table, JOB SF 1, power phase, 113 queries, geomean query time: DuckDB 76 ms, ClickHouse Local 122 ms, SQLite 131 ms, Polars 262 ms, DataFusion 280 ms, Snowflake (X-Small) 634 ms, Databricks 1.93 s, BigQuery 3.48 s. DuckDB is the untuned run, like the rest (the tuned run, 55 ms, gives the same order). By total time SQLite would fall behind Polars. Caveats: the site marks all 9 runs \"not ranked\"; local engines ran on an Apple M4 laptop, cloud ones over the network from it; the Polars run has no result validation. Runs date from 2026-08-25 to 2026-10-03; date is the newest run."
   }
 ]

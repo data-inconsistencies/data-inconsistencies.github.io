@@ -1,61 +1,68 @@
 {
   "source": "https://benchmark.clickhouse.com/",
   "metric": "Combined, default view; lower is better, 1.00 = best",
-  "updated": "2026-11-23",
+  "updated": "2026-11-24",
   "systems": 126,
   "engines": {
+    "Amazon Aurora": {
+      "rank": 119,
+      "score": 663.52,
+      "system": "Aurora for PostgreSQL",
+      "machine": "Aurora: 16acu",
+      "date": "2022-07-01"
+    },
     "Amazon Redshift": {
       "rank": 52,
-      "score": 7.49,
+      "score": 7.47,
       "system": "Redshift",
       "machine": "serverless",
       "date": "2026-11-16"
     },
     "Apache Spark": {
       "rank": 111,
-      "score": 105.9,
+      "score": 106.03,
       "system": "Spark (Iceberg)",
       "machine": "c6a.4xlarge",
       "date": "2026-11-08"
     },
     "ClickHouse": {
       "rank": 3,
-      "score": 2.03,
-      "system": "ClickHouse (web)",
-      "machine": "c8g.metal-48xl",
+      "score": 2.04,
+      "system": "ClickHouse ☁️ (gcp)",
+      "machine": "ClickHouse ☁️: 356GiB",
       "date": "2026-11-23"
     },
     "Databricks": {
       "rank": 76,
-      "score": 15.07,
+      "score": 15.02,
       "system": "Databricks",
       "machine": "XL",
       "date": "2025-11-13"
     },
     "DataFusion": {
       "rank": 22,
-      "score": 4.46,
+      "score": 4.47,
       "system": "DataFusion (Vortex, partitioned)",
       "machine": "c8g.metal-48xl",
       "date": "2026-11-15"
     },
     "DuckDB": {
       "rank": 26,
-      "score": 4.69,
+      "score": 4.7,
       "system": "DuckDB",
       "machine": "c8g.metal-48xl",
       "date": "2026-11-10"
     },
     "Exasol": {
       "rank": 72,
-      "score": 13.55,
+      "score": 13.56,
       "system": "Exasol",
       "machine": "c8g.metal-48xl",
       "date": "2026-11-08"
     },
     "Google BigQuery": {
       "rank": 85,
-      "score": 21.06,
+      "score": 20.99,
       "system": "Bigquery",
       "machine": "serverless",
       "date": "2025-10-28"
@@ -67,23 +74,30 @@
       "machine": "c8g.metal-48xl",
       "date": "2026-11-11"
     },
+    "PostgreSQL": {
+      "rank": 116,
+      "score": 294.75,
+      "system": "PostgreSQL",
+      "machine": "c8g.metal-48xl",
+      "date": "2026-09-19"
+    },
     "Snowflake": {
       "rank": 40,
-      "score": 6.12,
+      "score": 6.1,
       "system": "Snowflake (Interactive)",
       "machine": "2XL",
       "date": "2026-07-27"
     },
     "StarRocks": {
       "rank": 45,
-      "score": 6.41,
+      "score": 6.42,
       "system": "StarRocks",
       "machine": "c8g.metal-48xl",
       "date": "2026-09-07"
     },
     "Trino": {
       "rank": 86,
-      "score": 22.11,
+      "score": 22.14,
       "system": "Trino (Parquet, partitioned)",
       "machine": "c8g.metal-48xl",
       "date": "2026-11-14"
@@ -92,9 +106,12 @@
   "hidden": {
     "Apache Druid": "listed as \"enthusiast\", hidden by default",
     "Dask": "in-memory engine, not scored by the Combined metric",
+    "HEAVY.AI": "listed as \"enthusiast\", hidden by default",
     "Kinetica": "listed as \"enthusiast\", hidden by default",
+    "MonetDB": "listed as \"enthusiast\", hidden by default",
     "Pandas": "in-memory engine, not scored by the Combined metric",
     "SingleStore": "listed as \"enthusiast\", hidden by default",
+    "SQLite": "listed as \"enthusiast\", hidden by default",
     "Tableau Hyper": "listed as \"enthusiast\", hidden by default"
   }
 }

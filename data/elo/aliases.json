@@ -17,5 +17,15 @@
   "Hudi": "Apache Hudi",
   "Hyper": "Tableau Hyper",
   "Duckdb": "DuckDB",
-  "Starrocks": "StarRocks"
+  "Starrocks": "StarRocks",
+  "HeavyAI": "HEAVY.AI",
+  "HeavyDB": "HEAVY.AI",
+  "OmniSci": "HEAVY.AI",
+  "Postgres": "PostgreSQL",
+  "HeatWave": "MySQL HeatWave",
+  "Oracle MySQL HeatWave": "MySQL HeatWave",
+  "AWS Aurora": "Amazon Aurora",
+  "Aurora": "Amazon Aurora",
+  "ClickHouse Local": "ClickHouse",
+  "Sqlite": "SQLite"
 }
