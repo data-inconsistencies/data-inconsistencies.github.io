@@ -21,4 +21,4 @@ Here we are starting a blog to share our insights and experiences with you.
 
 ## next steps
 
-We are developing a [landscape of data services here](https://landscape.data-inconsistencies.datajourney.expert/) for the start to make it easier for you to choose the right components for your data architecture.
+We are developing a [landscape of data services here](https://github.com/data-inconsistencies/landscape) for the start to make it easier for you to choose the right components for your data architecture.
