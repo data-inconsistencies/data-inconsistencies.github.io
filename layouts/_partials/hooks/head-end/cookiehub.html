@@ -1,7 +1,10 @@
 <script src="https://cdn.cookiehub.eu/c2/9df5f782.js"></script>
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(event) {
+// The CookieHub account still has the old domain. Browsers drop a cookie set for another domain, so the
+// answer was lost and the banner came back on every page. Ad blockers can remove CookieHub altogether.
+if (window.__cookiehub && window.__cookiehub.settings) window.__cookiehub.settings.general.domain = location.hostname;
 var cpm = {};
-window.cookiehub.load(cpm);
+if (window.cookiehub) window.cookiehub.load(cpm);
 });
 </script>

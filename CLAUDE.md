@@ -33,6 +33,8 @@ Hugo Blox (Tailwind v4, `github.com/HugoBlox/kit/modules/blox`) landing site, de
   Engine names on /rankings/ link there and send GA4 event `engine_click`
   (engine, link_url, link_location, workload_filter). GA is `G-GV8QDDVB6Q` in params.yaml and only
   loads in production builds, not `hugo server`.
+- Cookie consent: CookieHub (`layouts/_partials/hooks/head-end/cookiehub.html`). Its account has the old domain, so the hook sets
+  the cookie domain to the current host; the landscape does the same in its `analytics/analytics.mjs`.
 - WebMCP: `assets/js/webmcp.mjs` defines the agent tools on /rankings/ (tests in `tests/webmcp.test.mjs`, spec section
   in `docs/elo/spec.md`). Keep it import-free; bad input returns `{error}`, never throws; view changes go through
   `setView()` in `single.html`. Chrome origin-trial token: `webmcp.originTrialToken` in params.yaml (empty = flag only).
