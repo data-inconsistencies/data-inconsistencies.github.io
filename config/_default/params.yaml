@@ -75,7 +75,7 @@ hugoblox:
     enable: true
     provider: 'giscus'
     giscus:
-      repo: 'data-inconsistencies/landingpage-comments'
+      repo: 'data-inconsistencies/website-comments'
       repo_id: 'R_kgDOM_WnDw'
       category: 'Announcements'
       category_id: 'DIC_kwDOM_WnD84CjTmQ'

@@ -36,7 +36,7 @@ Hugo Blox (Tailwind v4, `github.com/HugoBlox/kit/modules/blox`) landing site, de
 - WebMCP: `assets/js/webmcp.mjs` defines the agent tools on /rankings/ (tests in `tests/webmcp.test.mjs`, spec section
   in `docs/elo/spec.md`). Keep it import-free; bad input returns `{error}`, never throws; view changes go through
   `setView()` in `single.html`. Chrome origin-trial token: `webmcp.originTrialToken` in params.yaml (empty = flag only).
-- Comments: GitHub Discussions via giscus (`comments` in params.yaml; thread repo `data-inconsistencies/landingpage-comments`),
+- Comments: GitHub Discussions via giscus (`comments` in params.yaml; thread repo `data-inconsistencies/website-comments`),
   only on pages with `commentable: true`. `layouts/_partials/comments/giscus.html` overrides the theme's partial so the
   widget follows the light/dark toggle.
 - Use canonical engine names (`ClickHouse`, `Apache Spark`, `Trino`, `DataFusion`) — a new spelling creates a new player.
