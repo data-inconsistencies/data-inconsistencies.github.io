@@ -1,6 +1,6 @@
 // Pure helpers for scripts/find-matches.mjs: no network, no SDK, fully unit-tested.
 
-export const WORKLOADS = ['TPC-H', 'TPC-DS', 'SSB', 'ClickBench', 'other'];
+export const WORKLOADS = ['TPC-H', 'TPC-DS', 'SSB', 'ClickBench', 'CH-benCHmark', 'Join Order Benchmark', 'other'];
 
 const flat = (ranking) => ranking.flatMap((e) => (Array.isArray(e) ? e : [e]));
 
@@ -81,7 +81,7 @@ Today is ${today}. The newest report already in the leaderboard was published ${
 
 Find up to ${maxResults} public performance reports published after ${newest} that compare at least two
 analytics engines (OLAP databases, query engines, dataframe libraries, cloud warehouses) on a named
-benchmark such as TPC-H, TPC-DS, SSB, or ClickBench. Vendor blogs, independent blogs, papers and docs
+benchmark such as TPC-H, TPC-DS, SSB, ClickBench, CH-benCHmark, or Join Order Benchmark (JOB). Vendor blogs, independent blogs, papers and docs
 all count, including messy ones, as long as the results are public and the overall order is readable.
 
 For each report:

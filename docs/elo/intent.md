@@ -11,7 +11,7 @@ benchmark into ELO "matches" (1v1 or N-way) and shows:
 - the current leaderboard,
 - rating history over time,
 - every match with its source link,
-- a filter by workload (TPC-H, TPC-DS, SSB, …).
+- a filter by workload (TPC-H, TPC-DS, SSB, CH-benCHmark, Join Order Benchmark, …).
 
 ## Users
 Data engineers choosing an engine; vendors/DevRel checking their standing;

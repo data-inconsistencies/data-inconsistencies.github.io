@@ -7,7 +7,7 @@
 { "id": 18,                                  // stable unique integer
   "date": "2024-04-17",                      // date the report was published
   "source": "https://pola.rs/posts/benchmarks/",
-  "workload": "TPC-H",                       // TPC-H | TPC-DS | SSB | other
+  "workload": "TPC-H",                       // TPC-H | TPC-DS | SSB | CH-benCHmark | Join Order Benchmark | other
   "ranking": ["Polars", "DuckDB", "Apache Spark", "Dask", "Pandas", "Modin"] }  // 1st → last
 ```
 JSON (not YAML) so the same file is read by Hugo and by `node --test` with no dependencies.
@@ -46,7 +46,8 @@ Initial data is imported from the existing "RAW" sheet (19 matches, 2022-01 → 
 ## Page
 `/rankings/`:
 1. Playground switch (Engines by default, Table formats) and workload filter (All, TPC-H, TPC-DS, SSB,
-   only workloads with matches in the chosen playground) — recompute ratings from the filtered matches.
+   CH-benCHmark, Join Order Benchmark, only workloads with matches in the chosen playground) —
+   recompute ratings from the filtered matches.
 2. Leaderboard table: rank, engine, rating, Δ from last match, W-L-D (pairwise), matches played, last match date.
 3. Rating history chart for the top engines (inline SVG, no external libs).
 4. Match log, newest first, with result order, rating change per engine, match weight, and source link.

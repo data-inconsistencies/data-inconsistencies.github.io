@@ -1,4 +1,10 @@
 {
+  "Amazon Aurora": {
+    "url": "https://aws.amazon.com/rds/aurora/",
+    "description": "AWS's managed relational database, compatible with MySQL and PostgreSQL.",
+    "bestFor": "Transactional apps on AWS with light analytics",
+    "playground": "Engines"
+  },
   "Amazon Redshift": {
     "url": "https://aws.amazon.com/redshift/",
     "description": "AWS's managed columnar cloud data warehouse, provisioned or serverless.",
@@ -71,6 +77,12 @@
     "bestFor": "Ad-hoc SQL on very large data with no infrastructure to run",
     "playground": "Engines"
   },
+  "HEAVY.AI": {
+    "url": "https://docs.nvidia.com/heavyai/overview",
+    "description": "GPU-accelerated columnar SQL database (formerly OmniSci and MapD) that also runs on CPUs.",
+    "bestFor": "Interactive geospatial and time-series analytics on GPUs",
+    "playground": "Engines"
+  },
   "Kinetica": {
     "url": "https://www.kinetica.com/",
     "description": "GPU-accelerated analytical database with strong geospatial and time-series support.",
@@ -89,6 +101,18 @@
     "bestFor": "Speeding up pandas code without rewriting it",
     "playground": "Engines"
   },
+  "MonetDB": {
+    "url": "https://www.monetdb.org/",
+    "description": "Open-source column-store database that pioneered vectorized, in-memory query execution.",
+    "bestFor": "In-memory analytics and research on a single server",
+    "playground": "Engines"
+  },
+  "MySQL HeatWave": {
+    "url": "https://www.oracle.com/mysql/",
+    "description": "Oracle's managed MySQL service with an in-memory, massively parallel query accelerator.",
+    "bestFor": "Analytics on live MySQL data without a separate warehouse",
+    "playground": "Engines"
+  },
   "Pandas": {
     "url": "https://pandas.pydata.org/",
     "description": "The standard Python DataFrame library for data manipulation and analysis.",
@@ -101,6 +125,12 @@
     "bestFor": "High-performance DataFrame work on a single machine",
     "playground": "Engines"
   },
+  "PostgreSQL": {
+    "url": "https://www.postgresql.org/",
+    "description": "Open-source row-oriented relational database with a large extension ecosystem.",
+    "bestFor": "Transactional apps that also need moderate SQL analytics",
+    "playground": "Engines"
+  },
   "Power BI Datamart": {
     "url": "https://www.microsoft.com/en-us/power-platform/products/power-bi",
     "description": "Self-service managed SQL database inside Microsoft Power BI.",
@@ -111,6 +141,12 @@
     "url": "https://rockset.com/",
     "description": "Real-time search and analytics database with converged indexing (acquired by OpenAI in 2024).",
     "bestFor": "Low-latency queries on fresh semi-structured data",
+    "playground": "Engines"
+  },
+  "SQLite": {
+    "url": "https://www.sqlite.org/",
+    "description": "Embedded row-oriented SQL database stored in a single file; no server.",
+    "bestFor": "Local application storage with light SQL analytics",
     "playground": "Engines"
   },
   "SingleStore": {

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
   normalizeUrl, canonicalEngine, normalizeCandidate, validateCandidate, mergeCandidates, buildPrompt,
+  WORKLOADS, OUTPUT_SCHEMA,
 } from '../scripts/lib/candidates.mjs';
 
 const aliases = { Clickhouse: 'ClickHouse', PySpark: 'Apache Spark' };
@@ -63,4 +64,19 @@ test('buildPrompt includes cutoff date, known engines and known sources', () => 
 test('aliases file maps only to engines spelled canonically elsewhere', () => {
   const a = JSON.parse(readFileSync(new URL('../data/elo/aliases.json', import.meta.url)));
   for (const [k, v] of Object.entries(a)) assert.notEqual(k, v);
+});
+
+test('CH-benCHmark and Join Order Benchmark are known workloads, offered to the search and allowed in its output', () => {
+  const prompt = buildPrompt(existing, { today: '2026-01-01' });
+  const allowed = OUTPUT_SCHEMA.properties.matches.items.properties.workload.enum;
+  for (const w of ['CH-benCHmark', 'Join Order Benchmark']) {
+    assert.ok(WORKLOADS.includes(w), `${w} missing from WORKLOADS`);
+    assert.ok(allowed.includes(w), `${w} missing from OUTPUT_SCHEMA`);
+    assert.ok(prompt.includes(w), `${w} missing from the prompt`);
+  }
+});
+
+test('every recorded match uses a known workload spelling', () => {
+  const matches = JSON.parse(readFileSync(new URL('../data/elo/matches.json', import.meta.url)));
+  for (const m of matches) assert.ok(WORKLOADS.includes(m.workload), `match ${m.id}: unknown workload "${m.workload}"`);
 });
