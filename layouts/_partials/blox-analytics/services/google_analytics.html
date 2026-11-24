@@ -2,8 +2,10 @@
 {{ $ga := site.Params.hugoblox.analytics.google.measurement_id | default "" }}
 {{ if hugo.IsProduction | and $ga }}
 {{ $js := resources.Get "js/analytics.mjs" | minify | fingerprint }}
+{{ $consent := resources.Get "js/consent.mjs" | minify | fingerprint }}
 <script type="module">
   import { start } from "{{ $js.RelPermalink }}";
-  start(window, document, {{ $ga }});
+  import { onConsent } from "{{ $consent.RelPermalink }}";
+  start(window, document, {{ $ga }}, onConsent);
 </script>
 {{ end }}
