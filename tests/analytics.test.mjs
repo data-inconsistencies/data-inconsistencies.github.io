@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { start } from '../assets/js/analytics.mjs';
+import { onConsent } from '../assets/js/consent.mjs';
 
 const ID = 'G-TEST';
 
@@ -12,7 +13,7 @@ function browser() {
     head: { append: (s) => scripts.push(s.src) },
     addEventListener: (name, fn) => { listeners[name] = fn; },
   };
-  start(win, doc, ID);
+  start(win, doc, ID, onConsent);
   return {
     win, scripts,
     consent: (action, category) => listeners[`cookiehub_on${action}`]({ detail: { category } }),

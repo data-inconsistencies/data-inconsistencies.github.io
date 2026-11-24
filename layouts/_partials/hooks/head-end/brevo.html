@@ -1,13 +1,7 @@
-
-<script src="https://cdn.brevo.com/js/sdk-loader.js" async></script>
-<script>
-    // Version: 2.0
-    window.Brevo = window.Brevo || [];
-    Brevo.push([
-        "init",
-        {
-        client_key: "8qgno1yq0r6jn2x1ycsnrar4"
-        }
-    ]);
+{{ $js := resources.Get "js/brevo.mjs" | minify | fingerprint }}
+{{ $consent := resources.Get "js/consent.mjs" | minify | fingerprint }}
+<script type="module">
+  import { start } from "{{ $js.RelPermalink }}";
+  import { onConsent } from "{{ $consent.RelPermalink }}";
+  start(window, document, "8qgno1yq0r6jn2x1ycsnrar4", onConsent);
 </script>
-

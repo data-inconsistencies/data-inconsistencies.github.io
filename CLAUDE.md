@@ -36,6 +36,8 @@ Hugo Blox (Tailwind v4, `github.com/HugoBlox/kit/modules/blox`) landing site, de
 - Google Analytics loads only after consent (`assets/js/analytics.mjs`, tests in `tests/analytics.test.mjs`; the partial
   `layouts/_partials/blox-analytics/services/google_analytics.html` overrides the theme's). `window.gtag` does not exist before
   that, so check it before sending an event.
+- Brevo loads only after marketing consent (`assets/js/brevo.mjs`, tests in `tests/brevo.test.mjs`). A new third-party script
+  that sets cookies needs the same gate: `onConsent` in `assets/js/consent.mjs`.
 - Cookie consent: CookieHub (`layouts/_partials/hooks/head-end/cookiehub.html`). Its account has the old domain, so the hook sets
   the cookie domain to the current host; the landscape does the same in its `analytics/analytics.mjs`.
 - WebMCP: `assets/js/webmcp.mjs` defines the agent tools on /rankings/ (tests in `tests/webmcp.test.mjs`, spec section

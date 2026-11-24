@@ -1,15 +1,13 @@
 // Google Analytics, only after the visitor allows analytics in the CookieHub banner. Loaded by
-// layouts/_partials/blox-analytics/services/google_analytics.html. CookieHub announces each allowed or withdrawn
-// category with these document events, on every page load for a visitor who already answered.
-export function start(win, doc, id) {
+// layouts/_partials/blox-analytics/services/google_analytics.html, which passes onConsent from consent.mjs.
+export function start(win, doc, id, onConsent) {
   let loaded = false;
   let allowed = false;
 
-  doc.addEventListener('cookiehub_onAllow', ({ detail }) => {
-    if (detail.category !== 'analytics') return;
-    allowed = true;
-    win[`ga-disable-${id}`] = false;
-    if (loaded) return;
+  onConsent(win, doc, 'analytics', (answer) => {
+    allowed = answer;
+    win[`ga-disable-${id}`] = !allowed; // gtag.js drops every event while this is set
+    if (!allowed || loaded) return;
     loaded = true;
     win.dataLayer = win.dataLayer ?? [];
     win.gtag = function () { win.dataLayer.push(arguments); }; // must be `arguments`: gtag.js ignores arrays
@@ -19,12 +17,6 @@ export function start(win, doc, id) {
     doc.head.append(Object.assign(doc.createElement('script'), {
       src: `https://www.googletagmanager.com/gtag/js?id=${id}`, async: true,
     }));
-  });
-
-  doc.addEventListener('cookiehub_onRevoke', ({ detail }) => {
-    if (detail.category !== 'analytics') return;
-    allowed = false;
-    win[`ga-disable-${id}`] = true; // gtag.js drops every event while this is set
   });
 
   // Outbound links, with the same fields as the theme's tracker that this replaces.
