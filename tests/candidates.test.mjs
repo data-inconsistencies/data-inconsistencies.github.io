@@ -100,10 +100,42 @@ test('recorded comments are short, single-line text, and the defective-data matc
     assert.ok(comment.trim() === comment && comment.length > 0, `match ${id}: empty or padded comment`);
     assert.ok(comment.length <= 280 && !comment.includes('\n'), `match ${id}: comment too long (${comment.length})`);
   }
-  assert.match(matches.find((m) => m.id === 34).comment ?? '', /defect|faulty|wrong/i, 'match 34 must warn about its defective data');
+  // BenchBox's TPC-H runs made with its faulty macOS data generator.
+  for (const id of [37, 38, 40, 41, 42, 63, 64, 65]) {
+    assert.match(matches.find((m) => m.id === id)?.comment ?? '', /defect|faulty|wrong/i, `match ${id} must warn about its defective data`);
+  }
 });
 
 test('every recorded match uses a known workload spelling', () => {
   const matches = JSON.parse(readFileSync(new URL('../data/elo/matches.json', import.meta.url)));
   for (const m of matches) assert.ok(WORKLOADS.includes(m.workload), `match ${m.id}: unknown workload "${m.workload}"`);
+});
+
+test('runs of one page at different scales are separate matches; a repeat of one scale is not', () => {
+  const run = (scale, over = {}) => cand({ source: 'https://runs.test/query?sf=' + scale, scale: `SF ${scale}`, ...over });
+  const { added, skipped } = mergeCandidates(existing, [run(1), run(10), run(1), run(1, { date: '2025-04-01' })], { aliases, today: '2026-01-01' });
+  assert.deepEqual(added.map((m) => [m.scale, m.date]), [['SF 1', '2025-03-01'], ['SF 10', '2025-03-01'], ['SF 1', '2025-04-01']]);
+  assert.equal(skipped.length, 1);
+});
+
+test('a scale does not let a report recorded without one in twice', () => {
+  const { added } = mergeCandidates(existing, [cand({ source: 'https://example.com/post', date: '2024-01-01', scale: 'SF 1' })], { aliases, today: '2026-01-01' });
+  assert.equal(added.length, 0);
+});
+
+test('the search can return a scale, and an empty one is not recorded', () => {
+  assert.ok(OUTPUT_SCHEMA.properties.matches.items.properties.scale);
+  const { added } = mergeCandidates(existing, [cand({ scale: '' })], { aliases, today: '2026-01-01' });
+  assert.ok(!('scale' in added[0]));
+});
+
+test('BenchBox matches: one per benchmark, scale and run date', () => {
+  const ms = JSON.parse(readFileSync(new URL('../data/elo/matches.json', import.meta.url))).filter((m) => /benchbox\.dev/.test(m.source));
+  assert.ok(ms.length);
+  const keys = ms.map((m) => `${m.workload}|${m.scale}|${m.date}`);
+  assert.equal(new Set(keys).size, keys.length);
+  for (const m of ms) {
+    assert.match(m.scale ?? '', /^SF \d/, `match ${m.id} has no scale`);
+    assert.equal(Number(new URL(m.source).searchParams.get('sf')), Number(m.scale.slice(3)), `match ${m.id}: source and scale disagree`);
+  }
 });

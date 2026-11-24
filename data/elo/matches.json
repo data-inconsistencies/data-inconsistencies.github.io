@@ -394,75 +394,602 @@
     "evidence": "New-suite measurements table, rows \"JOB, original snapshot\", all 113 queries, result hashes matching across engines, M4 Pro, 10 threads, 24 GiB: sum of query medians DuckDB 3.30s, StarRocks 7.24s, ClickHouse 13.92s, MonetDB 20.15s, PostgreSQL 73.36s (with 23 foreign-key indexes); the geometric-mean ratio gives the same order. DuckDB runs embedded, the others in Docker. Date is the commit that added the report."
   },
   {
-    "id": 31,
-    "date": "2026-10-03",
-    "source": "https://benchbox.dev/results/joinorder/",
-    "workload": "Join Order Benchmark",
+    "id": 35,
+    "date": "2026-08-23",
+    "source": "https://benchbox.dev/results/query?benchmark=tpcds&sf=1.0",
+    "workload": "TPC-DS",
+    "scale": "SF 1",
     "ranking": [
       "DuckDB",
-      "ClickHouse",
-      "SQLite",
-      "Polars",
       "DataFusion",
-      "Snowflake",
-      "Databricks",
-      "Google BigQuery"
+      "Apache Spark"
     ],
-    "comment": "BenchBox does not rank these runs. Local engines ran on an Apple M4 laptop, cloud warehouses over the network. Polars' results were not validated. By total time SQLite would fall behind Polars.",
-    "evidence": "BenchBox Results table, JOB SF 1, power phase, 113 queries, geomean query time: DuckDB 76 ms, ClickHouse Local 122 ms, SQLite 131 ms, Polars 262 ms, DataFusion 280 ms, Snowflake (X-Small) 634 ms, Databricks 1.93 s, BigQuery 3.48 s. DuckDB is the untuned run, like the rest (the tuned run, 55 ms, gives the same order). By total time SQLite would fall behind Polars. Caveats: the site marks all 9 runs \"not ranked\"; local engines ran on an Apple M4 laptop, cloud ones over the network from it; the Polars run has no result validation. Runs date from 2026-08-25 to 2026-10-03; date is the newest run."
+    "comment": "Run on an Apple M4 laptop. BenchBox marks the DataFusion run as known defective data.",
+    "evidence": "BenchBox run list, TPC-DS SF 1, runs dated 2026-08-23, power phase, 103 queries, ordered by the \"Geomean latency\" column: DuckDB 13 ms, DataFusion 51 ms, Spark 567 ms. Run ids: 314a918c, 8fae3f63, d1539f11."
   },
   {
-    "id": 32,
-    "date": "2026-10-03",
-    "source": "https://benchbox.dev/results/ssb/?sf=1",
+    "id": 36,
+    "date": "2026-08-23",
+    "source": "https://benchbox.dev/results/query?benchmark=tpcds&sf=10.0",
+    "workload": "TPC-DS",
+    "scale": "SF 10",
+    "ranking": [
+      "DuckDB",
+      "DataFusion"
+    ],
+    "comment": "Run on an Apple M4 laptop. BenchBox marks the DataFusion run as known defective data. Left out: Apache Spark (failed queries).",
+    "evidence": "BenchBox run list, TPC-DS SF 10, runs dated 2026-08-23, power phase, 103 queries, ordered by the \"Geomean latency\" column: DuckDB 110 ms, DataFusion 236 ms. Left out because not every query finished: Spark (failed queries, 2.32 s). Run ids: ab8df093, cc8c6679."
+  },
+  {
+    "id": 37,
+    "date": "2026-08-25",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=0.01",
+    "workload": "TPC-H",
+    "scale": "SF 0.01",
+    "ranking": [
+      "CedarDB",
+      "SQLite",
+      "ClickHouse",
+      "LakeSail",
+      "StarRocks",
+      "Apache Spark"
+    ],
+    "comment": "Run on an Apple M4 laptop. Known defect: bad generated addresses make 4 of 22 queries return wrong values, so BenchBox does not rank these runs. Apache Spark results were not validated. Very small data (about 10 MB).",
+    "evidence": "BenchBox run list, TPC-H SF 0.01, runs dated 2026-08-25, power phase, 22 queries, ordered by the \"Geomean latency\" column: CedarDB 8.9 ms, SQLite 9.5 ms, ClickHouse Server 16 ms, LakeSail 22 ms, StarRocks 27 ms, PySpark 683 ms. Known defect: the macOS data generator wrote non-canonical addresses, so Q2, Q10, Q15 and Q20 return wrong values (BenchBox results-data/DEFECTIVE_DATAGEN_AUDIT.md); recorded anyway. Run ids: f8172dc4, ebba214a, 25275a04, b1e4e2ee, 88eb5edd, 12aecc9a."
+  },
+  {
+    "id": 38,
+    "date": "2026-08-25",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=1.0",
+    "workload": "TPC-H",
+    "scale": "SF 1",
+    "ranking": [
+      "Polars",
+      "DataFusion",
+      "ClickHouse",
+      "SQLite",
+      "Apache Spark"
+    ],
+    "comment": "Run on an Apple M4 laptop. Known defect: bad generated addresses make 4 of 22 queries return wrong values, so BenchBox does not rank these runs.",
+    "evidence": "BenchBox run list, TPC-H SF 1, runs dated 2026-08-25, power phase, 22 queries, ordered by the \"Geomean latency\" column: Polars 37 ms, DataFusion 47 ms, ClickHouse Local 71 ms, SQLite 495 ms, PySpark 1.91 s. Known defect: the macOS data generator wrote non-canonical addresses, so Q2, Q10, Q15 and Q20 return wrong values (BenchBox results-data/DEFECTIVE_DATAGEN_AUDIT.md); recorded anyway. Run ids: fba87dcf, de976801, 3a02da02, 57eefaba, 20c41f34."
+  },
+  {
+    "id": 39,
+    "date": "2026-08-25",
+    "source": "https://benchbox.dev/results/query?benchmark=ssb&sf=0.01",
     "workload": "SSB",
+    "scale": "SF 0.01",
+    "ranking": [
+      "DuckDB",
+      "ClickHouse",
+      "SQLite"
+    ],
+    "comment": "Run on an Apple M4 laptop. Very small data (about 10 MB).",
+    "evidence": "BenchBox run list, SSB SF 0.01, runs dated 2026-08-25, power phase, 13 queries, ordered by the \"Geomean latency\" column: DuckDB 0.6 ms, ClickHouse Local 3.1 ms, SQLite 16 ms. Run ids: 30e8b012, 60b4e3b0, 3682c8ff."
+  },
+  {
+    "id": 40,
+    "date": "2026-08-26",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=0.01",
+    "workload": "TPC-H",
+    "scale": "SF 0.01",
+    "ranking": [
+      "Pandas",
+      "DuckDB",
+      "DataFusion",
+      "ClickHouse",
+      "Apache Spark"
+    ],
+    "comment": "Run on an Apple M4 laptop. Known defect: bad generated addresses make 4 of 22 queries return wrong values, so BenchBox does not rank these runs. Pandas results were not validated. Very small data (about 10 MB).",
+    "evidence": "BenchBox run list, TPC-H SF 0.01, runs dated 2026-08-26, power phase, 22 queries, ordered by the \"Geomean latency\" column: Pandas 3.9 ms, DuckDB 6.9 ms, DataFusion 11 ms, ClickHouse Local 13 ms, Spark 249 ms. Known defect: the macOS data generator wrote non-canonical addresses, so Q2, Q10, Q15 and Q20 return wrong values (BenchBox results-data/DEFECTIVE_DATAGEN_AUDIT.md); recorded anyway. Run ids: 6ebdb25c, c0122c88, a876fa0f, dfb4ecaa, 3e59911b."
+  },
+  {
+    "id": 41,
+    "date": "2026-08-26",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=0.1",
+    "workload": "TPC-H",
+    "scale": "SF 0.1",
+    "ranking": [
+      "Polars",
+      "DuckDB",
+      "Pandas",
+      "ClickHouse",
+      "SQLite",
+      "Apache Spark"
+    ],
+    "comment": "Run on an Apple M4 laptop. Known defect: bad generated addresses make 4 of 22 queries return wrong values, so BenchBox does not rank these runs. Polars and Pandas results were not validated. Very small data (about 100 MB).",
+    "evidence": "BenchBox run list, TPC-H SF 0.1, runs dated 2026-08-26, power phase, 22 queries, ordered by the \"Geomean latency\" column: Polars 6.1 ms, DuckDB 16 ms, Pandas 21 ms, ClickHouse Local 26 ms, SQLite 52 ms, Spark 371 ms. Known defect: the macOS data generator wrote non-canonical addresses, so Q2, Q10, Q15 and Q20 return wrong values (BenchBox results-data/DEFECTIVE_DATAGEN_AUDIT.md); recorded anyway. Run ids: 0a1e8bb7, 0c523670, 8bf9dd35, 6abe4fb0, 9783dfb4, 6d4f7d03."
+  },
+  {
+    "id": 42,
+    "date": "2026-08-26",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=1.0",
+    "workload": "TPC-H",
+    "scale": "SF 1",
+    "ranking": [
+      "DuckDB",
+      "Apache Spark"
+    ],
+    "comment": "Run on an Apple M4 laptop. Known defect: bad generated addresses make 4 of 22 queries return wrong values, so BenchBox does not rank these runs.",
+    "evidence": "BenchBox run list, TPC-H SF 1, runs dated 2026-08-26, power phase, 22 queries, ordered by the \"Geomean latency\" column: DuckDB 38 ms, Spark 734 ms. Known defect: the macOS data generator wrote non-canonical addresses, so Q2, Q10, Q15 and Q20 return wrong values (BenchBox results-data/DEFECTIVE_DATAGEN_AUDIT.md); recorded anyway. Run ids: e175e64f, d36fde3c."
+  },
+  {
+    "id": 43,
+    "date": "2026-08-26",
+    "source": "https://benchbox.dev/results/query?benchmark=ssb&sf=0.01",
+    "workload": "SSB",
+    "scale": "SF 0.01",
+    "ranking": [
+      "DataFusion",
+      "Pandas"
+    ],
+    "comment": "Run on an Apple M4 laptop. Pandas results were not validated. Very small data (about 10 MB).",
+    "evidence": "BenchBox run list, SSB SF 0.01, runs dated 2026-08-26, power phase, 13 queries, ordered by the \"Geomean latency\" column: DataFusion 2 ms, Pandas 14 ms. Run ids: 359d2ef5, 5e3a791c."
+  },
+  {
+    "id": 44,
+    "date": "2026-08-26",
+    "source": "https://benchbox.dev/results/query?benchmark=ssb&sf=0.1",
+    "workload": "SSB",
+    "scale": "SF 0.1",
     "ranking": [
       "DuckDB",
       "DataFusion",
       "Polars",
       "ClickHouse",
-      "Snowflake",
-      "Databricks",
-      "Google BigQuery",
+      "Pandas"
+    ],
+    "comment": "Run on an Apple M4 laptop. Polars and Pandas results were not validated. Very small data (about 100 MB).",
+    "evidence": "BenchBox run list, SSB SF 0.1, runs dated 2026-08-26, power phase, 13 queries, ordered by the \"Geomean latency\" column: DuckDB 1.7 ms, DataFusion 8.1 ms, Polars 8.3 ms, ClickHouse Local 9.2 ms, Pandas 129 ms. Run ids: dc789650, cd2d3876, ae505473, eb064d66, c982e4b6."
+  },
+  {
+    "id": 45,
+    "date": "2026-08-26",
+    "source": "https://benchbox.dev/results/query?benchmark=ssb&sf=1.0",
+    "workload": "SSB",
+    "scale": "SF 1",
+    "ranking": [
+      "DuckDB",
+      "DataFusion",
+      "Polars",
       "Pandas",
       "SQLite"
     ],
-    "comment": "BenchBox does not rank these runs. Local engines ran on an Apple M4, cloud warehouses over the network, where fixed overhead dominates at this small size. Polars and Pandas results were not validated.",
-    "evidence": "BenchBox Results table, SSB SF 1 (the scale with the most engines), power phase, 13 queries, untuned runs, geomean query time: DuckDB 6.8 ms, DataFusion 22 ms, Polars 41 ms, ClickHouse Local 67 ms, Snowflake (X-Small) 388 ms, Databricks (2X-Small) 827 ms, BigQuery 869 ms, Pandas 2.51 s, SQLite 3.29 s. Caveats: the site marks all 10 runs \"not ranked\" (no Power@Size); local engines ran on an Apple M4, cloud ones over the network from it, where fixed per-query overhead dominates (BigQuery is flagged \"timing-plateau\"); Polars and Pandas runs have no result validation. Runs date from 2026-08-25 to 2026-10-03; date is the newest run."
+    "comment": "Run on an Apple M4 laptop. Polars and Pandas results were not validated.",
+    "evidence": "BenchBox run list, SSB SF 1, runs dated 2026-08-26, power phase, 13 queries, ordered by the \"Geomean latency\" column: DuckDB 6.8 ms, DataFusion 22 ms, Polars 41 ms, Pandas 2.45 s, SQLite 3.31 s. Run ids: 3817cfc3, 4fa56262, 4c2adaaa, 8075a143, 0f7dac40."
   },
   {
-    "id": 33,
-    "date": "2026-10-03",
-    "source": "https://benchbox.dev/results/tpcds/?sf=1",
+    "id": 46,
+    "date": "2026-08-26",
+    "source": "https://benchbox.dev/results/query?benchmark=tpcds&sf=1.0",
     "workload": "TPC-DS",
+    "scale": "SF 1",
     "ranking": [
-      "DuckDB",
-      "Apache Spark",
-      "Snowflake",
-      "Databricks"
-    ],
-    "comment": "Only the runs BenchBox itself ranks; other engines' runs were non-standard, incomplete or defective. DuckDB and Spark ran on an Apple M4, cloud warehouses over the network.",
-    "evidence": "BenchBox Results table, TPC-DS SF 1, power phase, 103 queries, only the runs BenchBox itself ranks (6 of 20): DuckDB 13 ms geomean (Power@Size 269,803; its two other ranked runs, 32 and 45 ms, also lead), Spark 557 ms (6,211), Snowflake X-Small 974 ms (3,709), Databricks 2X-Small 1.35 s (2,765); both measures give this order. DataFusion, ClickHouse Local, Polars, Pandas, BigQuery and SQLite are left out because BenchBox excludes their runs as non-standard, incomplete or known defective (superseded SQL translation). DuckDB and Spark ran locally on an Apple M4, the cloud warehouses over the network. Date is the newest ranked run."
-  },
-  {
-    "id": 34,
-    "date": "2026-10-03",
-    "source": "https://benchbox.dev/results/tpch/?sf=1",
-    "workload": "TPC-H",
-    "ranking": [
-      [
-        "DuckDB",
-        "Polars"
-      ],
+      "Polars",
       "DataFusion",
       "ClickHouse",
+      "Apache Spark"
+    ],
+    "comment": "Run on an Apple M4 laptop. BenchBox marks the DataFusion and ClickHouse runs as known defective data. Marked unofficial: Polars and Apache Spark. Polars results were not validated. Left out: Pandas (99 of 103 queries).",
+    "evidence": "BenchBox run list, TPC-DS SF 1, runs dated 2026-08-26, power phase, 103 queries, ordered by the \"Geomean latency\" column: Polars 41 ms, DataFusion 53 ms, ClickHouse Local 60 ms, Spark 574 ms. Left out because not every query finished: Pandas (99 of 103 queries, 649 ms). Run ids: 9f1b0f90, a63f81e4, dd649872, 79ef5134."
+  },
+  {
+    "id": 47,
+    "date": "2026-08-26",
+    "source": "https://benchbox.dev/results/query?benchmark=joinorder&sf=1.0",
+    "workload": "Join Order Benchmark",
+    "scale": "SF 1",
+    "ranking": [
+      "DuckDB",
       "SQLite",
-      "Apache Spark",
+      "Polars",
+      "DataFusion"
+    ],
+    "comment": "Run on an Apple M4 laptop. Polars results were not validated.",
+    "evidence": "BenchBox run list, Join Order Benchmark SF 1, runs dated 2026-08-26, power phase, 113 queries, ordered by the \"Geomean latency\" column: DuckDB 78 ms, SQLite 133 ms, Polars 265 ms, DataFusion 284 ms. Run ids: dc969472, 4f7bae8e, 80ca7028, cf29c9d9."
+  },
+  {
+    "id": 48,
+    "date": "2026-09-01",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=0.01",
+    "workload": "TPC-H",
+    "scale": "SF 0.01",
+    "ranking": [
+      "Polars",
+      "DuckDB",
+      "DataFusion"
+    ],
+    "comment": "Each engine ran on its own 4-core Azure CI machine, and the CPUs differ. Polars results were not validated. Very small data (about 10 MB).",
+    "evidence": "BenchBox run list, TPC-H SF 0.01, runs dated 2026-09-01, power phase, 22 queries, ordered by the \"Geomean latency\" column: Polars 5.2 ms [AMD EPYC 7763], DuckDB 5.9 ms [Intel Xeon 6973P-C], DataFusion 15 ms [AMD EPYC 9V74]. Run ids: 3a00d660, c30f2a60, 1ae3af0b."
+  },
+  {
+    "id": 49,
+    "date": "2026-09-01",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=0.1",
+    "workload": "TPC-H",
+    "scale": "SF 0.1",
+    "ranking": [
+      "DuckDB",
+      "Polars",
+      "DataFusion"
+    ],
+    "comment": "Each engine ran on its own 4-core Azure CI machine, and the CPUs differ. Polars results were not validated. Very small data (about 100 MB).",
+    "evidence": "BenchBox run list, TPC-H SF 0.1, runs dated 2026-09-01, power phase, 22 queries, ordered by the \"Geomean latency\" column: DuckDB 14 ms [AMD EPYC 7763], Polars 15 ms [AMD EPYC 9V74], DataFusion 26 ms [AMD EPYC 9V74]. Run ids: f2833fcb, 1eaa5467, 1fb2c135."
+  },
+  {
+    "id": 50,
+    "date": "2026-09-01",
+    "source": "https://benchbox.dev/results/query?benchmark=ssb&sf=0.01",
+    "workload": "SSB",
+    "scale": "SF 0.01",
+    "ranking": [
+      "DuckDB",
+      "Polars",
+      "DataFusion"
+    ],
+    "comment": "Each engine ran on its own 4-core Azure CI machine, and the CPUs differ. Polars results were not validated. Very small data (about 10 MB).",
+    "evidence": "BenchBox run list, SSB SF 0.01, runs dated 2026-09-01, power phase, 13 queries, ordered by the \"Geomean latency\" column: DuckDB 2.4 ms [Intel Xeon 8573C], Polars 3.3 ms [AMD EPYC 7763], DataFusion 8.7 ms [AMD EPYC 9V74]. Run ids: 6188e3ba, 09fd236f, d40c4fbb."
+  },
+  {
+    "id": 51,
+    "date": "2026-09-01",
+    "source": "https://benchbox.dev/results/query?benchmark=ssb&sf=0.1",
+    "workload": "SSB",
+    "scale": "SF 0.1",
+    "ranking": [
+      "DuckDB",
+      "Polars",
+      "DataFusion"
+    ],
+    "comment": "Run on 4-core Azure CI machines with the same CPU. Polars results were not validated. Very small data (about 100 MB).",
+    "evidence": "BenchBox run list, SSB SF 0.1, runs dated 2026-09-01, power phase, 13 queries, ordered by the \"Geomean latency\" column: DuckDB 5.9 ms [AMD EPYC 9V74], Polars 15 ms [AMD EPYC 9V74], DataFusion 19 ms [AMD EPYC 9V74]. Run ids: 7b86aa52, df2dff3c, 1e6f6dbd."
+  },
+  {
+    "id": 52,
+    "date": "2026-09-01",
+    "source": "https://benchbox.dev/results/query?benchmark=tpcds&sf=1.0",
+    "workload": "TPC-DS",
+    "scale": "SF 1",
+    "ranking": [
+      "DuckDB",
+      "DataFusion"
+    ],
+    "comment": "Each engine ran on its own 4-core Azure CI machine, and the CPUs differ. BenchBox marks the DataFusion run as known defective data.",
+    "evidence": "BenchBox run list, TPC-DS SF 1, runs dated 2026-09-01, power phase, 103 queries, ordered by the \"Geomean latency\" column: DuckDB 45 ms [AMD EPYC 7763], DataFusion 134 ms [AMD EPYC 9V74]. Run ids: 06b7cf91, e7ccec58."
+  },
+  {
+    "id": 53,
+    "date": "2026-09-19",
+    "source": "https://benchbox.dev/results/query?benchmark=ssb&sf=0.1",
+    "workload": "SSB",
+    "scale": "SF 0.1",
+    "ranking": [
+      "Snowflake",
+      "Google BigQuery"
+    ],
+    "comment": "Cloud warehouses, timed over the network from a laptop. Very small data (about 100 MB).",
+    "evidence": "BenchBox run list, SSB SF 0.1, runs dated 2026-09-19, power phase, 13 queries, ordered by the \"Geomean latency\" column: Snowflake 331 ms (X-Small), BigQuery 894 ms. Run ids: fa812871, 13927168."
+  },
+  {
+    "id": 54,
+    "date": "2026-09-19",
+    "source": "https://benchbox.dev/results/query?benchmark=ssb&sf=1.0",
+    "workload": "SSB",
+    "scale": "SF 1",
+    "ranking": [
+      "Snowflake",
+      "Google BigQuery"
+    ],
+    "comment": "Cloud warehouses, timed over the network from a laptop.",
+    "evidence": "BenchBox run list, SSB SF 1, runs dated 2026-09-19, power phase, 13 queries, ordered by the \"Geomean latency\" column: Snowflake 383 ms (X-Small), BigQuery 864 ms. Run ids: 7b9b4102, 6e5072c7."
+  },
+  {
+    "id": 55,
+    "date": "2026-09-19",
+    "source": "https://benchbox.dev/results/query?benchmark=ssb&sf=10.0",
+    "workload": "SSB",
+    "scale": "SF 10",
+    "ranking": [
+      "Snowflake",
+      "Google BigQuery"
+    ],
+    "comment": "Cloud warehouses, timed over the network from a laptop.",
+    "evidence": "BenchBox run list, SSB SF 10, runs dated 2026-09-19, power phase, 13 queries, ordered by the \"Geomean latency\" column: Snowflake 563 ms (X-Small), BigQuery 1.23 s. Run ids: ad51ff5c, 15aac0e0."
+  },
+  {
+    "id": 56,
+    "date": "2026-09-20",
+    "source": "https://benchbox.dev/results/query?benchmark=joinorder&sf=1.0",
+    "workload": "Join Order Benchmark",
+    "scale": "SF 1",
+    "ranking": [
+      "Snowflake",
+      "Google BigQuery"
+    ],
+    "comment": "Cloud warehouses, timed over the network from a laptop.",
+    "evidence": "BenchBox run list, Join Order Benchmark SF 1, runs dated 2026-09-20, power phase, 113 queries, ordered by the \"Geomean latency\" column: Snowflake 629 ms (X-Small), BigQuery 3.44 s. Run ids: 7d5f2ef4, ab4880d2."
+  },
+  {
+    "id": 57,
+    "date": "2026-10-01",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=0.01",
+    "workload": "TPC-H",
+    "scale": "SF 0.01",
+    "ranking": [
+      "DuckDB",
+      "DataFusion"
+    ],
+    "comment": "Each engine ran on its own 4-core Azure CI machine, and the CPUs differ. Very small data (about 10 MB).",
+    "evidence": "BenchBox run list, TPC-H SF 0.01, runs dated 2026-10-01, power phase, 22 queries, ordered by the \"Geomean latency\" column: DuckDB 8 ms [AMD EPYC 9V74], DataFusion 11 ms [Intel Xeon 8370C]. Run ids: 5a885f28, b5ead6e0."
+  },
+  {
+    "id": 58,
+    "date": "2026-10-01",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=0.1",
+    "workload": "TPC-H",
+    "scale": "SF 0.1",
+    "ranking": [
+      "DuckDB",
+      "DataFusion"
+    ],
+    "comment": "Run on 4-core Azure CI machines with the same CPU. Very small data (about 100 MB).",
+    "evidence": "BenchBox run list, TPC-H SF 0.1, runs dated 2026-10-01, power phase, 22 queries, ordered by the \"Geomean latency\" column: DuckDB 11 ms [Intel Xeon 6973P-C], DataFusion 17 ms [Intel Xeon 6973P-C]. Run ids: 6a53c6ab, c5aed7dc."
+  },
+  {
+    "id": 59,
+    "date": "2026-10-01",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=1.0",
+    "workload": "TPC-H",
+    "scale": "SF 1",
+    "ranking": [
+      "DuckDB",
+      "ClickHouse"
+    ],
+    "comment": "Each engine ran on its own 4-core Azure CI machine, and the CPUs differ. BenchBox marks the ClickHouse run as known defective data. Marked unofficial: DuckDB.",
+    "evidence": "BenchBox run list, TPC-H SF 1, runs dated 2026-10-01, power phase, 22 queries, ordered by the \"Geomean latency\" column: DuckDB 50 ms [AMD EPYC 7763], ClickHouse Local 121 ms [AMD EPYC 9V74]. Run ids: 1442b83d, 9591ee31."
+  },
+  {
+    "id": 60,
+    "date": "2026-10-01",
+    "source": "https://benchbox.dev/results/query?benchmark=ssb&sf=0.01",
+    "workload": "SSB",
+    "scale": "SF 0.01",
+    "ranking": [
+      "DuckDB",
+      "Polars",
+      "DataFusion"
+    ],
+    "comment": "Each engine ran on its own 4-core Azure CI machine, and the CPUs differ. Polars results were not validated. Very small data (about 10 MB).",
+    "evidence": "BenchBox run list, SSB SF 0.01, runs dated 2026-10-01, power phase, 13 queries, ordered by the \"Geomean latency\" column: DuckDB 2.5 ms [Intel Xeon 8573C], Polars 3.3 ms [AMD EPYC 7763], DataFusion 4.8 ms [Intel Xeon 8573C]. Run ids: 94d46a1d, 2dfdf437, b2025f8c."
+  },
+  {
+    "id": 61,
+    "date": "2026-10-01",
+    "source": "https://benchbox.dev/results/query?benchmark=ssb&sf=0.1",
+    "workload": "SSB",
+    "scale": "SF 0.1",
+    "ranking": [
+      "DuckDB",
+      "Polars",
+      "DataFusion"
+    ],
+    "comment": "Each engine ran on its own 4-core Azure CI machine, and the CPUs differ. Polars results were not validated. Very small data (about 100 MB).",
+    "evidence": "BenchBox run list, SSB SF 0.1, runs dated 2026-10-01, power phase, 13 queries, ordered by the \"Geomean latency\" column: DuckDB 5.1 ms [AMD EPYC 7763], Polars 11 ms [AMD EPYC 9V45], DataFusion 18 ms [AMD EPYC 7763]. Run ids: 529ba925, 02c3d500, 3e398c6b."
+  },
+  {
+    "id": 62,
+    "date": "2026-10-01",
+    "source": "https://benchbox.dev/results/query?benchmark=tpcds&sf=1.0",
+    "workload": "TPC-DS",
+    "scale": "SF 1",
+    "ranking": [
+      "DuckDB",
+      "DataFusion",
+      "ClickHouse"
+    ],
+    "comment": "Each engine ran on its own 4-core Azure CI machine, and the CPUs differ. BenchBox marks the DataFusion and ClickHouse runs as known defective data.",
+    "evidence": "BenchBox run list, TPC-DS SF 1, runs dated 2026-10-01, power phase, 103 queries, ordered by the \"Geomean latency\" column: DuckDB 32 ms [AMD EPYC 9V74], DataFusion 90 ms [Intel Xeon 6973P-C], ClickHouse Local 96 ms [AMD EPYC 9V45]. Run ids: d9c5278f, 603aa5a4, 751221ac."
+  },
+  {
+    "id": 63,
+    "date": "2026-10-03",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=0.1",
+    "workload": "TPC-H",
+    "scale": "SF 0.1",
+    "ranking": [
       "Snowflake",
       "Databricks",
       "Google BigQuery"
     ],
-    "comment": "Known defect: BenchBox's data generator wrote bad addresses, so 4 of 22 queries return wrong values, and BenchBox does not rank these runs. Kept until it publishes reruns. Local engines ran on an Apple M4, cloud warehouses over the network.",
-    "evidence": "BenchBox Results table, TPC-H SF 1, power phase, 22 queries, untuned standard runs (Apple M4 for local engines), geomean query time: DuckDB 35 and 38 ms, Polars 36 and 37 ms (repeat runs interleave, so a tie), DataFusion 47 ms, ClickHouse Local 70 ms, SQLite 494 ms, Spark SQL 719 ms, Snowflake X-Small 943 ms, Databricks 2X-Small 956 ms, BigQuery 1.04 s. Known defect: BenchBox flags all of these runs \"known defective data\" and does not rank them, because its macOS generator wrote non-canonical addresses, so Q2, Q10, Q15 and Q20 return wrong values (results-data/DEFECTIVE_DATAGEN_AUDIT.md); recorded anyway on the maintainer's decision, to be replaced by BenchBox reruns. Snowflake and Databricks swap places on Power@Size (3,645 vs 3,843). Not counted: non-standard and tuned runs, runs on other machines, PySpark DataFrame and DuckLake. Cloud engines ran over the network. Date is the newest run counted."
+    "comment": "Cloud warehouses, timed over the network from a laptop. Known defect: bad generated addresses make 4 of 22 queries return wrong values, so BenchBox does not rank these runs. Very small data (about 100 MB).",
+    "evidence": "BenchBox run list, TPC-H SF 0.1, runs dated 2026-10-03, power phase, 22 queries, ordered by the \"Geomean latency\" column: Snowflake 937 ms (X-Small), Databricks 946 ms (2X-Small), BigQuery 993 ms. Known defect: the macOS data generator wrote non-canonical addresses, so Q2, Q10, Q15 and Q20 return wrong values (BenchBox results-data/DEFECTIVE_DATAGEN_AUDIT.md); recorded anyway. Run ids: b43bdbfb, 1e73eddf, ef5d5e2b."
+  },
+  {
+    "id": 64,
+    "date": "2026-10-03",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=1.0",
+    "workload": "TPC-H",
+    "scale": "SF 1",
+    "ranking": [
+      "Databricks",
+      "Snowflake",
+      "Google BigQuery"
+    ],
+    "comment": "Cloud warehouses, timed over the network from a laptop. Known defect: bad generated addresses make 4 of 22 queries return wrong values, so BenchBox does not rank these runs.",
+    "evidence": "BenchBox run list, TPC-H SF 1, runs dated 2026-10-03, power phase, 22 queries, ordered by the \"Geomean latency\" column: Databricks 988 ms (2X-Small), Snowflake 990 ms (X-Small), BigQuery 1.05 s. The list's separate \"Display geomean\" column swaps Databricks (956 ms) and Snowflake (943 ms). Known defect: the macOS data generator wrote non-canonical addresses, so Q2, Q10, Q15 and Q20 return wrong values (BenchBox results-data/DEFECTIVE_DATAGEN_AUDIT.md); recorded anyway. Run ids: 2dab70bc, 22e9d6bd, 9571f6cb."
+  },
+  {
+    "id": 65,
+    "date": "2026-10-03",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=10.0",
+    "workload": "TPC-H",
+    "scale": "SF 10",
+    "ranking": [
+      "Snowflake",
+      "Databricks",
+      "Google BigQuery"
+    ],
+    "comment": "Cloud warehouses, timed over the network from a laptop. Known defect: bad generated addresses make 4 of 22 queries return wrong values, so BenchBox does not rank these runs.",
+    "evidence": "BenchBox run list, TPC-H SF 10, runs dated 2026-10-03, power phase, 22 queries, ordered by the \"Geomean latency\" column: Snowflake 1.27 s (X-Small), Databricks 1.29 s (2X-Small), BigQuery 2.6 s. Known defect: the macOS data generator wrote non-canonical addresses, so Q2, Q10, Q15 and Q20 return wrong values (BenchBox results-data/DEFECTIVE_DATAGEN_AUDIT.md); recorded anyway. Run ids: 5e9ad890, 5f5ccaf2, d3495b28."
+  },
+  {
+    "id": 66,
+    "date": "2026-10-03",
+    "source": "https://benchbox.dev/results/query?benchmark=tpcds&sf=0.1",
+    "workload": "TPC-DS",
+    "scale": "SF 0.1",
+    "ranking": [
+      "Snowflake",
+      "Databricks"
+    ],
+    "comment": "Cloud warehouses, timed over the network from a laptop. Very small data (about 100 MB).",
+    "evidence": "BenchBox run list, TPC-DS SF 0.1, runs dated 2026-10-03, power phase, 103 queries, ordered by the \"Geomean latency\" column: Snowflake 899 ms (X-Small), Databricks 1.1 s (2X-Small). Run ids: 9380b8f7, 9d1e2028."
+  },
+  {
+    "id": 67,
+    "date": "2026-10-03",
+    "source": "https://benchbox.dev/results/query?benchmark=tpcds&sf=1.0",
+    "workload": "TPC-DS",
+    "scale": "SF 1",
+    "ranking": [
+      "Snowflake",
+      "Databricks"
+    ],
+    "comment": "Cloud warehouses, timed over the network from a laptop.",
+    "evidence": "BenchBox run list, TPC-DS SF 1, runs dated 2026-10-03, power phase, 103 queries, ordered by the \"Geomean latency\" column: Snowflake 996 ms (X-Small), Databricks 1.39 s (2X-Small). Run ids: 21c306b8, 05eb026b."
+  },
+  {
+    "id": 68,
+    "date": "2026-10-03",
+    "source": "https://benchbox.dev/results/query?benchmark=tpcds&sf=10.0",
+    "workload": "TPC-DS",
+    "scale": "SF 10",
+    "ranking": [
+      "Snowflake",
+      "Databricks"
+    ],
+    "comment": "Cloud warehouses, timed over the network from a laptop.",
+    "evidence": "BenchBox run list, TPC-DS SF 10, runs dated 2026-10-03, power phase, 103 queries, ordered by the \"Geomean latency\" column: Snowflake 1.24 s (X-Small), Databricks 1.73 s (2X-Small). Run ids: a278d476, 752d5924."
+  },
+  {
+    "id": 69,
+    "date": "2026-10-07",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=1.0",
+    "workload": "TPC-H",
+    "scale": "SF 1",
+    "ranking": [
+      "DuckDB",
+      "Apache Doris",
+      "Apache Spark"
+    ],
+    "comment": "Run on an Apple M4 laptop. Throughput phase.",
+    "evidence": "BenchBox run list, TPC-H SF 1, runs dated 2026-10-07, throughput phase, 22 queries, ordered by the \"Geomean latency\" column: DuckDB 30 ms, Apache Doris 347 ms, Spark 5.62 s. Run ids: 83a01707, 2c74ef0a, 9c57f2ae."
+  },
+  {
+    "id": 70,
+    "date": "2026-10-13",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=0.01",
+    "workload": "TPC-H",
+    "scale": "SF 0.01",
+    "ranking": [
+      "DuckDB",
+      "DataFusion"
+    ],
+    "comment": "Each engine ran on its own 4-core Azure CI machine, and the CPUs differ. Very small data (about 10 MB).",
+    "evidence": "BenchBox run list, TPC-H SF 0.01, runs dated 2026-10-13, power phase, 22 queries, ordered by the \"Geomean latency\" column: DuckDB 7.9 ms [AMD EPYC 7763], DataFusion 11 ms [Intel Xeon 8573C]. Run ids: d60b9dcc, b571409d."
+  },
+  {
+    "id": 71,
+    "date": "2026-10-13",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=0.1",
+    "workload": "TPC-H",
+    "scale": "SF 0.1",
+    "ranking": [
+      "DuckDB",
+      "DataFusion"
+    ],
+    "comment": "Run on 4-core Azure CI machines with the same CPU. Very small data (about 100 MB).",
+    "evidence": "BenchBox run list, TPC-H SF 0.1, runs dated 2026-10-13, power phase, 22 queries, ordered by the \"Geomean latency\" column: DuckDB 14 ms [AMD EPYC 7763], DataFusion 25 ms [AMD EPYC 7763]. Run ids: c28dcfb7, 584d1349."
+  },
+  {
+    "id": 72,
+    "date": "2026-10-13",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=1.0",
+    "workload": "TPC-H",
+    "scale": "SF 1",
+    "ranking": [
+      "DuckDB",
+      "ClickHouse"
+    ],
+    "comment": "Each engine ran on its own 4-core Azure CI machine, and the CPUs differ. BenchBox marks the ClickHouse run as known defective data. Marked unofficial: DuckDB.",
+    "evidence": "BenchBox run list, TPC-H SF 1, runs dated 2026-10-13, power phase, 22 queries, ordered by the \"Geomean latency\" column: DuckDB 31 ms [AMD EPYC 9V45], ClickHouse Local 93 ms [Intel Xeon 6973P-C]. Run ids: 9757cfbb, bb68bfc6."
+  },
+  {
+    "id": 73,
+    "date": "2026-10-26",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=0.01",
+    "workload": "TPC-H",
+    "scale": "SF 0.01",
+    "ranking": [
+      "SQLite",
+      "DataFusion",
+      "ClickHouse"
+    ],
+    "comment": "ClickHouse ran on a 4-core Linux ARM machine, the rest directly on an Apple M4. Very small data (about 10 MB).",
+    "evidence": "BenchBox run list, TPC-H SF 0.01, runs dated 2026-10-26, power phase, 22 queries, ordered by the \"Geomean latency\" column: SQLite 13 ms, DataFusion 15 ms, ClickHouse Local 16 ms. Run ids: cac6f1fc, ae3f2603, d1e2919d."
+  },
+  {
+    "id": 74,
+    "date": "2026-10-26",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=0.1",
+    "workload": "TPC-H",
+    "scale": "SF 0.1",
+    "ranking": [
+      "DataFusion",
+      "ClickHouse",
+      "SQLite"
+    ],
+    "comment": "ClickHouse ran on a 4-core Linux ARM machine, the rest directly on an Apple M4. Very small data (about 100 MB).",
+    "evidence": "BenchBox run list, TPC-H SF 0.1, runs dated 2026-10-26, power phase, 22 queries, ordered by the \"Geomean latency\" column: DataFusion 22 ms, ClickHouse Local 47 ms, SQLite 64 ms. Run ids: 4ce746d0, 026e73a5, 567fe63b."
+  },
+  {
+    "id": 75,
+    "date": "2026-10-26",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=1.0",
+    "workload": "TPC-H",
+    "scale": "SF 1",
+    "ranking": [
+      "DataFusion",
+      "ClickHouse",
+      "SQLite"
+    ],
+    "comment": "ClickHouse ran on a 4-core Linux ARM machine, the rest directly on an Apple M4. Marked unofficial: all runs.",
+    "evidence": "BenchBox run list, TPC-H SF 1, runs dated 2026-10-26, power phase, 22 queries, ordered by the \"Geomean latency\" column: DataFusion 59 ms, ClickHouse Local 208 ms, SQLite 555 ms. Run ids: 11da1efd, 36a74038, ec4c44e7."
+  },
+  {
+    "id": 76,
+    "date": "2026-10-26",
+    "source": "https://benchbox.dev/results/query?benchmark=tpcds&sf=1.0",
+    "workload": "TPC-DS",
+    "scale": "SF 1",
+    "ranking": [
+      "DataFusion",
+      "ClickHouse"
+    ],
+    "comment": "ClickHouse ran on a 4-core Linux ARM machine, the rest directly on an Apple M4. Marked unofficial: all runs.",
+    "evidence": "BenchBox run list, TPC-DS SF 1, runs dated 2026-10-26, power phase, 103 queries, ordered by the \"Geomean latency\" column: DataFusion 47 ms, ClickHouse Local 204 ms. Run ids: c958e608, 4b30bf13."
+  },
+  {
+    "id": 77,
+    "date": "2026-11-11",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=0.1",
+    "workload": "TPC-H",
+    "scale": "SF 0.1",
+    "ranking": [
+      "DuckDB",
+      "Polars"
+    ],
+    "comment": "Run on an Apple M4 laptop. Very small data (about 100 MB).",
+    "evidence": "BenchBox run list, TPC-H SF 0.1, runs dated 2026-11-11, standard phase, 22 queries, ordered by the \"Geomean latency\" column: DuckDB 7 ms, Polars 11 ms. Run ids: d8b0b97f, 27561037."
   }
 ]

@@ -18,12 +18,26 @@
       "machine": "serverless",
       "date": "2026-11-16"
     },
+    "Apache Doris": {
+      "rank": 65,
+      "score": 12.03,
+      "system": "Doris (Iceberg)",
+      "machine": "c8g.metal-48xl",
+      "date": "2026-11-08"
+    },
     "Apache Spark": {
       "rank": 111,
       "score": 106.03,
       "system": "Spark (Iceberg)",
       "machine": "c6a.4xlarge",
       "date": "2026-11-08"
+    },
+    "CedarDB": {
+      "rank": 2,
+      "score": 1.84,
+      "system": "CedarDB",
+      "machine": "c7a.metal-48xl",
+      "date": "2026-11-10"
     },
     "ClickHouse": {
       "rank": 3,
@@ -66,6 +80,13 @@
       "system": "Bigquery",
       "machine": "serverless",
       "date": "2025-10-28"
+    },
+    "LakeSail": {
+      "rank": 43,
+      "score": 6.24,
+      "system": "Sail (Parquet)",
+      "machine": "c8g.metal-48xl",
+      "date": "2026-10-12"
     },
     "Polars": {
       "rank": 20,

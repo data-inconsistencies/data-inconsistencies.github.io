@@ -1,8 +1,10 @@
 {
   "Amazon Aurora": ["Aurora for MySQL", "Aurora for PostgreSQL"],
   "Amazon Redshift": ["Redshift"],
+  "Apache Doris": ["Doris", "Doris (Parquet, partitioned)", "Doris (Parquet, single)", "Doris (Iceberg)"],
   "Apache Druid": ["Druid"],
   "Apache Spark": ["Spark", "Spark (Iceberg)"],
+  "CedarDB": ["CedarDB", "CedarDB (Parquet)"],
   "ClickHouse": ["ClickHouse", "ClickHouse ☁️ (aws)", "ClickHouse ☁️ (gcp)", "ClickHouse ☁️ (azure)", "ClickHouse (Parquet, partitioned)", "ClickHouse (Parquet, single)", "ClickHouse (data lake, partitioned)", "ClickHouse (data lake, single)", "ClickHouse (Iceberg)", "ClickHouse (Vortex, partitioned)", "ClickHouse (Vortex, single)", "ClickHouse (web)", "ClickHouse (memory)"],
   "Dask": ["Dask (DataFrame)"],
   "DataFusion": ["DataFusion (Parquet, partitioned)", "DataFusion (Parquet, single)", "DataFusion (Iceberg)", "DataFusion (Vortex, partitioned)", "DataFusion (Vortex, single)"],
@@ -12,6 +14,7 @@
   "Google BigQuery": ["Bigquery"],
   "HEAVY.AI": ["HeavyAI"],
   "Kinetica": ["Kinetica"],
+  "LakeSail": ["Sail (Parquet)", "Sail (Parquet, partitioned)"],
   "MonetDB": ["MonetDB"],
   "Pandas": ["pandas"],
   "Polars": ["Polars (Parquet)", "Polars (SQL)", "Polars (DataFrame)", "Polars (Parquet, tuned)"],

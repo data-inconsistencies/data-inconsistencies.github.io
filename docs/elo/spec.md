@@ -10,6 +10,10 @@
   "workload": "TPC-H",                       // TPC-H | TPC-DS | SSB | CH-benCHmark | Join Order Benchmark | other
   "ranking": ["Polars", "DuckDB", "Apache Spark", "Dask", "Pandas", "Modin"] }  // 1st → last
 ```
+An optional `scale` (e.g. `"SF 10"`) marks one scale of a page that lists separate runs. On such a page
+(benchbox.dev) a match is all the runs of one benchmark at one scale on one run date: `date` is the run
+date, `source` the page filtered to that benchmark and scale, and runs from different dates are never
+combined. The scale is shown next to the workload in the match log and does not affect ratings.
 Two optional text fields explain a match. `comment` is a short plain-language caveat for visitors
 (at most 280 characters: who ran it, what was left out, known defects) and is always visible in the
 match log. `evidence` is the longer record of which table or figure the order came from; the log
@@ -85,12 +89,12 @@ web fetch tools) to find public benchmark reports published after the newest mat
 - **Input to the model:** newest match date, the canonical engine names, and every source
   URL already in the data (so known reports are skipped).
 - **Output:** JSON matching a fixed schema (structured outputs): `date`, `source`,
-  `workload`, `ranking` (fastest → slowest; nested array = tie), `evidence` (how the order
+  `workload`, `scale` (empty unless the page lists runs by scale), `ranking` (fastest → slowest; nested array = tie), `evidence` (how the order
   was read from the report, e.g. "total runtime SF100 table").
 - **Post-processing (pure, tested in `scripts/lib/candidates.mjs`):**
   engine names are mapped to canonical names through `data/elo/aliases.json`;
-  candidates whose normalized URL + workload + date already exist are dropped (a page
-  republished with new results on a later date is a new match); invalid
+  candidates whose normalized URL + workload + date (+ scale, when both have one) already exist are
+  dropped (a page republished with new results on a later date is a new match); invalid
   candidates (bad date, <2 engines, duplicate engine, non-http source, future date) are
   rejected with a reason; survivors get the next free ids.
 - **Default is a dry run** that prints candidates. `--write` appends them to
