@@ -1,0 +1,37 @@
+{{/* Compact profile cards: content.title, content.text, content.items[] = {name, role, text, image, links[]}. */}}
+{{ $page := .wcPage }}
+{{ $content := .wcBlock.content }}
+<style>
+  .people { --pp-border: #e3e6eb; --pp-text: #111827; --pp-muted: #5b6474; --pp-accent: #15803d;
+            color: var(--pp-text); max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+  .dark .people { --pp-border: #374151; --pp-text: #f3f4f6; --pp-muted: #9ca3af; --pp-accent: #4ade80; }
+  .people h2 { font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 800; letter-spacing: -.02em; text-align: center; margin: 0 0 2rem; }
+  .people .grid { display: grid; gap: 24px; }
+  @media (min-width: 800px) { .people .grid { grid-template-columns: 1fr 1fr; } }
+  .people .card { border: 1px solid var(--pp-border); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+  .people .who { display: flex; align-items: center; gap: 16px; }
+  .people img { width: 88px; height: 88px; border-radius: 50%; object-fit: cover; }
+  .people h3 { font-size: 1.25rem; font-weight: 700; margin: 0; }
+  .people .role { color: var(--pp-muted); font-size: .92rem; margin: 0; }
+  .people .bio { color: var(--pp-muted); line-height: 1.6; }
+  .people .bio p { margin: 0 0 .6rem; }
+  .people .links { margin-top: auto; display: flex; gap: 20px; font-weight: 600; font-size: .92rem; }
+  .people .links a { color: var(--pp-accent); text-decoration: underline; text-underline-offset: 3px; }
+</style>
+<div class="people">
+  {{ with $content.title }}<h2>{{ . }}</h2>{{ end }}
+  <div class="grid">
+    {{ range $content.items }}
+    <article class="card">
+      <div class="who">
+        {{ with .image }}{{ with resources.Get (path.Join "media" .) }}{{ with .Fill "176x176 Center webp" }}
+        <img src="{{ .RelPermalink }}" width="88" height="88" loading="lazy" alt="">
+        {{ end }}{{ end }}{{ end }}
+        <div><h3>{{ .name }}</h3>{{ with .role }}<p class="role">{{ . }}</p>{{ end }}</div>
+      </div>
+      <div class="bio">{{ .text | $page.RenderString (dict "display" "block") }}</div>
+      <div class="links">{{ range .links }}<a href="{{ .url }}" target="_blank" rel="noopener">{{ .text }}</a>{{ end }}</div>
+    </article>
+    {{ end }}
+  </div>
+</div>

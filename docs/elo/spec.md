@@ -63,7 +63,14 @@ Initial data is imported from the existing "RAW" sheet (19 matches, 2022-01 → 
 5. "How to add a report" note linking the data file on GitHub.
 6. Discussion: one GitHub Discussions thread for the page, through giscus (the only third-party widget here; needs a
    GitHub account to post). It follows the light/dark toggle. Comments never affect ratings.
-Homepage "Explore the live rankings" button and the main menu point to `/rankings/`.
+The main menu, the homepage hero and the homepage standings all point to `/rankings/`.
+
+## Homepage standings
+The `elo-top` block (`layouts/_partials/hbx/blocks/elo-top/block.html`) shows the top 5 of the Engines playground
+across all workloads, computed in the browser with the same `computeRatings` and data as `/rankings/`, so the two
+pages cannot disagree. Columns: rank, engine, rating, W–L and matches (a thin record should be visible). Only each match's `id`, `date` and `ranking` are embedded. Below the table: the number of
+engines and matches in that playground and the newest report's date. Without JavaScript it shows a link to
+`/rankings/`.
 
 ## Acceptance
 - `node --test tests/` passes (engine unit tests incl. zero-sum, N-way, ties, determinism).

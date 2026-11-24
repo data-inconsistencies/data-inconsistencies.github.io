@@ -1,0 +1,66 @@
+{{/* Homepage standings: intro copy beside the live top 5. Spec: docs/elo/spec.md, "Homepage standings". */}}
+{{ $page := .wcPage }}
+{{ $content := .wcBlock.content }}
+{{ $elo := resources.Get "js/elo.mjs" | minify | fingerprint }}
+{{ $matches := slice }}
+{{ range hugo.Data.elo.matches }}
+  {{ $matches = $matches | append (dict "id" .id "date" .date "ranking" .ranking) }}
+{{ end }}
+{{ $playgrounds := dict }}
+{{ range $name, $info := hugo.Data.elo.engines }}
+  {{ $playgrounds = merge $playgrounds (dict $name $info.playground) }}
+{{ end }}
+<style>
+  .elo-top { --et-border: #e3e6eb; --et-text: #111827; --et-muted: #5b6474; --et-surface: #f6f7f9; --et-accent: #15803d;
+             color: var(--et-text); max-width: 1280px; margin: 0 auto; padding: 0 24px;
+             display: grid; gap: 40px; align-items: center; }
+  .dark .elo-top { --et-border: #374151; --et-text: #f3f4f6; --et-muted: #9ca3af; --et-surface: #1f2937; --et-accent: #4ade80; }
+  @media (min-width: 900px) { .elo-top { grid-template-columns: 1fr 1fr; gap: 64px; } }
+  .elo-top h2 { font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 800; letter-spacing: -.02em; line-height: 1.15; margin: 0 0 1rem; }
+  .elo-top .copy p { color: var(--et-muted); font-size: 1.08rem; line-height: 1.65; margin: 0 0 1rem; }
+  .elo-top .copy strong { color: var(--et-text); }
+  .elo-top .panel { border: 1px solid var(--et-border); border-radius: 12px; overflow-x: auto; }
+  .elo-top table { width: 100%; border-collapse: collapse; }
+  .elo-top th { background: var(--et-surface); color: var(--et-muted); font-size: .78rem; font-weight: 600;
+                text-align: left; text-transform: uppercase; letter-spacing: .04em; }
+  .elo-top th, .elo-top td { padding: 12px 16px; border-bottom: 1px solid var(--et-border); }
+  .elo-top .rank { width: 2.5rem; color: var(--et-muted); }
+  .elo-top .name { font-weight: 600; }
+  .elo-top .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  @media (max-width: 480px) { .elo-top th, .elo-top td { padding: 10px 6px; font-size: .85rem; } .elo-top th { font-size: .68rem; } .elo-top .rank { width: 1.5rem; } }
+  .elo-top .foot { margin: 0; padding: 12px 16px; color: var(--et-muted); font-size: .85rem; }
+  .elo-top .btn { display: inline-block; margin-top: .5rem; padding: 10px 20px; border-radius: 8px; background: #15803d;
+                  color: #fff; font-weight: 600; font-size: .92rem; text-decoration: none; }
+  .elo-top .btn:hover { background: #166534; }
+</style>
+<div class="elo-top">
+  <div class="copy">
+    {{ with $content.title }}<h2>{{ . }}</h2>{{ end }}
+    {{ with $content.text }}{{ . | $page.RenderString (dict "display" "block") }}{{ end }}
+    {{ with $content.button }}<a class="btn" href="{{ .url | relURL }}">{{ .text }} →</a>{{ end }}
+  </div>
+  <div class="panel">
+    <table>
+      <thead><tr><th class="rank" scope="col">#</th><th scope="col">Engine</th><th class="num" scope="col">Rating</th><th class="num" scope="col">W–L</th><th class="num" scope="col">Matches</th></tr></thead>
+      <tbody id="elo-top-board"></tbody>
+    </table>
+    <p class="foot" id="elo-top-foot"><a href="{{ "rankings/" | relURL }}">See the full leaderboard</a></p>
+  </div>
+</div>
+<script type="application/json" id="elo-top-data">{{ dict "matches" $matches "playgroundOf" $playgrounds | jsonify | safeJS }}</script>
+<script type="module">
+  import { computeRatings, leaderboard, PLAYGROUNDS } from "{{ $elo.RelPermalink }}";
+  const { matches, playgroundOf } = JSON.parse(document.getElementById("elo-top-data").textContent);
+  const result = computeRatings(matches, { playground: PLAYGROUNDS[0], playgroundOf });
+  const board = leaderboard(result.ratings);
+  const cell = (cls, text) => Object.assign(document.createElement("td"), { className: cls, textContent: text });
+  document.getElementById("elo-top-board").append(...board.slice(0, 5).map((r, i) => {
+    const tr = document.createElement("tr");
+    tr.append(cell("rank", i + 1), cell("name", r.engine), cell("num", r.rating.toFixed(0)), cell("num", `${r.wins}–${r.losses}`), cell("num", r.played));
+    return tr;
+  }));
+  const newest = new Date(result.matches.at(-1).date + "T00:00:00Z")
+    .toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+  document.getElementById("elo-top-foot").textContent =
+    `Top 5 of ${board.length} engines, all workloads · ${result.matches.length} matches · newest report ${newest}`;
+</script>
