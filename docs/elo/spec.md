@@ -51,7 +51,10 @@ Initial data is imported from the existing "RAW" sheet (19 matches, 2022-01 → 
 `/rankings/`:
 1. Playground switch (Engines by default, Table formats) and workload filter (All, TPC-H, TPC-DS, SSB,
    CH-benCHmark, Join Order Benchmark, only workloads with matches in the chosen playground) —
-   recompute ratings from the filtered matches.
+   recompute ratings from the filtered matches. Below the buttons, a short panel describes the chosen
+   benchmark: what it is, its shape (tables, queries, schema), what it tests (joins, flat-table scans,
+   optimizer, …) and a link. Text lives in `data/elo/workloads.json`; every workload needs an entry
+   (a test checks), and "All" has one too.
 2. Leaderboard table: rank, engine, rating, Δ from last match, W-L-D (pairwise), matches played, last match date.
 3. Rating history chart for the top engines (inline SVG, no external libs).
 4. Match log, newest first, with result order, rating change per engine, match weight, source link,

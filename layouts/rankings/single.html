@@ -69,6 +69,14 @@
   .elo .match summary { cursor: pointer; width: fit-content; color: var(--muted); font-weight: 500; }
   .elo .match summary:hover { color: var(--accent); }
   .elo .match details p { margin: 6px 0 0; line-height: 1.5; overflow-wrap: anywhere; }
+  .elo .workload { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; line-height: 1.55; max-width: 80ch; }
+  .elo .workload h2 { font-size: 1rem; margin: 0 0 .3rem; }
+  .elo .workload p { margin: .3rem 0; font-size: .92rem; }
+  .elo .workload .shape { color: var(--muted); font-size: .85rem; }
+  .elo .workload ul { list-style: none; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; margin: .5rem 0 0; padding: 0; font-size: .85rem; }
+  .elo .workload li { background: var(--accent-soft); color: var(--accent); border-radius: 4px; padding: 2px 8px; font-size: .8rem; font-weight: 600; margin: 0; }
+  .elo .workload li.label { background: none; color: var(--muted); padding: 0; font-weight: 400; }
+  .elo .workload a { color: var(--accent); text-decoration: underline; }
   .elo .note { color: var(--muted); font-size: .9rem; line-height: 1.6; }
   .elo .note a, .elo .lede a { color: var(--accent); text-decoration: underline; }
   .elo .explain { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent);
@@ -123,6 +131,7 @@
 
   <div class="chips" role="group" aria-label="Playground" id="elo-playground"></div>
   <div class="chips" role="group" aria-label="Filter by workload" id="elo-filter"></div>
+  <section class="workload" id="elo-workload" aria-live="polite"></section>
 
   <h2>Leaderboard</h2>
   <div class="table-wrap wide">
@@ -169,10 +178,12 @@
 
 <script type="application/json" id="elo-data">{{ hugo.Data.elo.matches | jsonify | safeJS }}</script>
 <script type="application/json" id="clickbench-data">{{ hugo.Data.elo.clickbench | jsonify | safeJS }}</script>
+<script type="application/json" id="workloads-data">{{ hugo.Data.elo.workloads | jsonify | safeJS }}</script>
 <script type="application/json" id="engines-data">{{ hugo.Data.elo.engines | jsonify | safeJS }}</script>
 <script type="module">
   import { computeRatings, leaderboard, workloads, PLAYGROUNDS } from "{{ $elo.RelPermalink }}";
   const data = JSON.parse(document.getElementById("elo-data").textContent);
+  const workloadInfo = JSON.parse(document.getElementById("workloads-data").textContent);
   const engineInfo = JSON.parse(document.getElementById("engines-data").textContent);
   // Separate leagues: engines are only rated against engines in the same playground.
   const playgroundOf = Object.fromEntries(Object.entries(engineInfo).map(([e, v]) => [e, v.playground]));
@@ -261,7 +272,18 @@
   });
   renderFilters();
 
+  function renderWorkload() {
+    const w = workloadInfo[current];
+    $("elo-workload").hidden = !w;
+    if (!w) return;
+    $("elo-workload").innerHTML = `<h2>${current === "All" ? "All benchmarks" : `About ${esc(current)}`}</h2>
+      <p>${esc(w.description)}</p>
+      ${w.shape ? `<p class="shape">${esc(w.shape)} · <a href="${esc(w.url)}" target="_blank" rel="noopener">About the benchmark ↗</a></p>` : ""}
+      ${w.tests ? `<ul><li class="label">Tests:</li>${w.tests.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>` : ""}`;
+  }
+
   function render() {
+    renderWorkload();
     const { ratings, history, matches } = rate({ workload: current });
     const board = leaderboard(ratings);
     const lo = Math.min(...board.map((r) => r.rating)), hi = Math.max(...board.map((r) => r.rating));
