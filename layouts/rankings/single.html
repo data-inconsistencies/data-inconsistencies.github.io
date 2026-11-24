@@ -1,5 +1,6 @@
 {{ define "main" }}
 {{ $elo := resources.Get "js/elo.mjs" | minify | fingerprint }}
+{{ $webmcp := resources.Get "js/webmcp.mjs" | minify | fingerprint }}
 {{ $repo := "https://github.com/data-inconsistencies/landingpage" }}
 <style>
   .elo { --bg: #ffffff; --surface: #f6f7f9; --border: #e3e6eb; --text: #111827; --muted: #5b6474;
@@ -182,8 +183,9 @@
 <script type="application/json" id="clickbench-data">{{ hugo.Data.elo.clickbench | jsonify | safeJS }}</script>
 <script type="application/json" id="workloads-data">{{ hugo.Data.elo.workloads | jsonify | safeJS }}</script>
 <script type="application/json" id="engines-data">{{ hugo.Data.elo.engines | jsonify | safeJS }}</script>
+<script type="application/json" id="aliases-data">{{ hugo.Data.elo.aliases | jsonify | safeJS }}</script>
 <script type="module">
-  import { computeRatings, leaderboard, workloads, PLAYGROUNDS } from "{{ $elo.RelPermalink }}";
+  import { computeRatings, leaderboard, workloads, expected, PLAYGROUNDS } from "{{ $elo.RelPermalink }}";
   const data = JSON.parse(document.getElementById("elo-data").textContent);
   const workloadInfo = JSON.parse(document.getElementById("workloads-data").textContent);
   const engineInfo = JSON.parse(document.getElementById("engines-data").textContent);
@@ -252,10 +254,7 @@
     `<button class="chip" data-p="${esc(p)}" aria-pressed="${p === league}">${esc(p)} · ${computeRatings(data, { playground: p, playgroundOf }).matches.length}</button>`).join("");
   $("elo-playground").addEventListener("click", (e) => {
     const b = e.target.closest("button[data-p]"); if (!b) return;
-    league = b.dataset.p;
-    for (const c of $("elo-playground").children) c.setAttribute("aria-pressed", c.dataset.p === league);
-    renderFilters();
-    render();
+    setView({ playground: b.dataset.p });
   });
 
   // Workload chips list only workloads with matches in the chosen playground.
@@ -268,11 +267,22 @@
   }
   $("elo-filter").addEventListener("click", (e) => {
     const b = e.target.closest("button[data-w]"); if (!b) return;
-    current = b.dataset.w;
-    for (const c of $("elo-filter").children) c.setAttribute("aria-pressed", c.dataset.w === current);
-    render();
+    setView({ workload: b.dataset.w });
   });
   renderFilters();
+
+  // The one way to change the view: used by the buttons and by the WebMCP set_rankings_view tool.
+  // chartEngines: undefined = leave the chart alone, [] = top 6.
+  function setView({ playground = league, workload = current, chartEngines }) {
+    const moved = playground !== league;
+    league = playground;
+    current = workload;
+    if (chartEngines) picked = chartEngines.length ? new Set(chartEngines) : null;
+    for (const c of $("elo-playground").children) c.setAttribute("aria-pressed", c.dataset.p === league);
+    if (moved) renderFilters();
+    for (const c of $("elo-filter").children) c.setAttribute("aria-pressed", c.dataset.w === current);
+    render();
+  }
 
   function renderWorkload() {
     const w = workloadInfo[current];
@@ -322,9 +332,11 @@
     renderChart();
   }
 
+  const shownInChart = () => (picked ? lastBoard.filter((r) => picked.has(r.engine)) : lastBoard.slice(0, TOP_N));
+
   function renderChart() {
     const board = lastBoard;
-    const shown = picked ? board.filter((r) => picked.has(r.engine)) : board.slice(0, TOP_N);
+    const shown = shownInChart();
     const shownSet = new Set(shown.map((r) => r.engine));
     $("elo-chart-note").textContent = picked ? `(${shown.length} of ${board.length})` : `(top ${Math.min(TOP_N, board.length)})`;
     const actions = [["top", `Top ${TOP_N}`], ["all", "All"], ["none", "None"]]
@@ -389,5 +401,21 @@
   }
 
   render();
+
+  // WebMCP: offer the rankings as tools to an AI agent in the visitor's browser (docs/elo/spec.md).
+  // Loaded only where the browser supports it; a failure here must not break the page.
+  if (document.modelContext) {
+    const ready = import("{{ $webmcp.RelPermalink }}").then(({ createTools, registerTools }) =>
+      registerTools(document.modelContext, createTools({
+        matches: data, engines: engineInfo, workloadInfo, clickbench,
+        aliases: JSON.parse($("aliases-data").textContent),
+        elo: { computeRatings, leaderboard, workloads, expected, PLAYGROUNDS },
+        view: {
+          get: () => ({ playground: league, workload: current, chartEngines: shownInChart().map((r) => r.engine) }),
+          set: setView,
+        },
+      }))).catch((e) => console.warn("WebMCP tools were not registered:", e));
+    try { document.modelContext.waitForToolsUntil?.(ready); } catch {}
+  }
 </script>
 {{ end }}

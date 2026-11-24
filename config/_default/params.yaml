@@ -77,3 +77,8 @@ hugoblox:
 #      repo_id: 'R_kgDOM_WnDw'
 #      category: 'Q&A'
 #      category_id: 'DIC_kwDOM_WnD84CjTmS'
+
+# WebMCP tools on /rankings/ (docs/elo/spec.md). Chrome origin-trial token for this site's origin, from
+# https://developer.chrome.com/origintrials/#/register_trial/4163014905550602241 — public, expires, renew it.
+webmcp:
+  originTrialToken: ''
