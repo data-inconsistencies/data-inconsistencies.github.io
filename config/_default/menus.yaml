@@ -12,6 +12,10 @@ main:
   - name: Rankings
     url: rankings/
     weight: 20
+  # A separate GitHub Pages site (data-inconsistencies/landscape), so not a page in this repo.
+  - name: Landscape
+    url: https://data-inconsistencies.github.io/landscape/
+    weight: 25
   - name: Videos
     # TODO migrate to youtube.data-inconsistencies.datajourney.expert once set up properly
     # url: https://www.youtube.com/@datainconsistencies/
