@@ -1,0 +1,2 @@
+{{/* Chrome origin-trial token for the WebMCP tools on /rankings/. Empty = no tag. */}}
+{{ if eq .Type "rankings" }}{{ with site.Params.webmcp.origintrialtoken }}<meta http-equiv="origin-trial" content="{{ . }}">{{ end }}{{ end }}

@@ -113,3 +113,37 @@ ClickHouse, so a useful contrast to the join-heavy TPC suites behind the ELO.
   such as pg_duckdb or Spark accelerators). The engine gets its best-scoring entry.
 - **Rank:** position among ClickBench systems, one row per system (the site's "best" toggle),
   e.g. `#14 of 120`. Engines with no entry in the default view show "—".
+
+## WebMCP (tools for AI agents)
+`/rankings/` registers [WebMCP](https://webmachinelearning.github.io/webmcp/) tools, so an AI agent
+in the visitor's browser can query the rankings as data instead of scraping the page. WebMCP is a
+W3C Community Group draft (read 2026-11-24) in a Chrome origin trial; the tools use only its
+imperative API, `document.modelContext.registerTool`.
+
+| Tool | Does | Hints |
+|------|------|-------|
+| `get_leaderboard` | Ratings table for a playground + workload, best first; `limit` 1–100 | read-only |
+| `get_engine` | One engine: product info, ClickBench entry, rank and record overall and per workload | read-only |
+| `compare_engines` | Two engines: ratings, expected score, and every match both played | read-only |
+| `search_matches` | Match log, newest first, filtered by engine, workload, playground, `since` date; `limit` 1–100 | read-only, untrusted content |
+| `set_rankings_view` | Changes what the visitor sees: playground, workload, engines in the chart | changes the page |
+
+- Definitions are in `assets/js/webmcp.mjs` (no imports; the rating functions are passed in), so
+  `node --test` runs every tool without a browser. Numbers come from `computeRatings` — the same
+  code the table uses, never a second implementation.
+- Read-only tools default to `Engines` / `All`, whatever the visitor has selected, so the same call
+  always gives the same answer. `set_rankings_view` goes through the same function as the buttons;
+  omitted settings keep their value, except that a workload with no matches in the new playground
+  falls back to `All` (as the buttons do). An agent's chart selection is not saved to the browser.
+- Engine names are matched case-insensitively and through `data/elo/aliases.json`.
+- Bad input returns `{ "error": "…" }` naming the valid values and changes nothing. It does not
+  throw: the WebMCP draft reduces a rejected tool call to a bare `OperationError`, which an agent cannot
+  learn from.
+- `search_matches` is marked untrusted because `comment` and `evidence` summarise third-party pages.
+- Registration is all or nothing: if one tool is refused, the others are unregistered.
+  Browsers without `document.modelContext` do not download the module, and a WebMCP failure never
+  breaks the page.
+- Origin trial: until WebMCP ships by default, Chrome visitors only get the tools if the page carries
+  an origin-trial token. Set `webmcp.originTrialToken` in `config/_default/params.yaml` (tokens are
+  public, per origin, and expire). Empty = no tag; local testing uses
+  `chrome://flags/#enable-webmcp-testing`.
