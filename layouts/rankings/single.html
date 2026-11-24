@@ -32,7 +32,8 @@
   .elo tr:last-child td { border-bottom: 0; }
   .elo .num { text-align: right; font-variant-numeric: tabular-nums; }
   .elo .rank { color: var(--muted); width: 2.5rem; }
-  .elo td.cb { cursor: help; }
+  .elo td.cb, .elo th[title] { cursor: help; }
+  .elo th[title] { text-decoration: underline dotted; text-underline-offset: 4px; }
   .elo td.cb small { color: var(--muted); }
   .elo .engine { font-weight: 600; }
   .elo td.about { white-space: normal; min-width: 220px; max-width: 300px; color: var(--muted); font-size: .85rem; line-height: 1.4; }
@@ -139,8 +140,9 @@
       <thead><tr>
         <th class="rank">#</th><th>Engine</th><th>What it is</th><th>Best for</th><th class="num">Rating</th>
         <th class="num" title="Rank among {{ hugo.Data.elo.clickbench.systems }} systems in ClickBench's default view, and its Combined score (lower is better, ×1.00 = best). Updated {{ hugo.Data.elo.clickbench.updated }}.">ClickBench</th>
-        <th class="num">Last Δ</th>
-        <th class="num">W–L–D</th><th class="num">Matches</th><th class="num">Last match</th>
+        <th class="num" title="Rating points gained or lost in the engine's most recent match. Older matches move ratings less, so a small number can mean an old match.">Last Δ</th>
+        <th class="num" title="Wins–losses–draws, counted against each other engine in a report. Finishing 2nd of 5 counts as 3 wins and 1 loss. A draw means the report shows a tie.">W–L–D</th>
+        <th class="num" title="Number of matches the engine has played, for the benchmark and playground picked above. A match is one report's result on one benchmark, however many engines it compares.">Matches</th><th class="num">Last match</th>
       </tr></thead>
       <tbody id="elo-board"></tbody>
     </table>

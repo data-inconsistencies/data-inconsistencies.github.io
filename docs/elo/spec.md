@@ -56,6 +56,7 @@ Initial data is imported from the existing "RAW" sheet (19 matches, 2022-01 → 
    optimizer, …) and a link. Text lives in `data/elo/workloads.json`; every workload needs an entry
    (a test checks), and "All" has one too.
 2. Leaderboard table: rank, engine, rating, Δ from last match, W-L-D (pairwise), matches played, last match date.
+   Hovering over a column heading with a dotted underline explains it.
 3. Rating history chart for the top engines (inline SVG, no external libs).
 4. Match log, newest first, with result order, rating change per engine, match weight, source link,
    and the match's `comment` and `evidence` when it has them.
