@@ -131,6 +131,23 @@ sections:
             text: Explore the live rankings
             url: /rankings/
   - block: cta-image-paragraph
+    id: landscape
+    content:
+      items:
+        - title: Find the pieces of a data lakehouse
+          text: |
+            The landscape maps open source projects and products to the layers of a data lakehouse, for two ways of working: with a **SQL query engine** or with an **analytics processing engine**.
+          feature_icon: check
+          features:
+            - Compute, catalogs and table formats
+            - Storage and orchestration
+            - Data quality and observability
+            - BI and semantic layers
+          image: landscape.png
+          button:
+            text: Explore the landscape
+            url: https://data-inconsistencies.github.io/landscape/
+  - block: cta-image-paragraph
     id: aboutus
     content:
       items:
