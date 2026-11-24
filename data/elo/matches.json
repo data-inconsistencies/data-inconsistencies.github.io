@@ -11,7 +11,9 @@
       "Google BigQuery",
       "Databricks",
       "DuckDB"
-    ]
+    ],
+    "comment": "Personal blog, mostly on small cloud tiers, with DuckDB on a 16 GB laptop. Ranked by total time; by geometric mean Power BI Datamart comes first. The author says single slow queries skew SingleStore and DuckDB.",
+    "evidence": "Re-read November 2026. datamonkeysite.com, TPC-H SF10, total seconds over 22 queries from results.csv (May 2022) in github.com/djouallah/Testing_BI_Engine: Snowflake X-Small 23.1, Power BI Datamart 31.2 (specification undisclosed), SingleStore S-0 33.2, BigQuery on demand with 1 GB BI Engine 35.0, Databricks 2X-Small 58.4, DuckDB on a laptop 71.4. Q13 skews SingleStore and Q9 skews DuckDB, per the author."
   },
   {
     "id": 2,
@@ -21,7 +23,9 @@
     "ranking": [
       "SingleStore",
       "ClickHouse"
-    ]
+    ],
+    "comment": "Run by Data-Sleek, a SingleStore consultancy, on 11 of the 22 queries. Four queries needed extra memory on ClickHouse, which could not complete Q11. ClickHouse loaded the largest tables about twice as fast.",
+    "evidence": "Re-read November 2026. Text table \"SingleStore vs. ClickHouse Queries\", Q1-Q11, one 64 GB / 8 CPU machine, scale factor not stated. SingleStore is faster on 9 of 11 (ClickHouse leads on Q1, 0 vs 20 ms, and Q7, 16.4 vs 18.1 s). Q8-Q11 failed on ClickHouse until memory was raised."
   },
   {
     "id": 3,
@@ -32,7 +36,9 @@
       "Rockset",
       "Apache Druid",
       "ClickHouse"
-    ]
+    ],
+    "comment": "Published by Rockset about its own product, and now offline. Its ClickHouse total (1,112 ms) matches one Altinity published in 2021 on different hardware, so this may not be a like-for-like run.",
+    "evidence": "The source URL redirects to OpenAI's announcement that it acquired Rockset, so the post itself could not be re-read. Search excerpts of it (November 2026) give Rockset 664 ms, Druid 747 ms and ClickHouse 1,112 ms over 13 queries. Altinity's March 2021 post reports ClickHouse at 1.112 s on one m5.8xlarge."
   },
   {
     "id": 4,
@@ -40,9 +46,13 @@
     "source": "https://www.onehouse.ai/blog/apache-hudi-vs-delta-lake-transparent-tpc-ds-lakehouse-performance-benchmarks",
     "workload": "TPC-DS",
     "ranking": [
-      "Apache Hudi",
-      "Delta Lake"
-    ]
+      [
+        "Apache Hudi",
+        "Delta Lake"
+      ]
+    ],
+    "comment": "Published by Onehouse, which sells Hudi-based products. Corrected November 2026 to a tie: the post calls the released versions (Hudi 0.11.1, Delta Lake 1.2.0) practically equal. Only Hudi's unreleased code was about 5% faster.",
+    "evidence": "Re-read November 2026. Text only; both charts are images. Queries: no practical difference between Hudi 0.11.1 and Delta 1.2.0, Hudi master about 5% faster. Loading within 5-6% of each other. AWS EMR 6.6.0, Spark 3.2.0; cluster size and scale factor not stated. Hudi was run with bulk_insert and its metadata table and meta-fields disabled. Recorded as a Hudi win until November 2026; the tie compares released versions."
   },
   {
     "id": 5,
@@ -52,7 +62,9 @@
     "ranking": [
       "Kinetica",
       "ClickHouse"
-    ]
+    ],
+    "comment": "The source page is gone. A Kinetica-sponsored study from the same day could compare only 8 TPC-DS queries, the ones it got running on ClickHouse.",
+    "evidence": "The source URL returns 404 (November 2026). Radiant Advisors' study, sponsored by Kinetica and published 2022-09-02, is probably what it reported: SF200 on four Azure E48s v4 VMs, Kinetica completed 98 of 99 queries, ClickHouse (from Altinity's repository) ran 8, and Kinetica was faster on all 8."
   },
   {
     "id": 6,
@@ -62,7 +74,9 @@
     "ranking": [
       "esProc",
       "ClickHouse"
-    ]
+    ],
+    "comment": "Published by SCUDATA, which makes esProc. We could not reopen the page. A related esProc page lists ClickHouse not finishing 9 of the 22 queries.",
+    "evidence": "The source's security certificate has expired, so it could not be re-read (November 2026). Related: the esProc wiki page \"Which Scenarios Does ClickHouse Applies to?\" (TPC-H 100 GB) has esProc faster on all 13 queries ClickHouse completed; ClickHouse ran out of memory on 7, exceeded 600 s on Q19 and hit a syntax error on Q21."
   },
   {
     "id": 7,
@@ -71,21 +85,24 @@
     "workload": "TPC-H",
     "ranking": [
       "StarRocks",
-      "ClickHouse"
-    ]
+      "Trino"
+    ],
+    "comment": "Published by StarRocks about its own product. Corrected November 2026: this was recorded against ClickHouse, but every version of the page we checked compares StarRocks with Trino.",
+    "evidence": "Re-read November 2026. StarRocks docs, TPC-H 100 GB. The version in place at this date (2.5 docs): StarRocks 2.1 native 21 s, StarRocks on Hive tables 92 s, Trino 357 on the same Hive data 307 s; from 3.0 on, StarRocks native 16.6 s, on Hive 91.8 s, Trino 419 187.3 s. The current page, the 2.2-3.1 docs branches and the file's GitHub history contain no ClickHouse result."
   },
   {
     "id": 8,
-    "date": "2023-03-02",
+    "date": "2023-03-09",
     "source": "https://datamonkeysite.com/2023/03/09/benchmarking-snowflake-databricks-synapse-bigquery-and-duckdb-using-tpch-sf100/",
     "workload": "TPC-H",
     "ranking": [
       "Snowflake",
       "Google BigQuery",
       "Amazon Redshift",
-      "Databricks",
-      "Tableau Hyper"
-    ]
+      "Databricks"
+    ],
+    "comment": "Personal blog, native-format group only. Corrected November 2026: Hyper removed, as it ran out of memory on one query (it was faster than Databricks on the other 21), and the date fixed. Trino, Synapse and DuckDB read Parquet, so are not counted.",
+    "evidence": "Re-read November 2026. Summary table in the post, matching results_SF100.csv in github.com/djouallah/Testing_BI_Engine, TPC-H SF100, total seconds over 22 queries, native storage: Snowflake X-Small 105.1, BigQuery on demand 125.8, Redshift Serverless 8 RPU 150.9, Databricks 2X-Small 666.6. Hyper (4 cores, 16 GB) 339.7 over 21 queries, out of memory on Q18; over those 21 Databricks takes 572.4, and Redshift (103.8) passes BigQuery (108.5). Not counted: BigQuery Standard (319.4, a second configuration) and the Parquet group (BigQuery 300.4, Trino 327.5, Synapse 603.0, DuckDB 581.4 over 20 queries)."
   },
   {
     "id": 9,
@@ -96,7 +113,9 @@
       "Tableau Hyper",
       "DuckDB",
       "DataFusion"
-    ]
+    ],
+    "comment": "Run on a laptop. DuckDB failed 1 of 22 queries and DataFusion 4, and failed queries are left out of their totals. DataFusion's time includes fetching results; the others' does not.",
+    "evidence": "Re-read November 2026. Per-query table, SF100 Parquet, summed seconds: Hyper 58.6, DuckDB 0.7.2-dev 94.5 (Q21 failed), DataFusion 20.0 689.8 (Q7, Q17, Q18, Q21 failed). Hyper needed a setting changed for Q9 to run in memory."
   },
   {
     "id": 10,
@@ -106,7 +125,9 @@
     "ranking": [
       "DuckDB",
       "DataFusion"
-    ]
+    ],
+    "comment": "Totals are only in charts we could not check. The text puts the two within 2x on average for queries that succeeded. The table lists DataFusion failing 3 queries at SF100 and 9 at SF1000.",
+    "evidence": "Re-read November 2026. hussainsultan.com, DataFusion 23.0.0 on a 24-core Threadripper, SF100/500/1000 Parquet, modified queries because DataFusion lacked some subquery support. DuckDB's figures come from the author's earlier article. DataFusion beats DuckDB on H14 and H19. The text's failure counts differ slightly from its table."
   },
   {
     "id": 11,
@@ -118,7 +139,9 @@
       "esProc",
       "StarRocks",
       "ClickHouse"
-    ]
+    ],
+    "comment": "Published by SCUDATA, which makes esProc. We could not reopen the page (its security certificate has expired), so this order is unchecked.",
+    "evidence": "Source not readable in November 2026 (expired certificate), and no other copy with the Snowflake, StarRocks and ClickHouse figures was found."
   },
   {
     "id": 12,
@@ -128,7 +151,9 @@
     "ranking": [
       "DuckDB",
       "Apache Spark"
-    ]
+    ],
+    "comment": "The page is offline, so this order is unchecked. Search excerpts describe about 10 GB of data with DuckDB best overall; Postgres was also tested but is not counted.",
+    "evidence": "voltrondata.com no longer resolves (November 2026). Search excerpts: Postgres, Spark and DuckDB through Ibis; on Q1 Spark took about 2.5x DuckDB's time, on Q10 almost twice."
   },
   {
     "id": 13,
@@ -139,7 +164,9 @@
       "StarRocks",
       "ClickHouse",
       "Apache Druid"
-    ]
+    ],
+    "comment": "Published by StarRocks about its own product, using one flattened table, which avoids joins. The figures come from StarRocks' docs history on GitHub, not the archived page.",
+    "evidence": "SSB-Flat, 13 queries, sum in ms, StarRocks docs branches 2.5-3.1 on GitHub: StarRocks 3.0 1236, ClickHouse 23.3 2645, Druid 25.0.0 10750, same host configuration. The archived source page could not be opened from here (November 2026)."
   },
   {
     "id": 14,
@@ -149,7 +176,9 @@
     "ranking": [
       "StarRocks",
       "Trino"
-    ]
+    ],
+    "comment": "Published by StarRocks about its own product. The page now shows newer results (StarRocks 3.5 against Trino 475) with the same order.",
+    "evidence": "StarRocks docs branches 3.0-3.1 on GitHub, 99-query sum: StarRocks native 174.2 s, StarRocks on Hive 238.6 s, Trino 419 on the same Hive data 891.9 s. Current page (November 2026), 1 TB: StarRocks on Iceberg 368.4 s, Trino on the same Iceberg catalog 2552.1 s."
   },
   {
     "id": 15,
@@ -160,7 +189,9 @@
       "DuckDB",
       "Trino",
       "Apache Spark"
-    ]
+    ],
+    "comment": "We could not reopen this article. Search excerpts say that at about 100 GB on one node, DuckDB was fastest on 75% of the TPC-DS queries and Trino on the rest.",
+    "evidence": "Medium refuses automated reads (November 2026), so this rests on search excerpts of the Data Minded article; per-query figures were not seen."
   },
   {
     "id": 16,
@@ -171,7 +202,9 @@
       "DuckDB",
       "Trino",
       "Apache Spark"
-    ]
+    ],
+    "comment": "We could not reopen this article. The excerpts we found mention only TPC-DS, so this TPC-H order is unchecked.",
+    "evidence": "Medium refuses automated reads (November 2026); see the TPC-DS match from the same article."
   },
   {
     "id": 17,
@@ -179,9 +212,11 @@
     "source": "https://bicortex.com/duckdb-vs-clickhouse-performance-comparison-for-structured-data-serialization-and-in-memory-tpc-ds-queries-execution/",
     "workload": "TPC-DS",
     "ranking": [
-      "ClickHouse",
-      "DuckDB"
-    ]
+      "DuckDB",
+      "ClickHouse"
+    ],
+    "comment": "Corrected November 2026: this was recorded the wrong way round. DuckDB won the TPC-DS queries; ClickHouse was faster only at converting CSV files to Parquet. 45 queries were skipped.",
+    "evidence": "Re-read November 2026. bicortex.com: in-memory tables on one Mac Pro, DuckDB better on all but one 50 GB query; ClickHouse \"performed a bit better\" on CSV-to-Parquet conversion. Per-query times are in an image. 45 query numbers were skipped for SQL incompatibilities. Recorded as ClickHouse first until November 2026, which matches the conversion test."
   },
   {
     "id": 18,
@@ -195,7 +230,9 @@
       "Dask",
       "Pandas",
       "Modin"
-    ]
+    ],
+    "comment": "Published by Polars about its own library. We could not open the archived April 2024 page, so these figures are unchecked. A newer version of the page is listed separately (2025-06-01).",
+    "evidence": "The archived source page could not be opened from here (November 2026)."
   },
   {
     "id": 19,
@@ -206,7 +243,9 @@
       "DuckDB",
       "DataFusion",
       "Polars"
-    ]
+    ],
+    "comment": "TPC-H-derived test at about 1 TB on a laptop. DuckDB finished all 22 queries, DataFusion 17 and Polars 13, so total times are not comparable. The order matches queries completed.",
+    "evidence": "Re-read November 2026. Ibis project, sf=1024, 96 GB M2 Max MacBook. Execution seconds over completed queries: DuckDB 1.0.0 1448 (22), DataFusion 38.0.1 1182 (17), Polars 1.0.0 lazy 1995 (13). Three DataFusion failures were a bug fixed later; 8 Polars queries ran out of memory. The page is dated 2024-07-08; this match is dated 2024-06-25."
   },
   {
     "id": 20,
@@ -217,6 +256,7 @@
       "StarRocks",
       "Trino"
     ],
+    "comment": "The Trino figure is the report's \"official\" number, not a run on the same hardware as StarRocks.",
     "evidence": "Section 6.3 summary table, SF1000 on Iceberg/GCS: StarRocks 4.0.8 (4 CN, warm) geomean 2.198s vs Trino 475 geomean 6.782s; Trino figure is the page's 'official' number, not a same-hardware run."
   },
   {
@@ -243,6 +283,7 @@
       "DuckDB",
       "DataFusion"
     ],
+    "comment": "Our calculation from raw results published by Polars. Query 18 is excluded because DataFusion ran out of memory on it.",
     "evidence": "Computed from raw results in github.com/pola-rs/polars-2.0-benchmark, SF100 on c7a.4xlarge, sum of best-of-5 over 21 queries (q18 excluded, DataFusion OOM): Polars 2.0 34.6s, DuckDB 1.5.6 50.2s, DataFusion 54 78.0s. DuckDB 2.0 alpha not counted."
   },
   {
@@ -255,6 +296,7 @@
       "DuckDB",
       "DataFusion"
     ],
+    "comment": "Our calculation from raw results published by Polars. Queries 67 and 72 are excluded because DataFusion timed out.",
     "evidence": "Computed from raw results in github.com/pola-rs/polars-2.0-benchmark, SF100 on c7a.4xlarge, sum of best-of-5 over 97 queries (q67, q72 excluded, DataFusion timeouts): Polars 2.0 85.8s, DuckDB 1.5.6 112.7s, DataFusion 54 198.5s. DuckDB 2.0 alpha not counted."
   },
   {
@@ -268,6 +310,7 @@
       "Apache Spark",
       "Dask"
     ],
+    "comment": "SF-100 result. At the smaller SF-10 size the top two swap: Polars streaming beats DuckDB.",
     "evidence": "Republished 'Updated PDS-H benchmark results (May 2025)', SF-100 total_time table: DuckDB 1.3.0 19.65s, Polars 1.30 streaming 23.94s (in-memory 152.27s not counted separately), PySpark 4.0 312.43s, Dask 2025.5.1 548.52s. At SF-10 Polars streaming is first (3.89s vs DuckDB 5.87s)."
   },
   {
@@ -280,6 +323,7 @@
       "ClickHouse",
       "Apache Druid"
     ],
+    "comment": "The page has no publication date; we use the release date of the newest version tested.",
     "evidence": "Rerun on the same docs page, SSB-Flat 100 GB, SUM row of the Test results table: StarRocks 3.5.0 992ms, ClickHouse 25.3.3.42 1858ms, Apache Druid 33.0.0 4710ms. Page has no publication date; date is the release date of the newest tested build (StarRocks 3.5.0, 2025-06-13)."
   },
   {
@@ -292,6 +336,7 @@
       "Snowflake",
       "Databricks"
     ],
+    "comment": "A TPC-DS-inspired set of 85 queries, run once from cold. First and second place are under 3% apart.",
     "evidence": "README results table, TPC-DS-inspired 85-query cohort at ~SF3000 (3 TB), single cold pass run 2026-10-11..13; ranked by batch time, the author's primary metric: Fabric Warehouse 23.35 min, Snowflake optimized 23.98 min, Azure Databricks Photon 47.34 min (geomean gives the same order). One lane per product: Fabric Lakehouse endpoint, Snowflake baseline, Databricks non-Photon and the unranked Fabric Spark notebook not counted."
   },
   {
@@ -305,6 +350,7 @@
       "StarRocks",
       "Trino"
     ],
+    "comment": "Published by Exasol about its own product. ClickHouse is left out because it completed only 18 of 22 queries. Trino's last place comes from the text, not a listed time.",
     "evidence": "Exasol-authored. Concurrency series, 1 node, SF50, 1 stream, median of 5 runs, totals from the text: Exasol 22.4s, DuckDB 81.5s, StarRocks 87.4s; Trino placed last from the text stating it is slowest in every configuration (its 1-stream total is only in Figure 1). ClickHouse left out: it completed only 18 of 22 queries (95.5s over the subset)."
   },
   {
@@ -316,6 +362,7 @@
       "MySQL HeatWave",
       "Amazon Aurora"
     ],
+    "comment": "Analyst article favourable to Oracle that doesn't say who ran the test. Transaction speed was equal, so the analytics half decides. One of its throughput sentences appears to swap the two figures.",
     "evidence": "Analyst article on Oracle's MySQL HeatWave launch, vendor-favourable; it does not name who ran the test. CH-benCHmark 100G: OLTP equal (0.02 s latency, 30K transactions/min for both), so the OLAP side decides: 4 concurrent OLAP sessions, HeatWave 35 s vs Aurora db.r5.8xlarge 632 s latency (18x). The OLAP throughput sentence claims 110x for HeatWave but prints .06 for HeatWave and 6.6 for Aurora, apparently swapped."
   },
   {
@@ -328,6 +375,7 @@
       "MonetDB",
       "HEAVY.AI"
     ],
+    "comment": "HEAVY.AI timed out on 37 of 113 queries. Each counts as the 120 s limit, so its real time would be longer.",
     "evidence": "UC Merced technical report, section 5.6 and Table 6, total time for the 113 JOB queries with each engine's default optimizer, no indexes, same CPU server: DuckDB 30.38s, MonetDB 114.46s, HEAVY.AI 4744s (37 queries hit the 120s timeout, each charged as 120s, so a lower bound). Forced-join-order (no-CE) runs not counted; PostgreSQL left out because the paper runs it tuned, with a different timeout, and does not tabulate it against these three."
   },
   {
@@ -342,6 +390,7 @@
       "MonetDB",
       "PostgreSQL"
     ],
+    "comment": "DuckDB ran embedded and the others in Docker. PostgreSQL had 23 extra indexes. The report has no publication date; we use the commit that added it.",
     "evidence": "New-suite measurements table, rows \"JOB, original snapshot\", all 113 queries, result hashes matching across engines, M4 Pro, 10 threads, 24 GiB: sum of query medians DuckDB 3.30s, StarRocks 7.24s, ClickHouse 13.92s, MonetDB 20.15s, PostgreSQL 73.36s (with 23 foreign-key indexes); the geometric-mean ratio gives the same order. DuckDB runs embedded, the others in Docker. Date is the commit that added the report."
   },
   {
@@ -359,6 +408,61 @@
       "Databricks",
       "Google BigQuery"
     ],
+    "comment": "BenchBox does not rank these runs. Local engines ran on an Apple M4 laptop, cloud warehouses over the network. Polars' results were not validated. By total time SQLite would fall behind Polars.",
     "evidence": "BenchBox Results table, JOB SF 1, power phase, 113 queries, geomean query time: DuckDB 76 ms, ClickHouse Local 122 ms, SQLite 131 ms, Polars 262 ms, DataFusion 280 ms, Snowflake (X-Small) 634 ms, Databricks 1.93 s, BigQuery 3.48 s. DuckDB is the untuned run, like the rest (the tuned run, 55 ms, gives the same order). By total time SQLite would fall behind Polars. Caveats: the site marks all 9 runs \"not ranked\"; local engines ran on an Apple M4 laptop, cloud ones over the network from it; the Polars run has no result validation. Runs date from 2026-08-25 to 2026-10-03; date is the newest run."
+  },
+  {
+    "id": 32,
+    "date": "2026-10-03",
+    "source": "https://benchbox.dev/results/ssb/?sf=1",
+    "workload": "SSB",
+    "ranking": [
+      "DuckDB",
+      "DataFusion",
+      "Polars",
+      "ClickHouse",
+      "Snowflake",
+      "Databricks",
+      "Google BigQuery",
+      "Pandas",
+      "SQLite"
+    ],
+    "comment": "BenchBox does not rank these runs. Local engines ran on an Apple M4, cloud warehouses over the network, where fixed overhead dominates at this small size. Polars and Pandas results were not validated.",
+    "evidence": "BenchBox Results table, SSB SF 1 (the scale with the most engines), power phase, 13 queries, untuned runs, geomean query time: DuckDB 6.8 ms, DataFusion 22 ms, Polars 41 ms, ClickHouse Local 67 ms, Snowflake (X-Small) 388 ms, Databricks (2X-Small) 827 ms, BigQuery 869 ms, Pandas 2.51 s, SQLite 3.29 s. Caveats: the site marks all 10 runs \"not ranked\" (no Power@Size); local engines ran on an Apple M4, cloud ones over the network from it, where fixed per-query overhead dominates (BigQuery is flagged \"timing-plateau\"); Polars and Pandas runs have no result validation. Runs date from 2026-08-25 to 2026-10-03; date is the newest run."
+  },
+  {
+    "id": 33,
+    "date": "2026-10-03",
+    "source": "https://benchbox.dev/results/tpcds/?sf=1",
+    "workload": "TPC-DS",
+    "ranking": [
+      "DuckDB",
+      "Apache Spark",
+      "Snowflake",
+      "Databricks"
+    ],
+    "comment": "Only the runs BenchBox itself ranks; other engines' runs were non-standard, incomplete or defective. DuckDB and Spark ran on an Apple M4, cloud warehouses over the network.",
+    "evidence": "BenchBox Results table, TPC-DS SF 1, power phase, 103 queries, only the runs BenchBox itself ranks (6 of 20): DuckDB 13 ms geomean (Power@Size 269,803; its two other ranked runs, 32 and 45 ms, also lead), Spark 557 ms (6,211), Snowflake X-Small 974 ms (3,709), Databricks 2X-Small 1.35 s (2,765); both measures give this order. DataFusion, ClickHouse Local, Polars, Pandas, BigQuery and SQLite are left out because BenchBox excludes their runs as non-standard, incomplete or known defective (superseded SQL translation). DuckDB and Spark ran locally on an Apple M4, the cloud warehouses over the network. Date is the newest ranked run."
+  },
+  {
+    "id": 34,
+    "date": "2026-10-03",
+    "source": "https://benchbox.dev/results/tpch/?sf=1",
+    "workload": "TPC-H",
+    "ranking": [
+      [
+        "DuckDB",
+        "Polars"
+      ],
+      "DataFusion",
+      "ClickHouse",
+      "SQLite",
+      "Apache Spark",
+      "Snowflake",
+      "Databricks",
+      "Google BigQuery"
+    ],
+    "comment": "Known defect: BenchBox's data generator wrote bad addresses, so 4 of 22 queries return wrong values, and BenchBox does not rank these runs. Kept until it publishes reruns. Local engines ran on an Apple M4, cloud warehouses over the network.",
+    "evidence": "BenchBox Results table, TPC-H SF 1, power phase, 22 queries, untuned standard runs (Apple M4 for local engines), geomean query time: DuckDB 35 and 38 ms, Polars 36 and 37 ms (repeat runs interleave, so a tie), DataFusion 47 ms, ClickHouse Local 70 ms, SQLite 494 ms, Spark SQL 719 ms, Snowflake X-Small 943 ms, Databricks 2X-Small 956 ms, BigQuery 1.04 s. Known defect: BenchBox flags all of these runs \"known defective data\" and does not rank them, because its macOS generator wrote non-canonical addresses, so Q2, Q10, Q15 and Q20 return wrong values (results-data/DEFECTIVE_DATAGEN_AUDIT.md); recorded anyway on the maintainer's decision, to be replaced by BenchBox reruns. Snowflake and Databricks swap places on Power@Size (3,645 vs 3,843). Not counted: non-standard and tuned runs, runs on other machines, PySpark DataFrame and DuckLake. Cloud engines ran over the network. Date is the newest run counted."
   }
 ]

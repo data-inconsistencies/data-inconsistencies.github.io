@@ -68,7 +68,11 @@ export function mergeCandidates(existing, candidates, { aliases = {}, today = ne
     const key = keyOf(c);
     if (seen.has(key)) { skipped.push({ candidate: c, reason: 'already in matches.json' }); continue; }
     seen.add(key);
-    added.push({ id: nextId++, date: c.date, source: c.source, workload: c.workload, ranking: c.ranking, evidence: c.evidence });
+    const comment = String(c.comment ?? '').trim();
+    added.push({
+      id: nextId++, date: c.date, source: c.source, workload: c.workload, ranking: c.ranking,
+      ...(comment && { comment }), evidence: c.evidence,
+    });
   }
   return { added, skipped };
 }
@@ -92,6 +96,8 @@ For each report:
    return one entry per benchmark.
 3. date = the report's publication date (YYYY-MM-DD). source = the canonical URL of the report.
 4. evidence = one sentence saying which figure or table the order came from.
+5. comment = a plain-language caveat shown to visitors, at most 280 characters: who ran the test if a
+   vendor did, what was left out, known defects. Empty string if there is nothing to warn about.
 
 Skip a report if you cannot determine a clear order or if it is not public. These reports are already
 recorded (date, benchmark, URL). Skip them, unless the page has since been republished with new results
@@ -114,7 +120,7 @@ export const OUTPUT_SCHEMA = {
       items: {
         type: 'object',
         additionalProperties: false,
-        required: ['date', 'source', 'workload', 'ranking', 'evidence'],
+        required: ['date', 'source', 'workload', 'ranking', 'comment', 'evidence'],
         properties: {
           date: { type: 'string', description: 'Publication date, YYYY-MM-DD' },
           source: { type: 'string', description: 'Report URL' },
@@ -124,6 +130,7 @@ export const OUTPUT_SCHEMA = {
             description: 'Fastest first. A nested array means a tie.',
             items: { anyOf: [{ type: 'string' }, { type: 'array', items: { type: 'string' } }] },
           },
+          comment: { type: 'string', description: 'Caveat for visitors, at most 280 characters; empty if none.' },
           evidence: { type: 'string' },
         },
       },

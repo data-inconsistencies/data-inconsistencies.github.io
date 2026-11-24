@@ -64,6 +64,11 @@
   .elo .match ol { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
   .elo .match li { font-size: .88rem; background: var(--surface); border-radius: 6px; padding: 3px 8px; }
   .elo .match li small { margin-left: 4px; font-variant-numeric: tabular-nums; }
+  .elo .match .comment { margin: 10px 0 0; padding-left: 10px; border-left: 3px solid var(--border); font-size: .88rem; line-height: 1.5; max-width: 80ch; }
+  .elo .match details { margin-top: 8px; font-size: .85rem; color: var(--muted); max-width: 80ch; }
+  .elo .match summary { cursor: pointer; width: fit-content; color: var(--muted); font-weight: 500; }
+  .elo .match summary:hover { color: var(--accent); }
+  .elo .match details p { margin: 6px 0 0; line-height: 1.5; overflow-wrap: anywhere; }
   .elo .note { color: var(--muted); font-size: .9rem; line-height: 1.6; }
   .elo .note a, .elo .lede a { color: var(--accent); text-decoration: underline; }
   .elo .explain { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent);
@@ -285,6 +290,8 @@
         <span class="date" title="Rating changes from this report are scaled by its weight, which halves every 2 years of age">weight ×${m.weight.toFixed(2)}</span>
         <a href="${esc(m.source)}" rel="noopener" target="_blank">${esc(new URL(m.source).hostname.replace(/^www\./, ""))} ↗</a></header>
       <ol>${m.placings.map((p) => `<li>${p.place}. ${engineLink(p.engine, "match")}<small>${fmtD(m.deltas[p.engine])}</small></li>`).join("")}</ol>
+      ${m.comment ? `<p class="comment">${esc(m.comment)}</p>` : ""}
+      ${m.evidence ? `<details><summary>How we read this report</summary><p>${esc(m.evidence)}</p></details>` : ""}
     </article>`).join("");
 
     lastBoard = board; lastHistory = history;

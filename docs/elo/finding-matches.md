@@ -30,6 +30,8 @@ What it should do, and what to check it did:
    `data/elo/matches.json`. Include pages republished with new results.
 2. Read each report (not search snippets). Record `date`, `source`, `workload`, `ranking` (fastest
    first; nested array = tie) and one sentence of `evidence` naming the table or figure used.
+   Add a `comment` (at most 280 characters, shown to visitors) when a reader should know something:
+   vendor-run, engines or queries left out, different hardware, known defects.
    - CH-benCHmark mixes transactions and analytics. Rank on the report's own headline measure; when
      engines tie on one side (OLTP or OLAP), the other side decides. Skip it when the two disagree
      and the report names no overall winner, and skip runs of only its OLTP half (that is TPC-C).
