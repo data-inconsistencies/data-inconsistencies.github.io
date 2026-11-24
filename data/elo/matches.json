@@ -360,5 +360,56 @@
       "Google BigQuery"
     ],
     "evidence": "BenchBox Results table, JOB SF 1, power phase, 113 queries, geomean query time: DuckDB 76 ms, ClickHouse Local 122 ms, SQLite 131 ms, Polars 262 ms, DataFusion 280 ms, Snowflake (X-Small) 634 ms, Databricks 1.93 s, BigQuery 3.48 s. DuckDB is the untuned run, like the rest (the tuned run, 55 ms, gives the same order). By total time SQLite would fall behind Polars. Caveats: the site marks all 9 runs \"not ranked\"; local engines ran on an Apple M4 laptop, cloud ones over the network from it; the Polars run has no result validation. Runs date from 2026-08-25 to 2026-10-03; date is the newest run."
+  },
+  {
+    "id": 32,
+    "date": "2026-10-03",
+    "source": "https://benchbox.dev/results/ssb/?sf=1",
+    "workload": "SSB",
+    "ranking": [
+      "DuckDB",
+      "DataFusion",
+      "Polars",
+      "ClickHouse",
+      "Snowflake",
+      "Databricks",
+      "Google BigQuery",
+      "Pandas",
+      "SQLite"
+    ],
+    "evidence": "BenchBox Results table, SSB SF 1 (the scale with the most engines), power phase, 13 queries, untuned runs, geomean query time: DuckDB 6.8 ms, DataFusion 22 ms, Polars 41 ms, ClickHouse Local 67 ms, Snowflake (X-Small) 388 ms, Databricks (2X-Small) 827 ms, BigQuery 869 ms, Pandas 2.51 s, SQLite 3.29 s. Caveats: the site marks all 10 runs \"not ranked\" (no Power@Size); local engines ran on an Apple M4, cloud ones over the network from it, where fixed per-query overhead dominates (BigQuery is flagged \"timing-plateau\"); Polars and Pandas runs have no result validation. Runs date from 2026-08-25 to 2026-10-03; date is the newest run."
+  },
+  {
+    "id": 33,
+    "date": "2026-10-03",
+    "source": "https://benchbox.dev/results/tpcds/?sf=1",
+    "workload": "TPC-DS",
+    "ranking": [
+      "DuckDB",
+      "Apache Spark",
+      "Snowflake",
+      "Databricks"
+    ],
+    "evidence": "BenchBox Results table, TPC-DS SF 1, power phase, 103 queries, only the runs BenchBox itself ranks (6 of 20): DuckDB 13 ms geomean (Power@Size 269,803; its two other ranked runs, 32 and 45 ms, also lead), Spark 557 ms (6,211), Snowflake X-Small 974 ms (3,709), Databricks 2X-Small 1.35 s (2,765); both measures give this order. DataFusion, ClickHouse Local, Polars, Pandas, BigQuery and SQLite are left out because BenchBox excludes their runs as non-standard, incomplete or known defective (superseded SQL translation). DuckDB and Spark ran locally on an Apple M4, the cloud warehouses over the network. Date is the newest ranked run."
+  },
+  {
+    "id": 34,
+    "date": "2026-10-03",
+    "source": "https://benchbox.dev/results/tpch/?sf=1",
+    "workload": "TPC-H",
+    "ranking": [
+      [
+        "DuckDB",
+        "Polars"
+      ],
+      "DataFusion",
+      "ClickHouse",
+      "SQLite",
+      "Apache Spark",
+      "Snowflake",
+      "Databricks",
+      "Google BigQuery"
+    ],
+    "evidence": "BenchBox Results table, TPC-H SF 1, power phase, 22 queries, untuned standard runs (Apple M4 for local engines), geomean query time: DuckDB 35 and 38 ms, Polars 36 and 37 ms (repeat runs interleave, so a tie), DataFusion 47 ms, ClickHouse Local 70 ms, SQLite 494 ms, Spark SQL 719 ms, Snowflake X-Small 943 ms, Databricks 2X-Small 956 ms, BigQuery 1.04 s. Known defect: BenchBox flags all of these runs \"known defective data\" and does not rank them, because its macOS generator wrote non-canonical addresses, so Q2, Q10, Q15 and Q20 return wrong values (results-data/DEFECTIVE_DATAGEN_AUDIT.md); recorded anyway on the maintainer's decision, to be replaced by BenchBox reruns. Snowflake and Databricks swap places on Power@Size (3,645 vs 3,843). Not counted: non-standard and tuned runs, runs on other machines, PySpark DataFrame and DuckLake. Cloud engines ran over the network. Date is the newest run counted."
   }
 ]
