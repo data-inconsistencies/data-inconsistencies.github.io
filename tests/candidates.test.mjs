@@ -76,6 +76,33 @@ test('CH-benCHmark and Join Order Benchmark are known workloads, offered to the 
   }
 });
 
+test('mergeCandidates keeps a comment and drops an empty one', () => {
+  const { added } = mergeCandidates(existing, [
+    cand({ source: 'https://c.test/1', comment: '  Vendor-run.  ' }),
+    cand({ source: 'https://c.test/2', comment: '  ' }),
+    cand({ source: 'https://c.test/3' }),
+  ], { aliases, today: '2026-01-01' });
+  assert.deepEqual(added.map((m) => m.comment), ['Vendor-run.', undefined, undefined]);
+  assert.ok(!('comment' in added[1]) && !('comment' in added[2]));
+});
+
+test('the search is asked for a visitor-facing comment', () => {
+  const item = OUTPUT_SCHEMA.properties.matches.items;
+  assert.equal(item.properties.comment?.type, 'string');
+  assert.ok(item.required.includes('comment'));
+  assert.match(buildPrompt(existing, { today: '2026-01-01' }), /comment = /);
+});
+
+test('recorded comments are short, single-line text, and the defective-data match says so', () => {
+  const matches = JSON.parse(readFileSync(new URL('../data/elo/matches.json', import.meta.url)));
+  for (const { id, comment } of matches) {
+    if (comment === undefined) continue;
+    assert.ok(comment.trim() === comment && comment.length > 0, `match ${id}: empty or padded comment`);
+    assert.ok(comment.length <= 280 && !comment.includes('\n'), `match ${id}: comment too long (${comment.length})`);
+  }
+  assert.match(matches.find((m) => m.id === 34).comment ?? '', /defect|faulty|wrong/i, 'match 34 must warn about its defective data');
+});
+
 test('every recorded match uses a known workload spelling', () => {
   const matches = JSON.parse(readFileSync(new URL('../data/elo/matches.json', import.meta.url)));
   for (const m of matches) assert.ok(WORKLOADS.includes(m.workload), `match ${m.id}: unknown workload "${m.workload}"`);

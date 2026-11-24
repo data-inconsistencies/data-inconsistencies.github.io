@@ -10,6 +10,10 @@
   "workload": "TPC-H",                       // TPC-H | TPC-DS | SSB | CH-benCHmark | Join Order Benchmark | other
   "ranking": ["Polars", "DuckDB", "Apache Spark", "Dask", "Pandas", "Modin"] }  // 1st → last
 ```
+Two optional text fields explain a match. `comment` is a short plain-language caveat for visitors
+(at most 280 characters: who ran it, what was left out, known defects) and is always visible in the
+match log. `evidence` is the longer record of which table or figure the order came from; the log
+shows it behind a "How we read this report" toggle. Neither affects ratings.
 JSON (not YAML) so the same file is read by Hugo and by `node --test` with no dependencies.
 Ties: an entry may be a list, e.g. `["A", ["B", "C"], "D"]` means B and C tie for 2nd.
 
@@ -50,7 +54,8 @@ Initial data is imported from the existing "RAW" sheet (19 matches, 2022-01 → 
    recompute ratings from the filtered matches.
 2. Leaderboard table: rank, engine, rating, Δ from last match, W-L-D (pairwise), matches played, last match date.
 3. Rating history chart for the top engines (inline SVG, no external libs).
-4. Match log, newest first, with result order, rating change per engine, match weight, and source link.
+4. Match log, newest first, with result order, rating change per engine, match weight, source link,
+   and the match's `comment` and `evidence` when it has them.
 5. "How to add a report" note linking the data file on GitHub.
 Homepage "Explore the live rankings" button and the main menu point to `/rankings/`.
 
