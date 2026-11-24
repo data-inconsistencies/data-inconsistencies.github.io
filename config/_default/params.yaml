@@ -81,4 +81,5 @@ hugoblox:
 # WebMCP tools on /rankings/ (docs/elo/spec.md). Chrome origin-trial token for this site's origin, from
 # https://developer.chrome.com/origintrials/#/register_trial/4163014905550602241 — public, expires, renew it.
 webmcp:
-  originTrialToken: ''
+  # For https://data-inconsistencies.github.io only; expires 2027-03-29.
+  originTrialToken: 'ArFJb2qq8gFbgSfmX6iZYreF7VNxmiIqiSGdZUOlYwKZy7/CTB3dNcsiggdQ8FaUxPp9vW+11YXLQktETuFy3gIAAABeeyJvcmlnaW4iOiJodHRwczovL2RhdGEtaW5jb25zaXN0ZW5jaWVzLmdpdGh1Yi5pbzo0NDMiLCJmZWF0dXJlIjoiV2ViTUNQIiwiZXhwaXJ5IjoxODA2MzY0ODAwfQ=='
