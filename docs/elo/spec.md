@@ -61,6 +61,8 @@ Initial data is imported from the existing "RAW" sheet (19 matches, 2022-01 → 
 4. Match log, newest first, with result order, rating change per engine, match weight, source link,
    and the match's `comment` and `evidence` when it has them.
 5. "How to add a report" note linking the data file on GitHub.
+6. Discussion: one GitHub Discussions thread for the page, through giscus (the only third-party widget here; needs a
+   GitHub account to post). It follows the light/dark toggle. Comments never affect ratings.
 Homepage "Explore the live rankings" button and the main menu point to `/rankings/`.
 
 ## Acceptance

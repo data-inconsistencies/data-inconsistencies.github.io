@@ -69,14 +69,16 @@ hugoblox:
     enable: true
     anonymize_analytics: true
 
-#  comments:
-#    enable: true
-#    provider: 'giscus'
-#    giscus:
-#      repo: 'data-inconsistencies/landingpage-comments'
-#      repo_id: 'R_kgDOM_WnDw'
-#      category: 'Q&A'
-#      category_id: 'DIC_kwDOM_WnD84CjTmS'
+  # GitHub Discussions via giscus; only on pages with `commentable: true` in front matter.
+  # Announcements: only maintainers and the giscus app can start threads, anyone can reply.
+  comments:
+    enable: true
+    provider: 'giscus'
+    giscus:
+      repo: 'data-inconsistencies/landingpage-comments'
+      repo_id: 'R_kgDOM_WnDw'
+      category: 'Announcements'
+      category_id: 'DIC_kwDOM_WnD84CjTmQ'
 
 # WebMCP tools on /rankings/ (docs/elo/spec.md). Chrome origin-trial token for this site's origin, from
 # https://developer.chrome.com/origintrials/#/register_trial/4163014905550602241 — public, expires, renew it.
