@@ -1,0 +1,41 @@
+{
+  "All": {
+    "description": "Every match from every benchmark, rated together. The benchmarks test different things: some are join-heavy, one tests query planning, and one mixes analytics with live transactions. Pick a benchmark to see ratings from that kind of work only."
+  },
+  "TPC-H": {
+    "description": "The classic data warehouse benchmark: business questions over a wholesale supplier's orders. Data is spread across separate tables, so most queries must join several of them before aggregating large volumes. The generated data is evenly distributed, which is easier to plan for than real data.",
+    "shape": "8 tables, 22 queries, normalized (3NF) schema, generated data",
+    "tests": ["Multi-table joins", "Large scans", "Aggregation"],
+    "url": "https://www.tpc.org/tpch/"
+  },
+  "TPC-DS": {
+    "description": "A harder successor to TPC-H that models a retailer's reporting and ad-hoc analysis. It has more tables, more joins per query and more complex SQL, over deliberately skewed data. Engines need broad SQL support and a good optimizer just to finish all of it.",
+    "shape": "24 tables, 99 queries, snowflake schema, generated skewed data",
+    "tests": ["Complex joins", "Complex SQL", "Query optimizer", "Skewed data"],
+    "url": "https://www.tpc.org/tpcds/"
+  },
+  "SSB": {
+    "description": "Star Schema Benchmark: TPC-H reworked into one big fact table with four small dimension tables, the layout common in BI dashboards. The standard form tests joins from fact to dimensions. Some reports here run \"SSB-Flat\" instead, with everything merged into one wide table, which removes the joins and tests scan speed.",
+    "shape": "5 tables (or 1 when flattened), 13 queries, star schema, generated data",
+    "tests": ["Star-schema joins", "Filtering", "Aggregation", "Flat-table scans (SSB-Flat)"],
+    "url": "https://www.cs.umb.edu/~poneil/StarSchemaB.PDF"
+  },
+  "CH-benCHmark": {
+    "description": "Runs TPC-C transactions and TPC-H-style analytical queries on the same tables at the same time. It tests whether a database can answer analytical questions on live data without slowing the transactions down, known as HTAP (hybrid transactional/analytical processing).",
+    "shape": "TPC-C tables plus 3 from TPC-H, 22 analytical queries alongside live transactions",
+    "tests": ["Mixed workload (HTAP)", "Concurrency", "Joins on live data"],
+    "url": "https://db.in.tum.de/research/projects/CHbenCHmark/"
+  },
+  "Join Order Benchmark": {
+    "description": "Queries over real movie data from IMDb, with the skew and correlations that generated data lacks. Each query joins many tables, so the hard part is choosing a good join order. It tests how well the optimizer estimates row counts more than raw scan speed.",
+    "shape": "21 tables, 113 queries, real data",
+    "tests": ["Join ordering", "Row-count estimates", "Query optimizer", "Real-world skew"],
+    "url": "https://github.com/gregrahn/join-order-benchmark"
+  },
+  "ClickBench": {
+    "description": "Web-analytics queries over a single flat table of about 100 million real, anonymized page views. With one table there are no joins between tables: it tests how fast an engine scans, filters and aggregates.",
+    "shape": "1 flat table, 43 queries, real anonymized data",
+    "tests": ["Flat-table scans", "Filtering", "Aggregation"],
+    "url": "https://benchmark.clickhouse.com/"
+  }
+}
