@@ -1,0 +1,49 @@
+{{/* Overrides the theme's partial, which follows the visitor's system colours instead of the site's
+     light/dark toggle (html.dark). giscus reads its settings from its own script tag, so the tag is
+     created here once the current theme is known. */}}
+{{ with site.Params.hugoblox.comments.giscus }}
+<div class="giscus"></div>
+<noscript>Enable JavaScript to comment here, or use <a href="https://github.com/{{ .repo }}/discussions">GitHub Discussions</a>.</noscript>
+<script>
+  (() => {
+    const ORIGIN = "https://giscus.app";
+    const root = document.documentElement;
+    const theme = () => (root.classList.contains("dark") ? "dark" : "light");
+    let shown = theme();
+    let ready = false; // the (lazy-loaded) frame only listens once it has sent us a message
+
+    const sync = () => {
+      const frame = document.querySelector("iframe.giscus-frame");
+      if (!ready || !frame || shown === theme()) return;
+      shown = theme();
+      frame.contentWindow.postMessage({ giscus: { setConfig: { theme: shown } } }, ORIGIN);
+    };
+    window.addEventListener("message", (e) => {
+      if (e.origin !== ORIGIN) return;
+      ready = true;
+      sync();
+    });
+    new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ["class"] });
+
+    const script = document.createElement("script");
+    Object.assign(script.dataset, {
+      repo: {{ .repo }},
+      repoId: {{ .repo_id }},
+      category: {{ .category }},
+      categoryId: {{ .category_id }},
+      mapping: {{ .mapping | default "pathname" }},
+      strict: "1",
+      reactionsEnabled: "1",
+      emitMetadata: "0",
+      inputPosition: "top",
+      theme: shown,
+      lang: {{ .language_code | default "en" }},
+      loading: "lazy",
+    });
+    script.src = ORIGIN + "/client.js";
+    script.crossOrigin = "anonymous";
+    script.async = true;
+    document.currentScript.after(script);
+  })();
+</script>
+{{ end }}

@@ -3,6 +3,7 @@ title: Analytics Engine ELO Rankings
 summary: Every public benchmark we could find, turned into ELO matches between analytics and OLAP engines.
 type: rankings
 layout: single
+commentable: true
 date: 2025-07-01
 ---
 

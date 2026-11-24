@@ -177,6 +177,19 @@
     <a href="{{ $repo }}/blob/main/data/elo/matches.json">data/elo/matches.json</a> in a pull request,
     or email <a href="mailto:atwong@alumni.uci.edu">atwong@alumni.uci.edu</a>. Backdated reports are welcome.
   </p>
+
+  {{ if .Params.commentable }}
+  {{ with site.Params.hugoblox.comments.giscus.repo }}
+  <div data-pagefind-ignore>
+    <h2 id="discussion">Discussion</h2>
+    <p class="note">
+      Disagree with a match, or know a report we missed? Comment below with your GitHub account, or read the threads on
+      <a href="https://github.com/{{ . }}/discussions">GitHub Discussions</a>. Comments do not change the ratings.
+    </p>
+    {{ partial "comments.html" $ }}
+  </div>
+  {{ end }}
+  {{ end }}
 </div>
 
 <script type="application/json" id="elo-data">{{ hugo.Data.elo.matches | jsonify | safeJS }}</script>
