@@ -74,7 +74,7 @@ test('real data file is valid and produces a leaderboard', () => {
   for (const d of data) {
     assert.match(d.date, /^\d{4}-\d{2}-\d{2}$/);
     assert.match(d.source, /^https?:\/\//);
-    assert.ok(d.ranking.length >= 2, `match ${d.id} needs 2+ engines`);
+    assert.ok(d.ranking.flat().length >= 2, `match ${d.id} needs 2+ engines`);
   }
   const { ratings } = computeRatings(data);
   assert.ok(Math.abs(sum(ratings) - 1500 * Object.keys(ratings).length) < 1e-6);

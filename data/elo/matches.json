@@ -12,8 +12,8 @@
       "Databricks",
       "DuckDB"
     ],
-    "comment": "Personal blog, mostly on small cloud tiers, with DuckDB on a 16 GB laptop. The totals are in an image we could not check, and the author says single slow queries skew SingleStore and DuckDB.",
-    "evidence": "Re-read November 2026. datamonkeysite.com, TPC-H SF10: Snowflake X-Small, Databricks 2X-Small, SingleStore S-0, BigQuery on demand with 1 GB BI Engine, Power BI Datamart (specification undisclosed), DuckDB on a laptop. The text confirms only Snowflake ahead of Databricks; the overall chart is an image and the linked results CSV returns 404. Q13 skews SingleStore and Q9 skews DuckDB, per the author."
+    "comment": "Personal blog, mostly on small cloud tiers, with DuckDB on a 16 GB laptop. Ranked by total time; by geometric mean Power BI Datamart comes first. The author says single slow queries skew SingleStore and DuckDB.",
+    "evidence": "Re-read November 2026. datamonkeysite.com, TPC-H SF10, total seconds over 22 queries from results.csv (May 2022) in github.com/djouallah/Testing_BI_Engine: Snowflake X-Small 23.1, Power BI Datamart 31.2 (specification undisclosed), SingleStore S-0 33.2, BigQuery on demand with 1 GB BI Engine 35.0, Databricks 2X-Small 58.4, DuckDB on a laptop 71.4. Q13 skews SingleStore and Q9 skews DuckDB, per the author."
   },
   {
     "id": 2,
@@ -46,11 +46,13 @@
     "source": "https://www.onehouse.ai/blog/apache-hudi-vs-delta-lake-transparent-tpc-ds-lakehouse-performance-benchmarks",
     "workload": "TPC-DS",
     "ranking": [
-      "Apache Hudi",
-      "Delta Lake"
+      [
+        "Apache Hudi",
+        "Delta Lake"
+      ]
     ],
-    "comment": "Published by Onehouse, which sells Hudi-based products. The post calls the released versions (Hudi 0.11.1, Delta Lake 1.2.0) practically equal; only Hudi's unreleased code was slightly faster, about 5%.",
-    "evidence": "Re-read November 2026. Text only; both charts are images. Queries: no practical difference between Hudi 0.11.1 and Delta 1.2.0, Hudi master about 5% faster. Loading within 5-6% of each other. AWS EMR 6.6.0, Spark 3.2.0; cluster size and scale factor not stated. Hudi was run with bulk_insert and its metadata table and meta-fields disabled."
+    "comment": "Published by Onehouse, which sells Hudi-based products. Corrected November 2026 to a tie: the post calls the released versions (Hudi 0.11.1, Delta Lake 1.2.0) practically equal. Only Hudi's unreleased code was about 5% faster.",
+    "evidence": "Re-read November 2026. Text only; both charts are images. Queries: no practical difference between Hudi 0.11.1 and Delta 1.2.0, Hudi master about 5% faster. Loading within 5-6% of each other. AWS EMR 6.6.0, Spark 3.2.0; cluster size and scale factor not stated. Hudi was run with bulk_insert and its metadata table and meta-fields disabled. Recorded as a Hudi win until November 2026; the tie compares released versions."
   },
   {
     "id": 5,
@@ -90,18 +92,17 @@
   },
   {
     "id": 8,
-    "date": "2023-03-02",
+    "date": "2023-03-09",
     "source": "https://datamonkeysite.com/2023/03/09/benchmarking-snowflake-databricks-synapse-bigquery-and-duckdb-using-tpch-sf100/",
     "workload": "TPC-H",
     "ranking": [
       "Snowflake",
       "Google BigQuery",
       "Amazon Redshift",
-      "Databricks",
-      "Tableau Hyper"
+      "Databricks"
     ],
-    "comment": "Personal blog. Hyper has no complete run (a bug stopped Query 18). DuckDB, Trino and Synapse were also tested but are not counted. Most totals are in an image we could not check.",
-    "evidence": "Re-read November 2026. TPC-H SF100, text only; the summary chart is an image and the linked CSV returns 404. Stated: BigQuery internal table 2 min 16 s, Databricks about 11-12 min, Synapse Serverless 8-11 min, Snowflake 102 s on a first run. Redshift's hot runs are called perhaps the fastest seen. DuckDB crashed on Q21; Trino needed Q15 rewritten."
+    "comment": "Personal blog, native-format group only. Corrected November 2026: Hyper removed, as it ran out of memory on one query (it was faster than Databricks on the other 21), and the date fixed. Trino, Synapse and DuckDB read Parquet, so are not counted.",
+    "evidence": "Re-read November 2026. Summary table in the post, matching results_SF100.csv in github.com/djouallah/Testing_BI_Engine, TPC-H SF100, total seconds over 22 queries, native storage: Snowflake X-Small 105.1, BigQuery on demand 125.8, Redshift Serverless 8 RPU 150.9, Databricks 2X-Small 666.6. Hyper (4 cores, 16 GB) 339.7 over 21 queries, out of memory on Q18; over those 21 Databricks takes 572.4, and Redshift (103.8) passes BigQuery (108.5). Not counted: BigQuery Standard (319.4, a second configuration) and the Parquet group (BigQuery 300.4, Trino 327.5, Synapse 603.0, DuckDB 581.4 over 20 queries)."
   },
   {
     "id": 9,
