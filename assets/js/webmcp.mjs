@@ -205,7 +205,7 @@ export function createTools({ matches, engines, workloadInfo, clickbench, aliase
         const [pa, pb] = [a, b].map((e) => m.placings.find((p) => p.engine === e)?.place);
         if (pa === undefined || pb === undefined) continue;
         headToHead[pa < pb ? 'a_wins' : pa > pb ? 'b_wins' : 'draws']++;
-        met.push({ id: m.id, date: m.date, workload: m.workload, source: m.source, a_place: pa, b_place: pb, engines: m.placings.length });
+        met.push({ id: m.id, date: m.date, workload: m.workload, scale: m.scale ?? null, source: m.source, a_place: pa, b_place: pb, engines: m.placings.length });
       }
       return {
         playground,
@@ -252,6 +252,7 @@ export function createTools({ matches, engines, workloadInfo, clickbench, aliase
           id: m.id,
           date: m.date,
           workload: m.workload,
+          scale: m.scale ?? null,
           source: m.source,
           weight: round(m.weight, 2),
           results: m.placings.map((p) => ({ place: p.place, engine: p.engine, ratingChange: round(m.deltas[p.engine]) })),

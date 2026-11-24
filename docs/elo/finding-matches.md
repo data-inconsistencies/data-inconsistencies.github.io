@@ -37,6 +37,14 @@ What it should do, and what to check it did:
      and the report names no overall winner, and skip runs of only its OLTP half (that is TPC-C).
    - JOB means all 113 queries. Skip JOB-light, JOB-Complex, CEB, single-variant subsets, and papers
      that swap optimizers inside one engine.
+   - BenchBox (`https://benchbox.dev/results/query?benchmark=tpch`, also `ssb`, `tpcds`, `joinorder`) is a
+     list of runs, not a report. One match = all runs of one benchmark at one scale on one run date,
+     when at least two engines ran. Rank by the list's "Geomean latency" column. Set `scale` (`SF 1`) and
+     use `...?benchmark=tpch&sf=1.0` as `source`. Leave out runs that did not finish every query
+     ("Partial pass", or a valid query count below 22 / 13 / 103 / 113) and DuckLake (same engine as DuckDB).
+     Keep runs BenchBox marks defective, unofficial or unvalidated, and say so in `comment`, as well as
+     when the machines differ. Read every page, sorted by the Result ID column: sorted by date, paging
+     repeats some runs and hides others.
 3. Skip reports with no clear overall order. When results are only in images, use the raw data if
    the authors publish it, or skip.
 4. Run the candidates through `mergeCandidates(existing, candidates, { aliases })` from

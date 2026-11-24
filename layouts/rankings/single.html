@@ -333,7 +333,7 @@
       <td class="num flat">${r.lastDate}</td></tr>`).join("");
 
     $("elo-matches").innerHTML = matches.slice().reverse().map((m) => `<article class="match">
-      <header><span class="tag">${esc(m.workload)}</span><span class="date">${m.date}</span>
+      <header><span class="tag">${esc(m.scale ? `${m.workload} ${m.scale}` : m.workload)}</span><span class="date">${m.date}</span>
         <span class="date" title="Rating changes from this report are scaled by its weight, which halves every 2 years of age">weight ×${m.weight.toFixed(2)}</span>
         <a href="${esc(m.source)}" rel="noopener" target="_blank">${esc(new URL(m.source).hostname.replace(/^www\./, ""))} ↗</a></header>
       <ol>${m.placings.map((p) => `<li>${p.place}. ${engineLink(p.engine, "match")}<small>${fmtD(m.deltas[p.engine])}</small></li>`).join("")}</ol>

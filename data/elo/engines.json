@@ -11,6 +11,12 @@
     "bestFor": "SQL warehousing and BI for teams already on AWS",
     "playground": "Engines"
   },
+  "Apache Doris": {
+    "url": "https://doris.apache.org/",
+    "description": "Open-source MPP analytical database with real-time ingestion and MySQL-compatible SQL.",
+    "bestFor": "Real-time dashboards and reports with many concurrent users",
+    "playground": "Engines"
+  },
   "Apache Druid": {
     "url": "https://druid.apache.org/",
     "description": "Open-source real-time analytics database with streaming ingestion and pre-aggregation.",
@@ -27,6 +33,12 @@
     "url": "https://spark.apache.org/",
     "description": "Open-source distributed engine for batch SQL, streaming and machine learning.",
     "bestFor": "Large-scale ETL and batch processing across a cluster",
+    "playground": "Engines"
+  },
+  "CedarDB": {
+    "url": "https://cedardb.com/",
+    "description": "PostgreSQL-compatible database for transactions and analytics, built on the Umbra research system.",
+    "bestFor": "Running analytics directly on live PostgreSQL-style data",
     "playground": "Engines"
   },
   "ClickHouse": {
@@ -87,6 +99,12 @@
     "url": "https://www.kinetica.com/",
     "description": "GPU-accelerated analytical database with strong geospatial and time-series support.",
     "bestFor": "Real-time geospatial and sensor analytics",
+    "playground": "Engines"
+  },
+  "LakeSail": {
+    "url": "https://lakesail.com/",
+    "description": "Makers of Sail, a Rust engine on DataFusion that is a drop-in replacement for Spark.",
+    "bestFor": "Running existing Spark SQL and DataFrame code without the JVM",
     "playground": "Engines"
   },
   "Microsoft Fabric": {

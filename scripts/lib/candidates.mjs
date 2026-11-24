@@ -26,6 +26,7 @@ export function normalizeCandidate(c, aliases, known) {
     ...c,
     source: String(c.source ?? '').trim(),
     workload: String(c.workload ?? '').trim(),
+    scale: String(c.scale ?? '').trim(),
     ranking: (c.ranking ?? []).map((e) => (Array.isArray(e) ? e.map(fix) : fix(e))),
   };
 }
@@ -54,9 +55,16 @@ export function knownEngines(matches) {
 export function mergeCandidates(existing, candidates, { aliases = {}, today = new Date().toISOString().slice(0, 10) } = {}) {
   const known = knownEngines(existing);
   // A report is the same match only if URL, workload and publication date all match:
-  // a page republished with new results on a later date is a new match.
+  // a page republished with new results on a later date is a new match. A page that lists runs at
+  // several scales gives one match per scale; a match without a scale covers the whole page.
   const keyOf = (m) => `${normalizeUrl(m.source)}|${m.workload}|${m.date}`;
-  const seen = new Set(existing.map(keyOf));
+  const seen = new Map();
+  const isKnown = (m) => {
+    const scales = seen.get(keyOf(m));
+    return !!scales && (!m.scale || scales.has('') || scales.has(m.scale));
+  };
+  const remember = (m) => seen.set(keyOf(m), (seen.get(keyOf(m)) ?? new Set()).add(m.scale ?? ''));
+  existing.forEach(remember);
   let nextId = Math.max(0, ...existing.map((m) => m.id)) + 1;
   const added = [];
   const skipped = [];
@@ -65,12 +73,11 @@ export function mergeCandidates(existing, candidates, { aliases = {}, today = ne
     const c = normalizeCandidate(raw, aliases, known);
     const reason = validateCandidate(c, today);
     if (reason) { skipped.push({ candidate: c, reason }); continue; }
-    const key = keyOf(c);
-    if (seen.has(key)) { skipped.push({ candidate: c, reason: 'already in matches.json' }); continue; }
-    seen.add(key);
+    if (isKnown(c)) { skipped.push({ candidate: c, reason: 'already in matches.json' }); continue; }
+    remember(c);
     const comment = String(c.comment ?? '').trim();
     added.push({
-      id: nextId++, date: c.date, source: c.source, workload: c.workload, ranking: c.ranking,
+      id: nextId++, date: c.date, source: c.source, workload: c.workload, ...(c.scale && { scale: c.scale }), ranking: c.ranking,
       ...(comment && { comment }), evidence: c.evidence,
     });
   }
@@ -93,11 +100,14 @@ For each report:
 2. Determine the overall finishing order, fastest first, using the report's own headline measure
    (total runtime, geometric mean, or the number it summarizes with). Put engines the report calls
    equal in a nested array, e.g. ["A", ["B", "C"], "D"]. If one report covers several benchmarks,
-   return one entry per benchmark.
+   return one entry per benchmark. If a page is a list of separate runs (such as benchbox.dev), return
+   one entry per benchmark, scale and run date, and never mix runs from different dates.
 3. date = the report's publication date (YYYY-MM-DD). source = the canonical URL of the report.
 4. evidence = one sentence saying which figure or table the order came from.
 5. comment = a plain-language caveat shown to visitors, at most 280 characters: who ran the test if a
    vendor did, what was left out, known defects. Empty string if there is nothing to warn about.
+6. scale = the data scale (e.g. "SF 10") when the entry is one scale of such a list of runs, otherwise
+   an empty string.
 
 Skip a report if you cannot determine a clear order or if it is not public. These reports are already
 recorded (date, benchmark, URL). Skip them, unless the page has since been republished with new results
@@ -120,11 +130,12 @@ export const OUTPUT_SCHEMA = {
       items: {
         type: 'object',
         additionalProperties: false,
-        required: ['date', 'source', 'workload', 'ranking', 'comment', 'evidence'],
+        required: ['date', 'source', 'workload', 'scale', 'ranking', 'comment', 'evidence'],
         properties: {
           date: { type: 'string', description: 'Publication date, YYYY-MM-DD' },
           source: { type: 'string', description: 'Report URL' },
           workload: { type: 'string', enum: WORKLOADS },
+          scale: { type: 'string', description: 'Data scale such as "SF 10" when the page lists separate runs by scale; empty otherwise.' },
           ranking: {
             type: 'array',
             description: 'Fastest first. A nested array means a tie.',

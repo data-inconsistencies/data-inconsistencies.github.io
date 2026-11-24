@@ -27,5 +27,7 @@
   "AWS Aurora": "Amazon Aurora",
   "Aurora": "Amazon Aurora",
   "ClickHouse Local": "ClickHouse",
-  "Sqlite": "SQLite"
+  "Sqlite": "SQLite",
+  "ClickHouse Server": "ClickHouse",
+  "Doris": "Apache Doris"
 }
