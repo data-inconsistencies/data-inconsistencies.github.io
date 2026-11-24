@@ -1,0 +1,9 @@
+{{/* Overrides the theme's partial, which starts Google Analytics before the visitor answers the cookie banner. */}}
+{{ $ga := site.Params.hugoblox.analytics.google.measurement_id | default "" }}
+{{ if hugo.IsProduction | and $ga }}
+{{ $js := resources.Get "js/analytics.mjs" | minify | fingerprint }}
+<script type="module">
+  import { start } from "{{ $js.RelPermalink }}";
+  start(window, document, {{ $ga }});
+</script>
+{{ end }}
