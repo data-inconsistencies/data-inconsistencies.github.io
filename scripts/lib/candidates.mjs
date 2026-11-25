@@ -52,6 +52,20 @@ export function knownEngines(matches) {
   return [...new Set(matches.flatMap((m) => flat(m.ranking)))].sort();
 }
 
+const scaleOf = (m) => Number(/^SF\s*([\d.]+)$/i.exec(m.scale ?? '')?.[1] ?? NaN);
+
+// One benchmark run at several scales on one date is one day's testing, not several results: returns
+// every match whose engines all appear in one larger-scale match of that page, workload and date.
+export function supersededRuns(matches) {
+  const keyOf = (m) => JSON.stringify([normalizeUrl(m.source), m.workload, m.date]);
+  const runs = matches
+    .filter((m) => !Number.isNaN(scaleOf(m)))
+    .map((m) => ({ m, key: keyOf(m), scale: scaleOf(m), engines: new Set(flat(m.ranking)) }));
+  const covers = (big, small) => big.key === small.key && big.scale > small.scale && [...small.engines].every((e) => big.engines.has(e));
+  return runs.filter((small) => runs.some((big) => covers(big, small))).map((r) => r.m);
+}
+
+// Returns `added` (with ids), `skipped` (with reasons) and `superseded`: ids of existing matches to remove.
 export function mergeCandidates(existing, candidates, { aliases = {}, today = new Date().toISOString().slice(0, 10) } = {}) {
   const known = knownEngines(existing);
   // A report is the same match only if URL, workload and publication date all match:
@@ -66,7 +80,7 @@ export function mergeCandidates(existing, candidates, { aliases = {}, today = ne
   const remember = (m) => seen.set(keyOf(m), (seen.get(keyOf(m)) ?? new Set()).add(m.scale ?? ''));
   existing.forEach(remember);
   let nextId = Math.max(0, ...existing.map((m) => m.id)) + 1;
-  const added = [];
+  const fresh = [];
   const skipped = [];
 
   for (const raw of candidates) {
@@ -75,13 +89,20 @@ export function mergeCandidates(existing, candidates, { aliases = {}, today = ne
     if (reason) { skipped.push({ candidate: c, reason }); continue; }
     if (isKnown(c)) { skipped.push({ candidate: c, reason: 'already in matches.json' }); continue; }
     remember(c);
+    fresh.push(c);
+  }
+
+  const smaller = new Set(supersededRuns([...existing, ...fresh]));
+  const added = [];
+  for (const c of fresh) {
+    if (smaller.has(c)) { skipped.push({ candidate: c, reason: 'all its engines ran at a larger scale that day' }); continue; }
     const comment = String(c.comment ?? '').trim();
     added.push({
       id: nextId++, date: c.date, source: c.source, workload: c.workload, ...(c.scale && { scale: c.scale }), ranking: c.ranking,
       ...(comment && { comment }), evidence: c.evidence,
     });
   }
-  return { added, skipped };
+  return { added, skipped, superseded: existing.filter((m) => smaller.has(m)).map((m) => m.id) };
 }
 
 export function buildPrompt(existing, { today = new Date().toISOString().slice(0, 10), maxResults = 10 } = {}) {
@@ -101,7 +122,8 @@ For each report:
    (total runtime, geometric mean, or the number it summarizes with). Put engines the report calls
    equal in a nested array, e.g. ["A", ["B", "C"], "D"]. If one report covers several benchmarks,
    return one entry per benchmark. If a page is a list of separate runs (such as benchbox.dev), return
-   one entry per benchmark, scale and run date, and never mix runs from different dates.
+   one entry per benchmark, scale and run date, and never mix runs from different dates. Leave out
+   a scale when all its engines (the same set, or a subset) are in one larger-scale entry of that date.
 3. date = the report's publication date (YYYY-MM-DD). source = the canonical URL of the report.
 4. evidence = one sentence saying which figure or table the order came from.
 5. comment = a plain-language caveat shown to visitors, at most 280 characters: who ran the test if a

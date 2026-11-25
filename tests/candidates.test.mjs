@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
   normalizeUrl, canonicalEngine, normalizeCandidate, validateCandidate, mergeCandidates, buildPrompt,
-  WORKLOADS, OUTPUT_SCHEMA,
+  WORKLOADS, OUTPUT_SCHEMA, supersededRuns,
 } from '../scripts/lib/candidates.mjs';
 
 const aliases = { Clickhouse: 'ClickHouse', PySpark: 'Apache Spark' };
@@ -101,7 +101,7 @@ test('recorded comments are short, single-line text, and the defective-data matc
     assert.ok(comment.length <= 280 && !comment.includes('\n'), `match ${id}: comment too long (${comment.length})`);
   }
   // BenchBox's TPC-H runs made with its faulty macOS data generator.
-  for (const id of [37, 38, 40, 41, 42, 63, 64, 65]) {
+  for (const id of [37, 38, 40, 41, 42, 65]) {
     assert.match(matches.find((m) => m.id === id)?.comment ?? '', /defect|faulty|wrong/i, `match ${id} must warn about its defective data`);
   }
 });
@@ -111,11 +111,43 @@ test('every recorded match uses a known workload spelling', () => {
   for (const m of matches) assert.ok(WORKLOADS.includes(m.workload), `match ${m.id}: unknown workload "${m.workload}"`);
 });
 
+const run = (scale, over = {}) => cand({ source: 'https://runs.test/query?sf=' + scale, scale: `SF ${scale}`, ...over });
+
 test('runs of one page at different scales are separate matches; a repeat of one scale is not', () => {
-  const run = (scale, over = {}) => cand({ source: 'https://runs.test/query?sf=' + scale, scale: `SF ${scale}`, ...over });
-  const { added, skipped } = mergeCandidates(existing, [run(1), run(10), run(1), run(1, { date: '2025-04-01' })], { aliases, today: '2026-01-01' });
+  const { added, skipped } = mergeCandidates(existing, [run(1, { ranking: ['DuckDB', 'Polars'] }), run(10), run(1), run(1, { date: '2025-04-01' })], { aliases, today: '2026-01-01' });
   assert.deepEqual(added.map((m) => [m.scale, m.date]), [['SF 1', '2025-03-01'], ['SF 10', '2025-03-01'], ['SF 1', '2025-04-01']]);
   assert.equal(skipped.length, 1);
+});
+
+test('same engines, benchmark and date at several scales: only the largest scale is added', () => {
+  // 9 vs 10: scales compare as numbers. The order of finish does not matter, and neither do ties.
+  const { added, skipped } = mergeCandidates(existing, [run(0.1), run(10), run(9, { ranking: ['PySpark', 'DuckDB'] }), run(1, { ranking: [['DuckDB', 'Apache Spark']] })], { aliases, today: '2026-01-01' });
+  assert.deepEqual(added.map((m) => [m.id, m.scale]), [[8, 'SF 10']]);
+  assert.equal(skipped.length, 3);
+  for (const s of skipped) assert.match(s.reason, /larger scale/);
+});
+
+test('a smaller scale of a recorded match is skipped; a larger one supersedes it', () => {
+  const recorded = [...existing, { id: 20, ...run(1) }];
+  const smaller = mergeCandidates(recorded, [run(0.1)], { aliases, today: '2026-01-01' });
+  assert.deepEqual([smaller.added, smaller.superseded], [[], []]);
+  assert.match(smaller.skipped[0].reason, /larger scale/);
+  const larger = mergeCandidates(recorded, [run(10)], { aliases, today: '2026-01-01' });
+  assert.deepEqual([larger.added.map((m) => [m.id, m.scale]), larger.superseded], [[[21, 'SF 10']], [20]]);
+});
+
+test('a smaller scale with a subset of the engines of one larger match is superseded; a superset is not', () => {
+  const abc = ['DuckDB', ['Polars', 'Apache Spark']];
+  const small = run(0.01, { ranking: ['Apache Spark', 'DuckDB'] });
+  assert.deepEqual(supersededRuns([run(1, { ranking: abc }), small]), [small]);
+  assert.deepEqual(supersededRuns([run(10), run(1, { ranking: abc })]), []);
+  // Every engine ran at a larger scale, but not in one match: the DuckDB-Pandas pair is not repeated.
+  assert.deepEqual(supersededRuns([run(1, { ranking: ['DuckDB', 'Polars'] }), run(10, { ranking: ['Pandas', 'Polars'] }), run(0.1, { ranking: ['DuckDB', 'Pandas'] })]), []);
+});
+
+test('scales are kept apart when the engines, workload, date or page differ, or a scale is missing', () => {
+  const others = [run(1, { ranking: ['DuckDB', 'Polars', 'Apache Spark'] }), run(1, { workload: 'SSB' }), run(1, { date: '2025-04-01' }), run(1, { source: 'https://other.test/q' }), run(1, { scale: undefined })];
+  assert.deepEqual(supersededRuns([run(10), ...others]), []);
 });
 
 test('a scale does not let a report recorded without one in twice', () => {
@@ -134,6 +166,7 @@ test('BenchBox matches: one per benchmark, scale and run date', () => {
   assert.ok(ms.length);
   const keys = ms.map((m) => `${m.workload}|${m.scale}|${m.date}`);
   assert.equal(new Set(keys).size, keys.length);
+  assert.deepEqual(supersededRuns(ms).map((m) => m.id), [], 'all the engines are recorded together at a larger scale that day');
   for (const m of ms) {
     assert.match(m.scale ?? '', /^SF \d/, `match ${m.id} has no scale`);
     assert.equal(Number(new URL(m.source).searchParams.get('sf')), Number(m.scale.slice(3)), `match ${m.id}: source and scale disagree`);

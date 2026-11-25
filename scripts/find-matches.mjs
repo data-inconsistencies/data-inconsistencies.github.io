@@ -68,7 +68,7 @@ async function discover(prompt) {
   throw new Error(`Still paused after ${MAX_CONTINUATIONS} continuations`);
 }
 
-function summarize({ added, skipped }, stats) {
+function summarize({ added, skipped, superseded }, stats) {
   const lines = [`Searched ${stats.searches}× and fetched ${stats.fetches} pages.`, ''];
   if (added.length) {
     lines.push(`### ${added.length} new match(es) — check each against its source before merging`, '');
@@ -79,6 +79,7 @@ function summarize({ added, skipped }, stats) {
   } else {
     lines.push('No new matches found.');
   }
+  if (superseded.length) lines.push('', `Superseded by a larger scale, to be removed: ${superseded.map((id) => `#${id}`).join(', ')}`);
   if (skipped.length) {
     lines.push('', '<details><summary>Skipped candidates</summary>', '');
     for (const s of skipped) lines.push(`- ${s.candidate.source || '(no source)'} (${s.candidate.workload}): ${s.reason}`);
@@ -101,7 +102,7 @@ async function main() {
   if (opts.summary) writeFileSync(opts.summary, `${summary}\n`);
 
   if (opts.write && merged.added.length) {
-    writeFileSync(MATCHES, `${JSON.stringify([...existing, ...merged.added], null, 2)}\n`);
+    writeFileSync(MATCHES, `${JSON.stringify([...existing.filter((m) => !merged.superseded.includes(m.id)), ...merged.added], null, 2)}\n`);
     console.error(`Wrote ${merged.added.length} match(es) to data/elo/matches.json`);
   } else if (!opts.write && merged.added.length) {
     console.error('Dry run: rerun with --write to add them.');
