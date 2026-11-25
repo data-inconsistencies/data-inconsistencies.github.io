@@ -40,7 +40,7 @@ What it should do, and what to check it did:
    - BenchBox (`https://benchbox.dev/results/query?benchmark=tpch`, also `ssb`, `tpcds`, `joinorder`) is a
      list of runs, not a report. One match = all runs of one benchmark at one scale on one run date,
      when at least two engines ran. Leave out a scale when all its engines (the same set, or a subset)
-     are also in one larger-scale match that day. Rank by the list's "Geomean latency" column. Set `scale` (`SF 1`) and
+     are also in one larger-scale match that day, in the same order; a different order is a match. Rank by the list's "Geomean latency" column. Set `scale` (`SF 1`) and
      use `...?benchmark=tpch&sf=1.0` as `source`. Leave out runs that did not finish every query
      ("Partial pass", or a valid query count below 22 / 13 / 103 / 113) and DuckLake (same engine as DuckDB).
      Keep runs BenchBox marks defective, unofficial or unvalidated, and say so in `comment`, as well as

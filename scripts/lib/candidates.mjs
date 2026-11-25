@@ -55,13 +55,19 @@ export function knownEngines(matches) {
 const scaleOf = (m) => Number(/^SF\s*([\d.]+)$/i.exec(m.scale ?? '')?.[1] ?? NaN);
 
 // One benchmark run at several scales on one date is one day's testing, not several results: returns
-// every match whose engines all appear in one larger-scale match of that page, workload and date.
+// every match whose engines all appear, in the same order, in one larger-scale match of that page,
+// workload and date. A different order stays: some products do better on small data than on large.
 export function supersededRuns(matches) {
   const keyOf = (m) => JSON.stringify([normalizeUrl(m.source), m.workload, m.date]);
   const runs = matches
     .filter((m) => !Number.isNaN(scaleOf(m)))
-    .map((m) => ({ m, key: keyOf(m), scale: scaleOf(m), engines: new Set(flat(m.ranking)) }));
-  const covers = (big, small) => big.key === small.key && big.scale > small.scale && [...small.engines].every((e) => big.engines.has(e));
+    .map((m) => ({ m, key: keyOf(m), scale: scaleOf(m), place: new Map(m.ranking.flatMap((e, i) => [e].flat().map((n) => [n, i]))) }));
+  const sameOrder = (big, small) => {
+    const names = [...small.place.keys()];
+    const cmp = (r, a, b) => Math.sign(r.place.get(a) - r.place.get(b));
+    return names.every((a) => big.place.has(a)) && names.every((a) => names.every((b) => cmp(big, a, b) === cmp(small, a, b)));
+  };
+  const covers = (big, small) => big.key === small.key && big.scale > small.scale && sameOrder(big, small);
   return runs.filter((small) => runs.some((big) => covers(big, small))).map((r) => r.m);
 }
 
@@ -95,7 +101,7 @@ export function mergeCandidates(existing, candidates, { aliases = {}, today = ne
   const smaller = new Set(supersededRuns([...existing, ...fresh]));
   const added = [];
   for (const c of fresh) {
-    if (smaller.has(c)) { skipped.push({ candidate: c, reason: 'all its engines ran at a larger scale that day' }); continue; }
+    if (smaller.has(c)) { skipped.push({ candidate: c, reason: 'all its engines finished in the same order at a larger scale that day' }); continue; }
     const comment = String(c.comment ?? '').trim();
     added.push({
       id: nextId++, date: c.date, source: c.source, workload: c.workload, ...(c.scale && { scale: c.scale }), ranking: c.ranking,
@@ -123,7 +129,8 @@ For each report:
    equal in a nested array, e.g. ["A", ["B", "C"], "D"]. If one report covers several benchmarks,
    return one entry per benchmark. If a page is a list of separate runs (such as benchbox.dev), return
    one entry per benchmark, scale and run date, and never mix runs from different dates. Leave out
-   a scale when all its engines (the same set, or a subset) are in one larger-scale entry of that date.
+   a scale when all its engines (the same set, or a subset) are in one larger-scale entry of that date,
+   in the same order; keep it when the order differs.
 3. date = the report's publication date (YYYY-MM-DD). source = the canonical URL of the report.
 4. evidence = one sentence saying which figure or table the order came from.
 5. comment = a plain-language caveat shown to visitors, at most 280 characters: who ran the test if a
