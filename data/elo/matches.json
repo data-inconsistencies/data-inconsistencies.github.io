@@ -576,6 +576,20 @@
     "evidence": "BenchBox run list, Join Order Benchmark SF 1, runs dated 2026-08-26, power phase, 113 queries, ordered by the \"Geomean latency\" column: DuckDB 78 ms, SQLite 133 ms, Polars 265 ms, DataFusion 284 ms. Run ids: dc969472, 4f7bae8e, 80ca7028, cf29c9d9."
   },
   {
+    "id": 48,
+    "date": "2026-09-01",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=0.01",
+    "workload": "TPC-H",
+    "scale": "SF 0.01",
+    "ranking": [
+      "Polars",
+      "DuckDB",
+      "DataFusion"
+    ],
+    "comment": "Each engine ran on its own 4-core Azure CI machine, and the CPUs differ. Polars results were not validated. Very small data (about 10 MB).",
+    "evidence": "BenchBox run list, TPC-H SF 0.01, runs dated 2026-09-01, power phase, 22 queries, ordered by the \"Geomean latency\" column: Polars 5.2 ms [AMD EPYC 7763], DuckDB 5.9 ms [Intel Xeon 6973P-C], DataFusion 15 ms [AMD EPYC 9V74]. Run ids: 3a00d660, c30f2a60, 1ae3af0b."
+  },
+  {
     "id": 49,
     "date": "2026-09-01",
     "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=0.1",
@@ -697,6 +711,20 @@
     "evidence": "BenchBox run list, TPC-DS SF 1, runs dated 2026-10-01, power phase, 103 queries, ordered by the \"Geomean latency\" column: DuckDB 32 ms [AMD EPYC 9V74], DataFusion 90 ms [Intel Xeon 6973P-C], ClickHouse Local 96 ms [AMD EPYC 9V45]. Run ids: d9c5278f, 603aa5a4, 751221ac."
   },
   {
+    "id": 64,
+    "date": "2026-10-03",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=1.0",
+    "workload": "TPC-H",
+    "scale": "SF 1",
+    "ranking": [
+      "Databricks",
+      "Snowflake",
+      "Google BigQuery"
+    ],
+    "comment": "Cloud warehouses, timed over the network from a laptop. Known defect: bad generated addresses make 4 of 22 queries return wrong values, so BenchBox does not rank these runs.",
+    "evidence": "BenchBox run list, TPC-H SF 1, runs dated 2026-10-03, power phase, 22 queries, ordered by the \"Geomean latency\" column: Databricks 988 ms (2X-Small), Snowflake 990 ms (X-Small), BigQuery 1.05 s. The list's separate \"Display geomean\" column swaps Databricks (956 ms) and Snowflake (943 ms). Known defect: the macOS data generator wrote non-canonical addresses, so Q2, Q10, Q15 and Q20 return wrong values (BenchBox results-data/DEFECTIVE_DATAGEN_AUDIT.md); recorded anyway. Run ids: 2dab70bc, 22e9d6bd, 9571f6cb."
+  },
+  {
     "id": 65,
     "date": "2026-10-03",
     "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=10.0",
@@ -762,6 +790,20 @@
     ],
     "comment": "Each engine ran on its own 4-core Azure CI machine, and the CPUs differ. BenchBox marks the ClickHouse run as known defective data. Marked unofficial: DuckDB.",
     "evidence": "BenchBox run list, TPC-H SF 1, runs dated 2026-10-13, power phase, 22 queries, ordered by the \"Geomean latency\" column: DuckDB 31 ms [AMD EPYC 9V45], ClickHouse Local 93 ms [Intel Xeon 6973P-C]. Run ids: 9757cfbb, bb68bfc6."
+  },
+  {
+    "id": 73,
+    "date": "2026-10-26",
+    "source": "https://benchbox.dev/results/query?benchmark=tpch&sf=0.01",
+    "workload": "TPC-H",
+    "scale": "SF 0.01",
+    "ranking": [
+      "SQLite",
+      "DataFusion",
+      "ClickHouse"
+    ],
+    "comment": "ClickHouse ran on a 4-core Linux ARM machine, the rest directly on an Apple M4. Very small data (about 10 MB).",
+    "evidence": "BenchBox run list, TPC-H SF 0.01, runs dated 2026-10-26, power phase, 22 queries, ordered by the \"Geomean latency\" column: SQLite 13 ms, DataFusion 15 ms, ClickHouse Local 16 ms. Run ids: cac6f1fc, ae3f2603, d1e2919d."
   },
   {
     "id": 75,

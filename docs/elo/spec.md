@@ -14,8 +14,10 @@ An optional `scale` (e.g. `"SF 10"`) marks one scale of a page that lists separa
 (benchbox.dev) a match is all the runs of one benchmark at one scale on one run date: `date` is the run
 date, `source` the page filtered to that benchmark and scale, and runs from different dates are never
 combined. A run list is left out when every engine in it also ran that benchmark at a larger scale in one
-match on that date (the same engines, or a subset of them), so one day's testing is not counted two or
-three times; a scale with an engine that the larger match lacks stays a match of its own. The scale is shown next to the workload in the match log and does not affect ratings.
+match on that date (the same engines, or a subset of them) and they finished in the same order, so one
+result is not counted two or three times. A scale stays a match of its own when it has an engine that the
+larger match lacks, or when its engines finished in a different order: some products do better on small
+data than on large. The scale is shown next to the workload in the match log and does not affect ratings.
 Two optional text fields explain a match. `comment` is a short plain-language caveat for visitors
 (at most 280 characters: who ran it, what was left out, known defects) and is always visible in the
 match log. `evidence` is the longer record of which table or figure the order came from; the log
@@ -97,8 +99,8 @@ web fetch tools) to find public benchmark reports published after the newest mat
   engine names are mapped to canonical names through `data/elo/aliases.json`;
   candidates whose normalized URL + workload + date (+ scale, when both have one) already exist are
   dropped (a page republished with new results on a later date is a new match); a match
-  whose engines all appear in a larger-scale match on the same page with the same workload and date is
-  dropped (candidates are skipped, recorded matches are returned as `superseded`); invalid
+  whose engines all appear, in the same order, in a larger-scale match on the same page with the same
+  workload and date is dropped (candidates are skipped, recorded matches are returned as `superseded`); invalid
   candidates (bad date, <2 engines, duplicate engine, non-http source, future date) are
   rejected with a reason; survivors get the next free ids.
 - **Default is a dry run** that prints candidates. `--write` appends them to
