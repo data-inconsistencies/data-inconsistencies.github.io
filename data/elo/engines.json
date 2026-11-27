@@ -11,6 +11,12 @@
     "bestFor": "SQL warehousing and BI for teams already on AWS",
     "playground": "Engines"
   },
+  "Apache DataFusion Comet": {
+    "url": "https://datafusion.apache.org/comet/",
+    "description": "Open-source Spark plugin that runs Spark SQL on native DataFusion operators.",
+    "bestFor": "Faster open-source Spark you tune yourself",
+    "playground": "Engines"
+  },
   "Apache Doris": {
     "url": "https://doris.apache.org/",
     "description": "Open-source MPP analytical database with real-time ingestion and MySQL-compatible SQL.",
@@ -129,6 +135,12 @@
     "url": "https://www.oracle.com/mysql/",
     "description": "Oracle's managed MySQL service with an in-memory, massively parallel query accelerator.",
     "bestFor": "Analytics on live MySQL data without a separate warehouse",
+    "playground": "Engines"
+  },
+  "Onehouse Quanton": {
+    "url": "https://www.onehouse.ai/product/quanton",
+    "description": "Onehouse's commercial native engine for Spark, built on a Velox fork, with its own optimizer rules.",
+    "bestFor": "Speeding up existing Spark jobs without rewriting them",
     "playground": "Engines"
   },
   "Pandas": {
