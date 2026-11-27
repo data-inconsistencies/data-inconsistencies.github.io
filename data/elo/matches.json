@@ -846,16 +846,19 @@
     "evidence": "BenchBox run list, TPC-H SF 0.1, runs dated 2026-11-11, standard phase, 22 queries, ordered by the \"Geomean latency\" column: DuckDB 7 ms, Polars 11 ms. Run ids: d8b0b97f, 27561037."
   },
   {
-    "id": 78,
-    "date": "2026-11-25",
-    "source": "https://medium.com/@menishmueli/onehouse-quanton-vs-spark-4-1-the-10-tb-tpc-ds-benchmark-analyzed-with-dataflint-f087e7864bdf",
+    "id": 79,
+    "date": "2026-11-01",
+    "source": "https://quanton.dev/benchmarks/",
     "workload": "TPC-DS",
     "ranking": [
       "Onehouse Quanton",
+      "Databricks",
+      "Amazon EMR",
+      "Apache Gluten",
       "Apache DataFusion Comet",
       "Apache Spark"
     ],
-    "comment": "Vendor-run: runs and logs from Onehouse, Quanton with its own config; DataFlint wrote it up. One round, all on Spark 4.1.3. Comet is the tuned run from part 1 and failed 2 of 103 queries; its total covers the other 101.",
-    "evidence": "TPC-DS 10 TB, summed per-query latency over the 103 queries on the same 10-executor cluster: Quanton 30 min, Spark 4.1 2 h 55 m (5.8× slower); tuned Comet 1.5× faster than Spark, and 3.8× slower than Quanton on the 100 queries both finished."
+    "comment": "Run and published by Onehouse, which sells Quanton. One round, no warmup. AWS EMR leaves out Q30; Comet and Gluten were tuned, and Comet ran Q14a/b separately. Photon ran on Spark 4.2, the rest on Spark 4.1.",
+    "evidence": "Benchmarks page, TPC-DS section (updated November 2026, day not given; dated 2026-11-01), 10 TB, 99 queries as 103 statements, 11 x m8gd.4xlarge, total runtime as text: Quanton (Spark 4.1) 1,480 s, Databricks Photon (DBR 19) 1,892 s, AWS EMR 8.1 4,725 s, Gluten 1.7 tuned 7,219 s, Comet 1.2.0 tuned 7,508 s, OSS Spark 4.1.3 10,506 s. Tuned figures used for Comet and Gluten, as the page headline does. The September 2026 Spark 3.5 run on the same page is replaced by this one. TPCx-BB, TPC-DI, LakeLoader and compaction sections skipped: ratios vs Spark only, undated. Replaces the DataFlint write-up of the same Onehouse runs (medium.com/@menishmueli, 2026-11-25; earlier Quanton build, 1,810 s), which was match 78 and is dropped so the runs count once; this page adds Photon, EMR and Gluten."
   }
 ]

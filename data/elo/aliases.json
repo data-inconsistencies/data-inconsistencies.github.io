@@ -29,5 +29,13 @@
   "ClickHouse Local": "ClickHouse",
   "Sqlite": "SQLite",
   "ClickHouse Server": "ClickHouse",
-  "Doris": "Apache Doris"
+  "Doris": "Apache Doris",
+  "Quanton": "Onehouse Quanton",
+  "Databricks Photon": "Databricks",
+  "Photon": "Databricks",
+  "AWS EMR": "Amazon EMR",
+  "EMR": "Amazon EMR",
+  "Gluten": "Apache Gluten",
+  "Comet": "Apache DataFusion Comet",
+  "DataFusion Comet": "Apache DataFusion Comet"
 }

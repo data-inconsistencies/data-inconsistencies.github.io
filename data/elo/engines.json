@@ -5,6 +5,12 @@
     "bestFor": "Transactional apps on AWS with light analytics",
     "playground": "Engines"
   },
+  "Amazon EMR": {
+    "url": "https://aws.amazon.com/emr/",
+    "description": "AWS managed service for running Apache Spark and other open-source big-data engines.",
+    "bestFor": "Running Spark jobs on AWS without managing the cluster software",
+    "playground": "Engines"
+  },
   "Amazon Redshift": {
     "url": "https://aws.amazon.com/redshift/",
     "description": "AWS's managed columnar cloud data warehouse, provisioned or serverless.",
@@ -15,6 +21,12 @@
     "url": "https://datafusion.apache.org/comet/",
     "description": "Open-source Spark plugin that runs Spark SQL on native DataFusion operators.",
     "bestFor": "Faster open-source Spark you tune yourself",
+    "playground": "Engines"
+  },
+  "Apache Gluten": {
+    "url": "https://gluten.apache.org/",
+    "description": "Spark plugin that offloads Spark SQL to native engines such as Velox and ClickHouse.",
+    "bestFor": "Speeding up existing Spark SQL jobs on a native backend",
     "playground": "Engines"
   },
   "Apache Doris": {
