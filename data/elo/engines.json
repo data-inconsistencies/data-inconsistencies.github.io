@@ -5,6 +5,12 @@
     "bestFor": "Transactional apps on AWS with light analytics",
     "playground": "Engines"
   },
+  "Amazon EMR": {
+    "url": "https://aws.amazon.com/emr/",
+    "description": "AWS managed service for running Apache Spark and other open-source big-data engines.",
+    "bestFor": "Running Spark jobs on AWS without managing the cluster software",
+    "playground": "Engines"
+  },
   "Amazon Redshift": {
     "url": "https://aws.amazon.com/redshift/",
     "description": "AWS's managed columnar cloud data warehouse, provisioned or serverless.",
@@ -28,6 +34,18 @@
     "description": "Open lakehouse table format with record-level upserts, deletes and incremental pulls.",
     "bestFor": "Streaming upserts and CDC into a data lake",
     "playground": "Table formats"
+  },
+  "Apache DataFusion Comet": {
+    "url": "https://datafusion.apache.org/comet/",
+    "description": "Spark plugin that runs Spark SQL on the native DataFusion engine.",
+    "bestFor": "Speeding up existing Spark SQL jobs without rewriting them",
+    "playground": "Engines"
+  },
+  "Apache Gluten": {
+    "url": "https://gluten.apache.org/",
+    "description": "Spark plugin that offloads Spark SQL to native engines such as Velox and ClickHouse.",
+    "bestFor": "Speeding up existing Spark SQL jobs on a native backend",
+    "playground": "Engines"
   },
   "Apache Spark": {
     "url": "https://spark.apache.org/",
@@ -147,6 +165,12 @@
     "url": "https://www.postgresql.org/",
     "description": "Open-source row-oriented relational database with a large extension ecosystem.",
     "bestFor": "Transactional apps that also need moderate SQL analytics",
+    "playground": "Engines"
+  },
+  "Quanton": {
+    "url": "https://quanton.dev/",
+    "description": "Onehouse engine that runs existing Spark jobs faster on Kubernetes clusters.",
+    "bestFor": "Cutting the cost of Spark ETL on lakehouse tables",
     "playground": "Engines"
   },
   "Power BI Datamart": {
