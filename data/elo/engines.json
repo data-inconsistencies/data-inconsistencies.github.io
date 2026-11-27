@@ -17,6 +17,18 @@
     "bestFor": "SQL warehousing and BI for teams already on AWS",
     "playground": "Engines"
   },
+  "Apache DataFusion Comet": {
+    "url": "https://datafusion.apache.org/comet/",
+    "description": "Open-source Spark plugin that runs Spark SQL on native DataFusion operators.",
+    "bestFor": "Faster open-source Spark you tune yourself",
+    "playground": "Engines"
+  },
+  "Apache Gluten": {
+    "url": "https://gluten.apache.org/",
+    "description": "Spark plugin that offloads Spark SQL to native engines such as Velox and ClickHouse.",
+    "bestFor": "Speeding up existing Spark SQL jobs on a native backend",
+    "playground": "Engines"
+  },
   "Apache Doris": {
     "url": "https://doris.apache.org/",
     "description": "Open-source MPP analytical database with real-time ingestion and MySQL-compatible SQL.",
@@ -34,18 +46,6 @@
     "description": "Open lakehouse table format with record-level upserts, deletes and incremental pulls.",
     "bestFor": "Streaming upserts and CDC into a data lake",
     "playground": "Table formats"
-  },
-  "Apache DataFusion Comet": {
-    "url": "https://datafusion.apache.org/comet/",
-    "description": "Spark plugin that runs Spark SQL on the native DataFusion engine.",
-    "bestFor": "Speeding up existing Spark SQL jobs without rewriting them",
-    "playground": "Engines"
-  },
-  "Apache Gluten": {
-    "url": "https://gluten.apache.org/",
-    "description": "Spark plugin that offloads Spark SQL to native engines such as Velox and ClickHouse.",
-    "bestFor": "Speeding up existing Spark SQL jobs on a native backend",
-    "playground": "Engines"
   },
   "Apache Spark": {
     "url": "https://spark.apache.org/",
@@ -149,6 +149,12 @@
     "bestFor": "Analytics on live MySQL data without a separate warehouse",
     "playground": "Engines"
   },
+  "Onehouse Quanton": {
+    "url": "https://www.onehouse.ai/product/quanton",
+    "description": "Onehouse's commercial native engine for Spark, built on a Velox fork, with its own optimizer rules.",
+    "bestFor": "Speeding up existing Spark jobs without rewriting them",
+    "playground": "Engines"
+  },
   "Pandas": {
     "url": "https://pandas.pydata.org/",
     "description": "The standard Python DataFrame library for data manipulation and analysis.",
@@ -165,12 +171,6 @@
     "url": "https://www.postgresql.org/",
     "description": "Open-source row-oriented relational database with a large extension ecosystem.",
     "bestFor": "Transactional apps that also need moderate SQL analytics",
-    "playground": "Engines"
-  },
-  "Quanton": {
-    "url": "https://quanton.dev/",
-    "description": "Onehouse engine that runs existing Spark jobs faster on Kubernetes clusters.",
-    "bestFor": "Cutting the cost of Spark ETL on lakehouse tables",
     "playground": "Engines"
   },
   "Power BI Datamart": {
