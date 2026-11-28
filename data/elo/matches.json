@@ -860,5 +860,51 @@
     ],
     "comment": "Run and published by Onehouse, which sells Quanton. One round, no warmup. AWS EMR leaves out Q30; Comet and Gluten were tuned, and Comet ran Q14a/b separately. Photon ran on Spark 4.2, the rest on Spark 4.1.",
     "evidence": "Benchmarks page, TPC-DS section (updated November 2026, day not given; dated 2026-11-01), 10 TB, 99 queries as 103 statements, 11 x m8gd.4xlarge, total runtime as text: Quanton (Spark 4.1) 1,480 s, Databricks Photon (DBR 19) 1,892 s, AWS EMR 8.1 4,725 s, Gluten 1.7 tuned 7,219 s, Comet 1.2.0 tuned 7,508 s, OSS Spark 4.1.3 10,506 s. Tuned figures used for Comet and Gluten, as the page headline does. The September 2026 Spark 3.5 run on the same page is replaced by this one. TPCx-BB, TPC-DI, LakeLoader and compaction sections skipped: ratios vs Spark only, undated. Replaces the DataFlint write-up of the same Onehouse runs (medium.com/@menishmueli, 2026-11-25; earlier Quanton build, 1,810 s), which was match 78 and is dropped so the runs count once; this page adds Photon, EMR and Gluten."
+  },
+  {
+    "id": 80,
+    "date": "2026-11-27",
+    "source": "https://benchmark.clickhouse.com/",
+    "workload": "ClickBench",
+    "scale": "c6a.4xlarge",
+    "ranking": [
+      "CedarDB",
+      "ClickHouse",
+      "DuckDB",
+      "DataFusion",
+      "Polars",
+      "LakeSail",
+      "StarRocks",
+      "Apache Doris",
+      "Exasol",
+      "Trino",
+      "Apache Spark",
+      "PostgreSQL"
+    ],
+    "comment": "Run and published by ClickHouse. One flat table (web analytics hits), so no joins: it tests scans, filters and aggregation. Only entries on the c6a.4xlarge machine, which leaves out cloud services.",
+    "evidence": "ClickBench default view, Combined score (lower is better, ×1.00 = best of all entries), c6a.4xlarge only, best entry per product: CedarDB: CedarDB ×3.50 (2026-11-10); ClickHouse: ClickHouse ×3.73 (2026-11-27); DuckDB: DuckDB ×8.17 (2026-11-12); DataFusion: DataFusion (Vortex, partitioned) ×9.42 (2026-11-15); Polars: Polars (Parquet) ×9.51 (2026-11-11); LakeSail: Sail (Parquet) ×12.39 (2026-10-12); StarRocks: StarRocks ×16.98 (2026-11-12); Apache Doris: Doris (Iceberg) ×22.54 (2026-11-08); Exasol: Exasol ×23.21 (2026-11-08); Trino: Trino (Parquet, partitioned) ×37.90 (2026-11-14); Apache Spark: Spark (Iceberg) ×105.31 (2026-11-08); PostgreSQL: PostgreSQL ×2706.69 (2026-09-21). Dated to the newest of these results; written by npm run clickbench, which replaces this match on each refresh."
+  },
+  {
+    "id": 81,
+    "date": "2026-11-27",
+    "source": "https://benchmark.clickhouse.com/",
+    "workload": "ClickBench",
+    "scale": "c8g.metal-48xl",
+    "ranking": [
+      "CedarDB",
+      "ClickHouse",
+      "Polars",
+      "DataFusion",
+      "DuckDB",
+      "LakeSail",
+      "StarRocks",
+      "Apache Doris",
+      "Exasol",
+      "Trino",
+      "Apache Spark",
+      "PostgreSQL"
+    ],
+    "comment": "Run and published by ClickHouse. One flat table (web analytics hits), so no joins: it tests scans, filters and aggregation. Only entries on the c8g.metal-48xl machine, which leaves out cloud services.",
+    "evidence": "ClickBench default view, Combined score (lower is better, ×1.00 = best of all entries), c8g.metal-48xl only, best entry per product: CedarDB: CedarDB ×1.92 (2026-11-10); ClickHouse: ClickHouse (web) ×2.11 (2026-11-27); Polars: Polars (Parquet) ×4.38 (2026-11-11); DataFusion: DataFusion (Vortex, partitioned) ×4.45 (2026-11-15); DuckDB: DuckDB ×4.67 (2026-11-10); LakeSail: Sail (Parquet) ×6.21 (2026-10-12); StarRocks: StarRocks ×6.38 (2026-09-07); Apache Doris: Doris (Iceberg) ×11.95 (2026-11-08); Exasol: Exasol ×13.47 (2026-11-08); Trino: Trino (Parquet, partitioned) ×22.06 (2026-11-14); Apache Spark: Spark ×117.74 (2026-05-11); PostgreSQL: PostgreSQL ×292.77 (2026-09-19). Dated to the newest of these results; written by npm run clickbench, which replaces this match on each refresh."
   }
 ]

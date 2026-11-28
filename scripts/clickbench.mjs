@@ -1,15 +1,17 @@
 #!/usr/bin/env node
-// Refresh data/elo/clickbench.json from ClickBench's published results.
+// Refresh data/elo/clickbench.json and the ClickBench matches in data/elo/matches.json
+// from ClickBench's published results.
 //   npm run clickbench            # download from GitHub
 //   npm run clickbench -- <file>  # use a local copy of data.generated.js
-// See docs/elo/spec.md ("ClickBench column").
+// See docs/elo/spec.md ("ClickBench column", "ClickBench matches").
 
 import { readFileSync, writeFileSync } from 'node:fs';
-import { parseDataJs, scoreEntries, rankForEngines } from './lib/clickbench.mjs';
+import { parseDataJs, scoreEntries, rankForEngines, clickbenchMatch, upsertClickbenchMatches, REFERENCE_MACHINES } from './lib/clickbench.mjs';
 
 const SOURCE = 'https://raw.githubusercontent.com/ClickHouse/ClickBench/main/data.generated.js';
 const MAP = new URL('../data/elo/clickbench-map.json', import.meta.url);
 const OUT = new URL('../data/elo/clickbench.json', import.meta.url);
+const MATCHES = new URL('../data/elo/matches.json', import.meta.url);
 
 // Why a mapped engine has no entry in the default view, in the site's own terms.
 function hiddenReasons(data, mapping, ranked) {
@@ -39,7 +41,8 @@ async function main() {
 
   const data = parseDataJs(js);
   const mapping = JSON.parse(readFileSync(MAP, 'utf8'));
-  const { systems, engines } = rankForEngines(scoreEntries(data), mapping);
+  const scored = scoreEntries(data);
+  const { systems, engines } = rankForEngines(scored, mapping);
 
   const out = {
     source: 'https://benchmark.clickhouse.com/',
@@ -63,6 +66,15 @@ async function main() {
   }
   for (const [engine, v] of Object.entries(out.hidden)) console.log(`${engine.padEnd(18)} — ${v}`);
   console.log(`${systems} ClickBench systems in the default view.`);
+
+  const matches = JSON.parse(readFileSync(MATCHES, 'utf8'));
+  const updated = upsertClickbenchMatches(matches, REFERENCE_MACHINES, (id, machine) => clickbenchMatch(scored, mapping, id, machine));
+  writeFileSync(MATCHES, `${JSON.stringify(updated, null, 2)}\n`);
+  for (const machine of REFERENCE_MACHINES) {
+    const m = updated.find((x) => x.workload === 'ClickBench' && x.scale === machine);
+    console.log(m ? `ClickBench match #${m.id} (${m.date}, ${machine}): ${m.ranking.map((r) => [r].flat().join(' = ')).join(' > ')}`
+      : `No ClickBench match on ${machine}: fewer than two engines there.`);
+  }
 }
 
 main().catch((err) => { console.error(err.message ?? err); process.exit(1); });

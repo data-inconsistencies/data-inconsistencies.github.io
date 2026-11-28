@@ -99,3 +99,61 @@ export function rankForEngines(scored, mapping) {
   }
   return { systems: bestPerSystem.length, engines };
 }
+
+// The ClickBench matches (docs/elo/spec.md, "ClickBench matches"): one per reference machine, best
+// entry per engine on that machine, ordered by Combined score; equal scores at two decimals tie.
+export const CLICKBENCH_SOURCE = 'https://benchmark.clickhouse.com/';
+export const REFERENCE_MACHINES = ['c6a.4xlarge', 'c8g.metal-48xl'];
+const comment = (machine) => 'Run and published by ClickHouse. One flat table (web analytics hits), so no joins: it tests scans, '
+  + `filters and aggregation. Only entries on the ${machine} machine, which leaves out cloud services.`;
+
+export function clickbenchMatch(scored, mapping, id, machine) {
+  const best = [];
+  for (const [engine, systems] of Object.entries(mapping)) {
+    const e = scored.filter((s) => s.machine === machine && systems.includes(s.system))
+      .sort((a, b) => a.score - b.score)[0];
+    if (e) best.push({ engine, ...e, rounded: e.score.toFixed(2) });
+  }
+  if (best.length < 2) return null;
+  best.sort((a, b) => a.score - b.score || a.engine.localeCompare(b.engine));
+
+  const ranking = [];
+  for (let i = 0; i < best.length;) {
+    let j = i;
+    while (j + 1 < best.length && best[j + 1].rounded === best[i].rounded) j++;
+    const group = best.slice(i, j + 1).map((b) => b.engine);
+    ranking.push(group.length > 1 ? group : group[0]);
+    i = j + 1;
+  }
+  const date = best.map((b) => b.date).sort().at(-1);
+  return {
+    id,
+    date,
+    source: CLICKBENCH_SOURCE,
+    workload: 'ClickBench',
+    scale: machine,
+    ranking,
+    comment: comment(machine),
+    evidence: `ClickBench default view, Combined score (lower is better, ×1.00 = best of all entries), `
+      + `${machine} only, best entry per product: `
+      + best.map((b) => `${b.engine}: ${b.system} ×${b.rounded} (${b.date})`).join('; ')
+      + `. Dated to the newest of these results; written by npm run clickbench, which replaces this match on each refresh.`,
+  };
+}
+
+const isClickbench = (m) => m.workload === 'ClickBench' && m.source === CLICKBENCH_SOURCE;
+
+// For each machine, put the match built by build(id, machine) where that machine's old one was
+// (keeping its id), or append it with the next free id; build returning null removes it.
+// ClickBench matches for machines not in the list are removed.
+export function upsertClickbenchMatches(matches, machines, build) {
+  let out = matches.filter((m) => !isClickbench(m) || machines.includes(m.scale));
+  for (const machine of machines) {
+    const i = out.findIndex((m) => isClickbench(m) && m.scale === machine);
+    const id = i >= 0 ? out[i].id : Math.max(0, ...out.map((m) => m.id)) + 1;
+    const match = build(id, machine);
+    out = out.filter((_, k) => k !== i);
+    if (match) out.splice(i >= 0 ? i : out.length, 0, match);
+  }
+  return out;
+}
