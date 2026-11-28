@@ -1,7 +1,7 @@
 name: Monthly ELO reminder
 
 # On the 1st of each month:
-# 1. Refresh the ClickBench comparison (no API key needed) and open a PR if it changed.
+# 1. Refresh the ClickBench comparison and match (no API key needed) and open a PR if they changed.
 # 2. Open a reminder issue assigned to the committers, so GitHub emails them to run the
 #    match search by hand (docs/elo/finding-matches.md). Last month's reminder is closed.
 # Setup: Settings > Actions > General > "Allow GitHub Actions to create and approve pull requests".
@@ -42,20 +42,20 @@ jobs:
           BRANCH: bot/clickbench-refresh
         run: |
           npm run clickbench
-          if git diff --quiet -- data/elo/clickbench.json; then
+          if git diff --quiet -- data/elo/clickbench.json data/elo/matches.json; then
             echo "ClickBench comparison unchanged."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -C "$BRANCH"
-          git add data/elo/clickbench.json
+          git add data/elo/clickbench.json data/elo/matches.json
           git commit -m "Refresh ClickBench comparison $(date -u +%Y-%m-%d)"
           git push --force origin "$BRANCH"
           if ! gh pr view "$BRANCH" --json state --jq .state 2>/dev/null | grep -q OPEN; then
             gh pr create --base main --head "$BRANCH" \
               --title "Refresh ClickBench comparison ($(date -u +%Y-%m-%d))" \
-              --body "Monthly refresh of \`data/elo/clickbench.json\` from ClickBench's published results (\`npm run clickbench\`). Check the leaderboard's ClickBench column in the Netlify preview before merging."
+              --body "Monthly refresh of \`data/elo/clickbench.json\` and the ClickBench match in \`data/elo/matches.json\` from ClickBench's published results (\`npm run clickbench\`). Check the leaderboard's ClickBench column and the ClickBench match in the Netlify preview before merging."
           fi
           git switch -q -
 

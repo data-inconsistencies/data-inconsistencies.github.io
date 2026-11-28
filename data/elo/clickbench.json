@@ -1,12 +1,12 @@
 {
   "source": "https://benchmark.clickhouse.com/",
   "metric": "Combined, default view; lower is better, 1.00 = best",
-  "updated": "2026-11-24",
+  "updated": "2026-11-28",
   "systems": 126,
   "engines": {
     "Amazon Aurora": {
       "rank": 119,
-      "score": 663.52,
+      "score": 663.94,
       "system": "Aurora for PostgreSQL",
       "machine": "Aurora: 16acu",
       "date": "2022-07-01"
@@ -20,84 +20,84 @@
     },
     "Apache Doris": {
       "rank": 65,
-      "score": 12.03,
+      "score": 11.95,
       "system": "Doris (Iceberg)",
       "machine": "c8g.metal-48xl",
       "date": "2026-11-08"
     },
     "Apache Spark": {
       "rank": 111,
-      "score": 106.03,
+      "score": 105.31,
       "system": "Spark (Iceberg)",
       "machine": "c6a.4xlarge",
       "date": "2026-11-08"
     },
     "CedarDB": {
       "rank": 2,
-      "score": 1.84,
+      "score": 1.83,
       "system": "CedarDB",
       "machine": "c7a.metal-48xl",
       "date": "2026-11-10"
     },
     "ClickHouse": {
       "rank": 3,
-      "score": 2.04,
+      "score": 2.05,
       "system": "ClickHouse ☁️ (gcp)",
       "machine": "ClickHouse ☁️: 356GiB",
-      "date": "2026-11-23"
+      "date": "2026-11-27"
     },
     "Databricks": {
       "rank": 76,
-      "score": 15.02,
+      "score": 15.03,
       "system": "Databricks",
       "machine": "XL",
       "date": "2025-11-13"
     },
     "DataFusion": {
-      "rank": 22,
-      "score": 4.47,
+      "rank": 23,
+      "score": 4.45,
       "system": "DataFusion (Vortex, partitioned)",
       "machine": "c8g.metal-48xl",
       "date": "2026-11-15"
     },
     "DuckDB": {
-      "rank": 26,
-      "score": 4.7,
+      "rank": 27,
+      "score": 4.67,
       "system": "DuckDB",
       "machine": "c8g.metal-48xl",
       "date": "2026-11-10"
     },
     "Exasol": {
       "rank": 72,
-      "score": 13.56,
+      "score": 13.47,
       "system": "Exasol",
       "machine": "c8g.metal-48xl",
       "date": "2026-11-08"
     },
     "Google BigQuery": {
       "rank": 85,
-      "score": 20.99,
+      "score": 21,
       "system": "Bigquery",
       "machine": "serverless",
       "date": "2025-10-28"
     },
     "LakeSail": {
       "rank": 43,
-      "score": 6.24,
+      "score": 6.21,
       "system": "Sail (Parquet)",
       "machine": "c8g.metal-48xl",
       "date": "2026-10-12"
     },
     "Polars": {
-      "rank": 20,
-      "score": 4.39,
+      "rank": 21,
+      "score": 4.38,
       "system": "Polars (Parquet)",
       "machine": "c8g.metal-48xl",
       "date": "2026-11-11"
     },
     "PostgreSQL": {
       "rank": 116,
-      "score": 294.75,
+      "score": 292.77,
       "system": "PostgreSQL",
       "machine": "c8g.metal-48xl",
       "date": "2026-09-19"
@@ -111,14 +111,14 @@
     },
     "StarRocks": {
       "rank": 45,
-      "score": 6.42,
+      "score": 6.38,
       "system": "StarRocks",
       "machine": "c8g.metal-48xl",
       "date": "2026-09-07"
     },
     "Trino": {
       "rank": 86,
-      "score": 22.14,
+      "score": 22.06,
       "system": "Trino (Parquet, partitioned)",
       "machine": "c8g.metal-48xl",
       "date": "2026-11-14"

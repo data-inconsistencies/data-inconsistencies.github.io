@@ -99,3 +99,54 @@ export function rankForEngines(scored, mapping) {
   }
   return { systems: bestPerSystem.length, engines };
 }
+
+// The single ClickBench match (docs/elo/spec.md, "ClickBench match"): best entry per engine on the
+// reference machine, ordered by Combined score; equal scores at two decimals tie.
+export const CLICKBENCH_SOURCE = 'https://benchmark.clickhouse.com/';
+export const REFERENCE_MACHINE = 'c6a.4xlarge';
+const COMMENT = 'Run and published by ClickHouse. One flat table (web analytics hits), so no joins: it tests scans, '
+  + 'filters and aggregation. Only entries on the reference c6a.4xlarge machine, which leaves out cloud services.';
+
+export function clickbenchMatch(scored, mapping, id) {
+  const best = [];
+  for (const [engine, systems] of Object.entries(mapping)) {
+    const e = scored.filter((s) => s.machine === REFERENCE_MACHINE && systems.includes(s.system))
+      .sort((a, b) => a.score - b.score)[0];
+    if (e) best.push({ engine, ...e, rounded: e.score.toFixed(2) });
+  }
+  if (best.length < 2) return null;
+  best.sort((a, b) => a.score - b.score || a.engine.localeCompare(b.engine));
+
+  const ranking = [];
+  for (let i = 0; i < best.length;) {
+    let j = i;
+    while (j + 1 < best.length && best[j + 1].rounded === best[i].rounded) j++;
+    const group = best.slice(i, j + 1).map((b) => b.engine);
+    ranking.push(group.length > 1 ? group : group[0]);
+    i = j + 1;
+  }
+  const date = best.map((b) => b.date).sort().at(-1);
+  return {
+    id,
+    date,
+    source: CLICKBENCH_SOURCE,
+    workload: 'ClickBench',
+    ranking,
+    comment: COMMENT,
+    evidence: `ClickBench default view, Combined score (lower is better, ×1.00 = best of all entries), `
+      + `${REFERENCE_MACHINE} only, best entry per product: `
+      + best.map((b) => `${b.engine}: ${b.system} ×${b.rounded} (${b.date})`).join('; ')
+      + `. Dated to the newest of these results; written by npm run clickbench, which replaces this match on each refresh.`,
+  };
+}
+
+// Put the ClickBench match built by build(id) where the old one was (keeping its id), or append it
+// with the next free id. build returning null removes it.
+export function upsertClickbenchMatch(matches, build) {
+  const i = matches.findIndex((m) => m.workload === 'ClickBench' && m.source === CLICKBENCH_SOURCE);
+  const id = i >= 0 ? matches[i].id : Math.max(0, ...matches.map((m) => m.id)) + 1;
+  const match = build(id);
+  const out = matches.filter((_, k) => k !== i);
+  if (match) out.splice(i >= 0 ? i : out.length, 0, match);
+  return out;
+}

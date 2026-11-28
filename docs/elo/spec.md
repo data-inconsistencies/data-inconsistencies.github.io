@@ -7,7 +7,7 @@
 { "id": 18,                                  // stable unique integer
   "date": "2024-04-17",                      // date the report was published
   "source": "https://pola.rs/posts/benchmarks/",
-  "workload": "TPC-H",                       // TPC-H | TPC-DS | SSB | CH-benCHmark | Join Order Benchmark | other
+  "workload": "TPC-H",                       // TPC-H | TPC-DS | SSB | ClickBench | CH-benCHmark | Join Order Benchmark | other
   "ranking": ["Polars", "DuckDB", "Apache Spark", "Dask", "Pandas", "Modin"] }  // 1st → last
 ```
 An optional `scale` (e.g. `"SF 10"`) marks one scale of a page that lists separate runs. On such a page
@@ -58,7 +58,7 @@ Initial data is imported from the existing "RAW" sheet (19 matches, 2022-01 → 
 ## Page
 `/rankings/`:
 1. Playground switch (Engines by default, Table formats) and workload filter (All, TPC-H, TPC-DS, SSB,
-   CH-benCHmark, Join Order Benchmark, only workloads with matches in the chosen playground) —
+   ClickBench, CH-benCHmark, Join Order Benchmark, only workloads with matches in the chosen playground) —
    recompute ratings from the filtered matches. Below the buttons, a short panel describes the chosen
    benchmark: what it is, its shape (tables, queries, schema), what it tests (joins, flat-table scans,
    optimizer, …) and a link. Text lives in `data/elo/workloads.json`; every workload needs an entry
@@ -132,6 +132,22 @@ ClickHouse, so a useful contrast to the join-heavy TPC suites behind the ELO.
   such as pg_duckdb or Spark accelerators). The engine gets its best-scoring entry.
 - **Rank:** position among ClickBench systems, one row per system (the site's "best" toggle),
   e.g. `#14 of 120`. Engines with no entry in the default view show "—".
+
+## ClickBench match
+ClickBench also counts as one match (workload `ClickBench`), written by the same `npm run clickbench`
+into `data/elo/matches.json`, so the column and the match always come from one download.
+
+- **Like with like:** only entries on ClickBench's reference machine, **c6a.4xlarge**, from the scored
+  default view above. Each ELO engine gets its best entry there (same mapping as the column); engines
+  with no entry on that machine (cloud services, serverless) are not in the match. The order is by
+  Combined score, best first; engines whose scores round to the same two decimals tie.
+- **Counted once:** ClickBench is a live leaderboard, not a dated report, so there is exactly one
+  ClickBench match. Each refresh replaces it in place and keeps its `id` (a new one gets the next free
+  id). Its `date` is the newest result date among the entries in it, so a refresh that changes no
+  result changes nothing, and decay ages it like any report.
+- `source` is `https://benchmark.clickhouse.com/`; `comment` says ClickHouse runs the benchmark and it is
+  one flat table; `evidence` lists each engine's system, score and result date.
+- `find-matches` already skips the page, since its URL is in the data.
 
 ## WebMCP (tools for AI agents)
 `/rankings/` registers [WebMCP](https://webmachinelearning.github.io/webmcp/) tools, so an AI agent

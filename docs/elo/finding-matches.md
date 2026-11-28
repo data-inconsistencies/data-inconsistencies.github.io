@@ -27,7 +27,8 @@ What it should do, and what to check it did:
 
 1. Search for TPC-H, TPC-DS, SSB, CH-benCHmark, Join Order Benchmark (JOB) and ClickBench-style
    comparisons of analytics engines published after the newest `date` in
-   `data/elo/matches.json`. Include pages republished with new results.
+   `data/elo/matches.json`. Include pages republished with new results. Skip
+   benchmark.clickhouse.com itself: `npm run clickbench` keeps its one match current.
 2. Read each report (not search snippets). Record `date`, `source`, `workload`, `ranking` (fastest
    first; nested array = tie) and one sentence of `evidence` naming the table or figure used.
    Add a `comment` (at most 280 characters, shown to visitors) when a reader should know something:

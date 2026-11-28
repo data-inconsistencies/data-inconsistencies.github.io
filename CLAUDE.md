@@ -28,6 +28,8 @@ Hugo Blox (Tailwind v4, `github.com/HugoBlox/kit/modules/blox`) landing site, de
   `scripts/lib/clickbench.mjs` ports ClickBench's default "Combined" ranking — re-check it against
   benchmark.clickhouse.com if their index.html scoring changes. Product → ClickBench systems mapping:
   `data/elo/clickbench-map.json` (add an entry when a new ELO engine appears).
+  It also keeps the one `ClickBench` match in `matches.json` (c6a.4xlarge entries only, replaced in place on each
+  refresh, same id); don't add ClickBench matches by hand.
 - Benchmark descriptions under the workload buttons: `data/elo/workloads.json` (a test fails if a workload has none).
 - Product links: `data/elo/engines.json` (url, one-line `description`, `bestFor` use case and `playground` per engine; a test fails if an ELO engine or field is missing). `playground` (`Engines` | `Table formats`, list in `PLAYGROUNDS` in `elo.mjs`) puts the engine in a separate league; set it when adding an engine. Shown as the "What it is" / "Best for" leaderboard columns.
   Engine names on /rankings/ link there and send GA4 event `engine_click`
