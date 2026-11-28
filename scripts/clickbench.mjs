@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-// Refresh data/elo/clickbench.json and the ClickBench match in data/elo/matches.json
+// Refresh data/elo/clickbench.json and the ClickBench matches in data/elo/matches.json
 // from ClickBench's published results.
 //   npm run clickbench            # download from GitHub
 //   npm run clickbench -- <file>  # use a local copy of data.generated.js
-// See docs/elo/spec.md ("ClickBench column", "ClickBench match").
+// See docs/elo/spec.md ("ClickBench column", "ClickBench matches").
 
 import { readFileSync, writeFileSync } from 'node:fs';
-import { parseDataJs, scoreEntries, rankForEngines, clickbenchMatch, upsertClickbenchMatch, REFERENCE_MACHINE } from './lib/clickbench.mjs';
+import { parseDataJs, scoreEntries, rankForEngines, clickbenchMatch, upsertClickbenchMatches, REFERENCE_MACHINES } from './lib/clickbench.mjs';
 
 const SOURCE = 'https://raw.githubusercontent.com/ClickHouse/ClickBench/main/data.generated.js';
 const MAP = new URL('../data/elo/clickbench-map.json', import.meta.url);
@@ -68,11 +68,13 @@ async function main() {
   console.log(`${systems} ClickBench systems in the default view.`);
 
   const matches = JSON.parse(readFileSync(MATCHES, 'utf8'));
-  const updated = upsertClickbenchMatch(matches, (id) => clickbenchMatch(scored, mapping, id));
+  const updated = upsertClickbenchMatches(matches, REFERENCE_MACHINES, (id, machine) => clickbenchMatch(scored, mapping, id, machine));
   writeFileSync(MATCHES, `${JSON.stringify(updated, null, 2)}\n`);
-  const m = updated.find((x) => x.workload === 'ClickBench');
-  console.log(m ? `ClickBench match #${m.id} (${m.date}, ${REFERENCE_MACHINE}): ${m.ranking.map((r) => [r].flat().join(' = ')).join(' > ')}`
-    : 'No ClickBench match: fewer than two engines on the reference machine.');
+  for (const machine of REFERENCE_MACHINES) {
+    const m = updated.find((x) => x.workload === 'ClickBench' && x.scale === machine);
+    console.log(m ? `ClickBench match #${m.id} (${m.date}, ${machine}): ${m.ranking.map((r) => [r].flat().join(' = ')).join(' > ')}`
+      : `No ClickBench match on ${machine}: fewer than two engines there.`);
+  }
 }
 
 main().catch((err) => { console.error(err.message ?? err); process.exit(1); });

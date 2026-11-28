@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { parseDataJs, inDefaultView, selectRun, scoreEntries, rankForEngines, clickbenchMatch, upsertClickbenchMatch, CLICKBENCH_SOURCE } from '../scripts/lib/clickbench.mjs';
+import { parseDataJs, inDefaultView, selectRun, scoreEntries, rankForEngines, clickbenchMatch, upsertClickbenchMatches, CLICKBENCH_SOURCE, REFERENCE_MACHINES } from '../scripts/lib/clickbench.mjs';
 
 const q = (t) => [t, t, t];
 const entry = (system, times, over = {}) => ({
@@ -66,7 +66,7 @@ test('mapping only names ELO engines that exist in matches.json', () => {
   for (const e of Object.keys(map)) assert.ok(engines.has(e), `${e} is not an ELO engine`);
 });
 
-test('clickbenchMatch ranks best entry per engine on the reference machine only, ties at two decimals', () => {
+test('clickbenchMatch ranks best entry per engine on one machine only, ties at two decimals', () => {
   const scored = [
     { system: 'A', machine: 'c8g.metal-48xl', date: '2026-03-01', score: 1.0 },
     { system: 'B', machine: 'c6a.4xlarge', date: '2026-01-05', score: 2.001 },
@@ -75,10 +75,12 @@ test('clickbenchMatch ranks best entry per engine on the reference machine only,
     { system: 'C', machine: 'Snowflake: L', date: '2026-04-01', score: 1.5 },
     { system: 'D', machine: 'c6a.4xlarge', date: '2026-01-01', score: 9.0 },
   ];
-  const m = clickbenchMatch(scored, { Aeng: ['A', 'A (Parquet)'], Beng: ['B'], Ceng: ['C'], Deng: ['D'] }, 80);
+  const m = clickbenchMatch(scored, { Aeng: ['A', 'A (Parquet)'], Beng: ['B'], Ceng: ['C'], Deng: ['D'] }, 80, 'c6a.4xlarge');
   assert.equal(m.id, 80);
   assert.equal(m.workload, 'ClickBench');
   assert.equal(m.source, CLICKBENCH_SOURCE);
+  assert.equal(m.scale, 'c6a.4xlarge', 'the machine is shown as the scale');
+  assert.match(m.comment, /c6a\.4xlarge/);
   assert.deepEqual(m.ranking, [['Beng', 'Aeng'], 'Deng'], 'cloud entries and other machines are left out');
   assert.equal(m.date, '2026-02-01', 'newest result date among the entries used');
   assert.match(m.evidence, /Aeng: A \(Parquet\) ×2\.00 \(2026-02-01\)/);
@@ -86,23 +88,25 @@ test('clickbenchMatch ranks best entry per engine on the reference machine only,
 });
 
 test('clickbenchMatch returns null with fewer than two engines', () => {
-  assert.equal(clickbenchMatch([{ system: 'A', machine: 'c6a.4xlarge', date: '2026-01-01', score: 1 }], { A: ['A'] }, 1), null);
+  assert.equal(clickbenchMatch([{ system: 'A', machine: 'c6a.4xlarge', date: '2026-01-01', score: 1 }], { A: ['A'] }, 1, 'c6a.4xlarge'), null);
 });
 
-test('upsertClickbenchMatch replaces the one ClickBench match in place and keeps its id', () => {
+test('upsertClickbenchMatches keeps one match per machine, in place, with its id', () => {
   const others = [{ id: 1, workload: 'TPC-H' }, { id: 5, workload: 'SSB' }];
-  const build = (id) => ({ id, workload: 'ClickBench', source: CLICKBENCH_SOURCE, ranking: ['X', 'Y'] });
-  const first = upsertClickbenchMatch(others, build);
-  assert.deepEqual(first.map((m) => m.id), [1, 5, 6], 'a new one gets the next free id');
-  const second = upsertClickbenchMatch([first[2], ...others], (id) => ({ ...build(id), ranking: ['Y', 'X'] }));
-  assert.deepEqual(second.map((m) => m.id), [6, 1, 5], 'replaced where it was');
-  assert.deepEqual(second[0].ranking, ['Y', 'X']);
-  assert.deepEqual(upsertClickbenchMatch([first[2], ...others], () => null), others, 'no match left → removed');
+  const build = (id, machine, ranking = ['X', 'Y']) => ({ id, workload: 'ClickBench', source: CLICKBENCH_SOURCE, scale: machine, ranking });
+  const first = upsertClickbenchMatches(others, ['m1', 'm2'], build);
+  assert.deepEqual(first.map((m) => [m.id, m.scale]), [[1, undefined], [5, undefined], [6, 'm1'], [7, 'm2']], 'new ones get the next free ids');
+  const reordered = [first[3], first[0], first[2], first[1]];
+  const second = upsertClickbenchMatches(reordered, ['m1', 'm2'], (id, machine) => build(id, machine, ['Y', 'X']));
+  assert.deepEqual(second.map((m) => m.id), [7, 1, 6, 5], 'each replaced where it was');
+  assert.ok(second.filter((m) => m.scale).every((m) => m.ranking[0] === 'Y'));
+  assert.deepEqual(upsertClickbenchMatches(first, ['m2'], build).map((m) => m.id), [1, 5, 7], 'a machine dropped from the list loses its match');
+  assert.deepEqual(upsertClickbenchMatches(first, ['m1', 'm2'], () => null), others, 'no engines → removed');
 });
 
-test('matches.json holds exactly one ClickBench match, from the reference machine', () => {
+test('matches.json holds exactly one ClickBench match per reference machine', () => {
   const matches = JSON.parse(readFileSync(new URL('../data/elo/matches.json', import.meta.url)));
   const cb = matches.filter((m) => m.workload === 'ClickBench');
-  assert.equal(cb.length, 1);
-  assert.equal(cb[0].source, CLICKBENCH_SOURCE);
+  assert.deepEqual(cb.map((m) => m.scale).sort(), [...REFERENCE_MACHINES].sort());
+  for (const m of cb) assert.equal(m.source, CLICKBENCH_SOURCE);
 });

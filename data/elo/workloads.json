@@ -33,7 +33,7 @@
     "url": "https://github.com/gregrahn/join-order-benchmark"
   },
   "ClickBench": {
-    "description": "Web-analytics queries over a single flat table of about 100 million real, anonymized page views. With one table there are no joins between tables: it tests how fast an engine scans, filters and aggregates. Ratings use only results on its reference c6a.4xlarge machine, so cloud services are left out.",
+    "description": "Web-analytics queries over a single flat table of about 100 million real, anonymized page views. With one table there are no joins between tables: it tests how fast an engine scans, filters and aggregates. Ratings use two matches, one each for the c6a.4xlarge and c8g.metal-48xl machines, so cloud services are left out.",
     "shape": "1 flat table, 43 queries, real anonymized data",
     "tests": ["Flat-table scans", "Filtering", "Aggregation"],
     "url": "https://benchmark.clickhouse.com/"

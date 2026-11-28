@@ -17,7 +17,8 @@ combined. A run list is left out when every engine in it also ran that benchmark
 match on that date (the same engines, or a subset of them) and they finished in the same order, so one
 result is not counted two or three times. A scale stays a match of its own when it has an engine that the
 larger match lacks, or when its engines finished in a different order: some products do better on small
-data than on large. The scale is shown next to the workload in the match log and does not affect ratings.
+data than on large. The scale is shown next to the workload in the match log and does not affect ratings. ClickBench
+matches use `scale` for the machine instead (see "ClickBench matches").
 Two optional text fields explain a match. `comment` is a short plain-language caveat for visitors
 (at most 280 characters: who ran it, what was left out, known defects) and is always visible in the
 match log. `evidence` is the longer record of which table or figure the order came from; the log
@@ -133,20 +134,26 @@ ClickHouse, so a useful contrast to the join-heavy TPC suites behind the ELO.
 - **Rank:** position among ClickBench systems, one row per system (the site's "best" toggle),
   e.g. `#14 of 120`. Engines with no entry in the default view show "—".
 
-## ClickBench match
-ClickBench also counts as one match (workload `ClickBench`), written by the same `npm run clickbench`
-into `data/elo/matches.json`, so the column and the match always come from one download.
+## ClickBench matches
+ClickBench also counts as matches (workload `ClickBench`), one per reference machine: **c6a.4xlarge**
+(16 vCPU, ClickBench's long-standing reference) and **c8g.metal-48xl** (192-core Graviton). Both are
+written by the same `npm run clickbench` into `data/elo/matches.json`, so the column and the matches
+always come from one download. The two machines reward different things (DuckDB does relatively better
+on the small one, Polars and DataFusion on the big one), so both count; this does mean ClickBench moves
+the engines in both about twice as much as a single report.
 
-- **Like with like:** only entries on ClickBench's reference machine, **c6a.4xlarge**, from the scored
-  default view above. Each ELO engine gets its best entry there (same mapping as the column); engines
-  with no entry on that machine (cloud services, serverless) are not in the match. The order is by
-  Combined score, best first; engines whose scores round to the same two decimals tie.
-- **Counted once:** ClickBench is a live leaderboard, not a dated report, so there is exactly one
-  ClickBench match. Each refresh replaces it in place and keeps its `id` (a new one gets the next free
-  id). Its `date` is the newest result date among the entries in it, so a refresh that changes no
-  result changes nothing, and decay ages it like any report.
-- `source` is `https://benchmark.clickhouse.com/`; `comment` says ClickHouse runs the benchmark and it is
-  one flat table; `evidence` lists each engine's system, score and result date.
+- **Like with like:** each match uses only entries on its machine, from the scored default view above.
+  Each ELO engine gets its best entry there (same mapping as the column); engines with no entry on that
+  machine (cloud services, serverless) are not in the match. The order is by Combined score, best
+  first; engines whose scores round to the same two decimals tie. The machine is the match's `scale`,
+  shown next to the workload in the match log.
+- **Counted once per machine:** ClickBench is a live leaderboard, not a dated report, so there is
+  exactly one ClickBench match per machine. Each refresh replaces it in place and keeps its `id` (a new
+  one gets the next free id); a ClickBench match for a machine no longer in the list is removed. Its
+  `date` is the newest result date among the entries in it, so a refresh that changes no result changes
+  nothing, and decay ages it like any report.
+- `source` is `https://benchmark.clickhouse.com/`; `comment` says ClickHouse runs the benchmark, it is
+  one flat table, and which machine; `evidence` lists each engine's system, score and result date.
 - `find-matches` already skips the page, since its URL is in the data.
 
 ## WebMCP (tools for AI agents)

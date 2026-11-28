@@ -866,6 +866,7 @@
     "date": "2026-11-27",
     "source": "https://benchmark.clickhouse.com/",
     "workload": "ClickBench",
+    "scale": "c6a.4xlarge",
     "ranking": [
       "CedarDB",
       "ClickHouse",
@@ -880,7 +881,30 @@
       "Apache Spark",
       "PostgreSQL"
     ],
-    "comment": "Run and published by ClickHouse. One flat table (web analytics hits), so no joins: it tests scans, filters and aggregation. Only entries on the reference c6a.4xlarge machine, which leaves out cloud services.",
+    "comment": "Run and published by ClickHouse. One flat table (web analytics hits), so no joins: it tests scans, filters and aggregation. Only entries on the c6a.4xlarge machine, which leaves out cloud services.",
     "evidence": "ClickBench default view, Combined score (lower is better, ×1.00 = best of all entries), c6a.4xlarge only, best entry per product: CedarDB: CedarDB ×3.50 (2026-11-10); ClickHouse: ClickHouse ×3.73 (2026-11-27); DuckDB: DuckDB ×8.17 (2026-11-12); DataFusion: DataFusion (Vortex, partitioned) ×9.42 (2026-11-15); Polars: Polars (Parquet) ×9.51 (2026-11-11); LakeSail: Sail (Parquet) ×12.39 (2026-10-12); StarRocks: StarRocks ×16.98 (2026-11-12); Apache Doris: Doris (Iceberg) ×22.54 (2026-11-08); Exasol: Exasol ×23.21 (2026-11-08); Trino: Trino (Parquet, partitioned) ×37.90 (2026-11-14); Apache Spark: Spark (Iceberg) ×105.31 (2026-11-08); PostgreSQL: PostgreSQL ×2706.69 (2026-09-21). Dated to the newest of these results; written by npm run clickbench, which replaces this match on each refresh."
+  },
+  {
+    "id": 81,
+    "date": "2026-11-27",
+    "source": "https://benchmark.clickhouse.com/",
+    "workload": "ClickBench",
+    "scale": "c8g.metal-48xl",
+    "ranking": [
+      "CedarDB",
+      "ClickHouse",
+      "Polars",
+      "DataFusion",
+      "DuckDB",
+      "LakeSail",
+      "StarRocks",
+      "Apache Doris",
+      "Exasol",
+      "Trino",
+      "Apache Spark",
+      "PostgreSQL"
+    ],
+    "comment": "Run and published by ClickHouse. One flat table (web analytics hits), so no joins: it tests scans, filters and aggregation. Only entries on the c8g.metal-48xl machine, which leaves out cloud services.",
+    "evidence": "ClickBench default view, Combined score (lower is better, ×1.00 = best of all entries), c8g.metal-48xl only, best entry per product: CedarDB: CedarDB ×1.92 (2026-11-10); ClickHouse: ClickHouse (web) ×2.11 (2026-11-27); Polars: Polars (Parquet) ×4.38 (2026-11-11); DataFusion: DataFusion (Vortex, partitioned) ×4.45 (2026-11-15); DuckDB: DuckDB ×4.67 (2026-11-10); LakeSail: Sail (Parquet) ×6.21 (2026-10-12); StarRocks: StarRocks ×6.38 (2026-09-07); Apache Doris: Doris (Iceberg) ×11.95 (2026-11-08); Exasol: Exasol ×13.47 (2026-11-08); Trino: Trino (Parquet, partitioned) ×22.06 (2026-11-14); Apache Spark: Spark ×117.74 (2026-05-11); PostgreSQL: PostgreSQL ×292.77 (2026-09-19). Dated to the newest of these results; written by npm run clickbench, which replaces this match on each refresh."
   }
 ]
